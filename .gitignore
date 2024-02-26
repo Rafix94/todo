@@ -1,0 +1,64 @@
+# IntelliJ IDEA
+.idea/
+
+# Compiled files
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.rar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+
+# Log files
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Maven
+target/
+
+# Gradle
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Compiled Gradle plugins
+buildSrc/build/
+
+# Caches
+.caches/
+.idea_caches/
+
+# Local History
+.idea/workspace.xml
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# JIRA plugin for IntelliJ
+atlassian-ide-plugin.xml
+
+# User-specific files
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/contentModel.xml
+
+# Sensitive or high-value files
+.idea/**/dataSources.ids
+.idea/**/dataSources.xml
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+

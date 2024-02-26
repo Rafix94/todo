@@ -1,0 +1,13 @@
+package com.recruitment.taskprocessor;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class TaskprocessorApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}

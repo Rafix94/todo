@@ -1,0 +1,43 @@
+services:
+  configserver:
+    container_name: configserver
+    image: todo/configserver:v1
+    ports:
+      - 8090:8090
+    healthcheck:
+      test: "curl --fail --silent localhost:8090/actuator/health/readiness | grep UP || exit 1"
+      interval: 20s
+      timeout: 10s
+      retries: 15
+      start_period: 15s
+    networks:
+      - todo
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+
+  eureka:
+    container_name: eureka
+    image: todo/eureka:v1
+    ports:
+      - 8091:8091
+    healthcheck:
+      test: "curl --fail --silent localhost:8091/actuator/health/readiness | grep UP || exit 1"
+      interval: 20s
+      timeout: 10s
+      retries: 15
+      start_period: 15s
+    networks:
+      - todo
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    depends_on:
+      configserver:
+        condition: service_healthy
+
+networks:
+  todo:
+    driver: "bridge"

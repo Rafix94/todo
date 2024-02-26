@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: "eureka"
+  config:
+    import: "optional:configserver:http://configserver:8090/"
+
+server:
+  port: 8091
