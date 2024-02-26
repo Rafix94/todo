@@ -37,7 +37,52 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
+  postgres:
+    container_name: postgres
+    image: postgres:16.2
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: useragent_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - todo
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
+  useragent:
+    container_name: useragent
+    image: todo/useragent:v1
+    ports:
+      - 8092:8092
+    healthcheck:
+      test: "curl --fail --silent localhost:8092/actuator/health/readiness | grep UP || exit 1"
+      interval: 20s
+      timeout: 10s
+      retries: 15
+      start_period: 15s
+    networks:
+      - todo
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+volumes:
+  postgres_data:
 networks:
   todo:
     driver: "bridge"

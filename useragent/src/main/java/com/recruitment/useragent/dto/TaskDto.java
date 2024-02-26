@@ -2,12 +2,14 @@ package com.recruitment.useragent.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 @Schema(
         name = "Task",
         description = "Holds task information"

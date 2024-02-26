@@ -17,18 +17,16 @@ import java.util.stream.Collectors;
 @RequestMapping(path="/tasks")
 public class TaskController {
     private final TaskRepository taskRepository;
-    private final TaskMapper taskMapper;
 
     @Autowired
-    public TaskController(TaskRepository taskRepository, TaskMapper taskMapper) {
+    public TaskController(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        this.taskMapper = taskMapper;
     }
 
     @GetMapping
     public ResponseEntity<List<TaskDto>> getTasks() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(taskRepository.findAll().stream().map(taskMapper::taskToTaskDTO).collect(Collectors.toList()));
+                .body(taskRepository.findAll().stream().map(TaskMapper::mapToTaskDto).collect(Collectors.toList()));
     }
 }
