@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: "001-create-user-table"
+      author: "rafal.grzes"
+      changes:
+        - createTable:
+            tableName: "user"
+            columns:
+              - column:
+                  name: "user_id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: "username"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "email"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: false
+
