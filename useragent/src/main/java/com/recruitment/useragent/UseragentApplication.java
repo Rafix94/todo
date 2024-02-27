@@ -18,6 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
                 contact = @Contact(name = "Rafał Grześ", email = "r.grzes94@gmail.com")
         )
 )
+@EnableJpaAuditing
 public class UseragentApplication {
 
     public static void main(String[] args) {

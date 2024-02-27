@@ -22,18 +22,18 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorDto> handleGlobalException(Exception exception,
-//                                                          WebRequest webRequest) {
-//        ErrorDto errorDto = ErrorDto.builder()
-//                .invokedPath(webRequest.getDescription(false))
-//                .message(exception.getMessage())
-//                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .timestamp(LocalDateTime.now())
-//                .build();
-//
-//        return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorDto> handleGlobalException(Exception exception,
+                                                          WebRequest webRequest) {
+        ErrorDto errorDto = ErrorDto.builder()
+                .invokedPath(webRequest.getDescription(false))
+                .message(exception.getMessage())
+                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
