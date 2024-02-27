@@ -81,6 +81,26 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+  edgeserver:
+    container_name: edgeserver
+    image: todo/edgeserver:v1
+    ports:
+      - 8093:8093
+    healthcheck:
+      test: "curl --fail --silent localhost:8093/actuator/health/readiness | grep UP || exit 1"
+      interval: 20s
+      timeout: 10s
+      retries: 15
+      start_period: 15s
+    networks:
+      - todo
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    depends_on:
+      useragent:
+        condition: service_healthy
 volumes:
   postgres_data:
 networks:
