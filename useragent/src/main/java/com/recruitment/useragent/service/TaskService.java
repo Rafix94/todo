@@ -24,8 +24,9 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public Page<TaskDto> getTasksForUser(Long userId, Pageable pageable) {
-        Page<Task> tasksPage = taskRepository.findByCustomerId(userId, pageable);
+    public Page<TaskDto> getTasksForCustomer(Long customerId, Pageable pageable) {
+        userRepository.findById(customerId).orElseThrow(() -> new NotFoundException("User", "id", String.valueOf(customerId)));
+        Page<Task> tasksPage = taskRepository.findByCustomerId(customerId, pageable);
         return tasksPage.map(TaskMapper::mapToTaskDto);
     }
 
@@ -38,5 +39,25 @@ public class TaskService {
         Task createdTask = taskRepository.save(task);
 
         return TaskMapper.mapToTaskDto(createdTask);
+    }
+
+    public TaskDto updateTask(Long taskId, TaskDto taskDto) {
+        Task existingTask = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
+
+        existingTask.setTitle(taskDto.getTitle());
+        existingTask.setDescription(taskDto.getDescription());
+
+        Task updatedTask = taskRepository.save(existingTask);
+        return TaskMapper.mapToTaskDto(updatedTask);
+    }
+
+    public boolean deleteTask(Long taskId) {
+        Task existingTask = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
+
+        taskRepository.delete(existingTask);
+
+        return true;
     }
 }

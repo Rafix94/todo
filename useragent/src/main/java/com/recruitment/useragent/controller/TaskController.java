@@ -2,9 +2,6 @@ package com.recruitment.useragent.controller;
 
 import com.recruitment.useragent.dto.ErrorDto;
 import com.recruitment.useragent.dto.TaskDto;
-import com.recruitment.useragent.entity.Task;
-import com.recruitment.useragent.mapper.TaskMapper;
-import com.recruitment.useragent.repository.TaskRepository;
 import com.recruitment.useragent.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,16 +16,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Tag(
         name = "Task management API",
@@ -55,11 +50,11 @@ public class TaskController {
                     description = "HTTP Status Internal Server Error",
                     content = @Content(schema = @Schema(implementation = ErrorDto.class)))
     })
-    @GetMapping("/{userId}")
+    @GetMapping("/{customerId}")
     public Page<TaskDto> getTasksForUser(
-            @PathVariable Long userId,
+            @PathVariable Long customerId,
             Pageable pageable) {
-        return taskService.getTasksForUser(userId, pageable);
+        return taskService.getTasksForCustomer(customerId, pageable);
     }
 
     @Operation(
@@ -81,5 +76,47 @@ public class TaskController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdTask);
+    }
+
+    @Operation(
+            summary = "Update task",
+            description = "REST API to update a task"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+            @ApiResponse(responseCode = "404", description = "HTTP Status Not Found"),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    })
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskDto> updateTask(
+            @PathVariable Long taskId,
+            @Valid @RequestBody TaskDto taskDto) {
+        TaskDto updatedTask = taskService.updateTask(taskId, taskDto);
+        if (updatedTask != null) {
+            return ResponseEntity.ok(updatedTask);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(
+            summary = "Delete task",
+            description = "REST API to delete a task"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "HTTP Status No Content"),
+            @ApiResponse(responseCode = "404", description = "HTTP Status Not Found"),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    })
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
+        taskService.deleteTask(taskId);
+        return ResponseEntity.noContent().build();
     }
 }
