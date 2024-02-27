@@ -1,6 +1,7 @@
 package com.recruitment.useragent.service;
 
 import com.recruitment.useragent.dto.TaskDto;
+import com.recruitment.useragent.dto.UpdateTaskDto;
 import com.recruitment.useragent.entity.Customer;
 import com.recruitment.useragent.entity.Task;
 import com.recruitment.useragent.exception.NotFoundException;
@@ -41,12 +42,12 @@ public class TaskService {
         return TaskMapper.mapToTaskDto(createdTask);
     }
 
-    public TaskDto updateTask(Long taskId, TaskDto taskDto) {
+    public TaskDto updateTask(Long taskId, UpdateTaskDto updateTaskDto) {
         Task existingTask = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
 
-        existingTask.setTitle(taskDto.getTitle());
-        existingTask.setDescription(taskDto.getDescription());
+        existingTask.setTitle(updateTaskDto.getTitle());
+        existingTask.setDescription(updateTaskDto.getDescription());
 
         Task updatedTask = taskRepository.save(existingTask);
         return TaskMapper.mapToTaskDto(updatedTask);

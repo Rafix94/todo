@@ -2,6 +2,7 @@ package com.recruitment.useragent.controller;
 
 import com.recruitment.useragent.dto.ErrorDto;
 import com.recruitment.useragent.dto.TaskDto;
+import com.recruitment.useragent.dto.UpdateTaskDto;
 import com.recruitment.useragent.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -93,8 +94,8 @@ public class TaskController {
     @PutMapping("/{taskId}")
     public ResponseEntity<TaskDto> updateTask(
             @PathVariable Long taskId,
-            @Valid @RequestBody TaskDto taskDto) {
-        TaskDto updatedTask = taskService.updateTask(taskId, taskDto);
+            @Valid @RequestBody UpdateTaskDto updateTaskDto) {
+        TaskDto updatedTask = taskService.updateTask(taskId, updateTaskDto);
         if (updatedTask != null) {
             return ResponseEntity.ok(updatedTask);
         } else {
