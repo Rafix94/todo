@@ -35,6 +35,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorDto> handleResourceNotFoundException(NotFoundException exception,
+                                                                            WebRequest webRequest) {
+        ErrorDto errorDto = ErrorDto.builder()
+                .invokedPath(webRequest.getDescription(false))
+                .message(exception.getMessage())
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
+    }
+
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException methodArgumentNotValidException,

@@ -13,7 +13,7 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
-                  name: "user_id"
+                  name: "customer_id"
                   type: "bigint"
                   constraints:
                     nullable: false
@@ -48,8 +48,8 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: "task"
             baseColumnNames:
-              - "user_id"
-            referencedTableName: "user"
+              - "customer_id"
+            referencedTableName: "customer"
             referencedColumnNames:
-              - "user_id"
-            constraintName: "fk_task_user"
+              - "id"
+            constraintName: "fk_task_customer"

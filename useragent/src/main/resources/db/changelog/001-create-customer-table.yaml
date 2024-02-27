@@ -4,10 +4,10 @@ databaseChangeLog:
       author: "rafal.grzes"
       changes:
         - createTable:
-            tableName: "user"
+            tableName: "customer"
             columns:
               - column:
-                  name: "user_id"
+                  name: "id"
                   type: "bigint"
                   autoIncrement: true
                   constraints:
