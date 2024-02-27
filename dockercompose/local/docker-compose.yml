@@ -101,6 +101,13 @@ services:
     depends_on:
       useragent:
         condition: service_healthy
+  ui:
+    container_name: ui
+    image: todo/ui:v1
+    ports:
+      - 4200:4200
+    restart: always
+
 #  keycloak:
 #    image: jboss/keycloak:15.0.2
 #    container_name: keycloak
