@@ -7,7 +7,7 @@ import com.recruitment.useragent.entity.Task;
 import com.recruitment.useragent.exception.NotFoundException;
 import com.recruitment.useragent.mapper.TaskMapper;
 import com.recruitment.useragent.repository.TaskRepository;
-import com.recruitment.useragent.repository.UserRepository;
+import com.recruitment.useragent.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,22 +17,22 @@ import org.springframework.stereotype.Service;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
+    private final CustomerRepository userRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
+    public TaskService(TaskRepository taskRepository, CustomerRepository userRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
     }
 
-    public Page<TaskDto> getTasksForCustomer(Long customerId, Pageable pageable) {
-        userRepository.findById(customerId).orElseThrow(() -> new NotFoundException("User", "id", String.valueOf(customerId)));
-        Page<Task> tasksPage = taskRepository.findByCustomerId(customerId, pageable);
+    public Page<TaskDto> getTasksForCustomer(String email, Pageable pageable) {
+        userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User", "email", String.valueOf(email)));
+        Page<Task> tasksPage = taskRepository.findByCustomerEmail(email, pageable);
         return tasksPage.map(TaskMapper::mapToTaskDto);
     }
 
-    public TaskDto createTaskForUser(Long customerId, TaskDto taskDto) {
-        Customer customer = userRepository.findById(customerId).orElseThrow(() -> new NotFoundException("User", "id", String.valueOf(customerId)));
+    public TaskDto createTaskForUser(String email, TaskDto taskDto) {
+        Customer customer = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User", "email", String.valueOf(email)));
 
         Task task = TaskMapper.mapToTask(taskDto);
 

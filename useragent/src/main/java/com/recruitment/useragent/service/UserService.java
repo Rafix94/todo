@@ -2,7 +2,7 @@ package com.recruitment.useragent.service;
 
 import com.recruitment.useragent.entity.Customer;
 import com.recruitment.useragent.exception.NotFoundException;
-import com.recruitment.useragent.repository.UserRepository;
+import com.recruitment.useragent.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final CustomerRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(CustomerRepository userRepository) {
         this.userRepository = userRepository;
     }
 

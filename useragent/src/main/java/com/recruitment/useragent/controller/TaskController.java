@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(
@@ -53,9 +54,9 @@ public class TaskController {
     })
     @GetMapping("/{customerId}")
     public Page<TaskDto> getTasksForUser(
-            @PathVariable Long customerId,
+            @RequestParam String email,
             Pageable pageable) {
-        return taskService.getTasksForCustomer(customerId, pageable);
+        return taskService.getTasksForCustomer(email, pageable);
     }
 
     @Operation(
@@ -71,9 +72,9 @@ public class TaskController {
     })
     @PostMapping("/{customerId}")
     public ResponseEntity<TaskDto> createTaskForUser(
-            @PathVariable Long customerId,
+            @RequestParam String email,
             @Valid @RequestBody TaskDto taskDto) {
-        TaskDto createdTask = taskService.createTaskForUser(customerId, taskDto);
+        TaskDto createdTask = taskService.createTaskForUser(email, taskDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdTask);

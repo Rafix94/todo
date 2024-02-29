@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   configserver:
     container_name: configserver
@@ -15,7 +16,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 700m
+          memory: 200m
 
   eureka:
     container_name: eureka
@@ -30,13 +31,14 @@ services:
       start_period: 15s
     networks:
       - todo
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     depends_on:
       configserver:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 200m
+
   postgres:
     container_name: postgres
     image: postgres:16.2
@@ -56,6 +58,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 200m
 
   useragent:
     container_name: useragent
@@ -70,10 +76,6 @@ services:
       start_period: 15s
     networks:
       - todo
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     depends_on:
       configserver:
         condition: service_healthy
@@ -81,6 +83,11 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 300m
+
   edgeserver:
     container_name: edgeserver
     image: todo/edgeserver:v1
@@ -94,45 +101,35 @@ services:
       start_period: 15s
     networks:
       - todo
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     depends_on:
       useragent:
         condition: service_healthy
-  ui:
-    container_name: ui
-    image: todo/ui:v1
-    ports:
-      - 4200:4200
-    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 200m
 
-#  keycloak:
-#    image: jboss/keycloak:15.0.2
-#    container_name: keycloak
-#    environment:
-#      - KEYCLOAK_USER=admin
-#      - KEYCLOAK_PASSWORD=admin
-#      - DB_VENDOR=POSTGRES
-#      - DB_ADDR=keycloak-db
-#      - DB_DATABASE=keycloak
-#      - DB_USER=keycloak
-#      - DB_PASSWORD=password
+#  ui:
+#    container_name: ui
+#    image: todo/ui:v1
 #    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - keycloak-db
-#
-#  keycloak-db:
-#    image: postgres:16.2
-#    container_name: keycloak-db
-#    environment:
-#      - POSTGRES_DB=keycloak
-#      - POSTGRES_USER=keycloak
-#      - POSTGRES_PASSWORD=password
-#    ports:
-#      - "5433:5432"
+#      - 4200:4200
+#    restart: always
+
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    container_name: keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command:
+      - start-dev
+      - --import-realm
+    volumes:
+      - /keycloak/realm.json:/opt/keycloak/data/import/realm.json
+
 volumes:
   postgres_data:
 networks:
