@@ -1,0 +1,15 @@
+<app-header></app-header>
+<div class="site-section">
+  <div>
+    <app-table [data]="data" [totalPages]="totalPages" [currentPage]="currentPage" (prevPage)="prevPage()" (nextPage)="nextPage()"></app-table>
+  </div>
+  <div class="row mb-5">
+    <div class="col">
+      <div class="">
+        <button class="btn btn-back" routerLink="/dashboard">
+          BACK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

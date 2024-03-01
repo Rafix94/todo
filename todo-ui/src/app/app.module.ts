@@ -10,8 +10,16 @@ import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 
+import { MatInputModule, MatPaginatorModule, MatProgressSpinnerModule,
+  MatSortModule, MatTableModule } from "@angular/material";
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import BrowserAnimationsModule
+import { MatFormFieldModule } from '@angular/material/form-field'; // Import MatFormFieldModule
+
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
-import {TasksComponent} from "./components/tasks/tasks.component";
+
+import {TaskComponent} from "./components/tasks/task.component";
+import {TableComponent} from "./components/table/table.component";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -29,20 +37,28 @@ function initializeKeycloak(keycloak: KeycloakService) {
 }
 
 @NgModule({
+  bootstrap: [AppComponent],
   declarations: [
     AppComponent,
     HeaderComponent,
     HomeComponent,
     LoginComponent,
     DashboardComponent,
-    TasksComponent
+    TaskComponent,
+    TableComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatInputModule,
     FormsModule,
     KeycloakAngularModule,
     HttpClientModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
     HttpClientXsrfModule.withOptions({
       cookieName: 'XSRF-TOKEN',
       headerName: 'X-XSRF-TOKEN',
@@ -55,8 +71,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       multi: true,
       deps: [KeycloakService],
     }
-  ],
-  bootstrap: [AppComponent]
+  ]
 })
 export class AppModule {
 

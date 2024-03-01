@@ -1,23 +1,27 @@
 
 export class Tasks {
 
-  public loanNumber: number;
-  public customerId: number;
-  public startDt: Date;
-  public loanType: string;
-  public totalLoan: number;
-  public amountPaid: number;
-  public outstandingAmount: number;
-
-  constructor(loanNumber?: number,customerId?: number,startDt?: Date, loanType?: string,
-    totalLoan?: number,amountPaid?: number, outstandingAmount?: number){
-        this.loanNumber = loanNumber || 0;
-        this.customerId = customerId || 0;
-        this.startDt = startDt!;
-        this.loanType = loanType || "";
-        this.totalLoan = totalLoan || 0;
-        this.amountPaid = amountPaid || 0;
-        this.outstandingAmount = outstandingAmount || 0;
+  public id: number;
+  public title: string;
+  public description: string;
+  public dueDate: Date;
+  public priority: string;
+  public status: string;
+  public category: string;
+  constructor(id?: number,
+              title?: string,
+              description?: string,
+              dueDate?: Date,
+              priority?: string,
+              status?: string,
+              category?: string){
+    this.id = id || 0;
+    this.title = title || "";
+    this.description = description || "";
+    this.dueDate = dueDate!;
+    this.priority = priority || "";
+    this.status = status || "";
+    this.category = category || "";
   }
 
 }

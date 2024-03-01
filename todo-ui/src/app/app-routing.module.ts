@@ -5,7 +5,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AuthKeyClockGuard } from './routeguards/auth.route';
 import { HomeComponent } from './components/home/home.component';
 
-import { TasksComponent } from './components/tasks/tasks.component';
+import { TaskComponent } from './components/tasks/task.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthKeyClockGuard],data: {
 
   }},
-  { path: 'tasks', component: TasksComponent, canActivate: [AuthKeyClockGuard],data: {
+  { path: 'tasks', component: TaskComponent, canActivate: [AuthKeyClockGuard],data: {
     // roles: ['USER','ADMIN']
   }},
 ];
