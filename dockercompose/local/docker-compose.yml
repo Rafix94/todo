@@ -107,7 +107,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 200m
+          memory: 300m
 
 #  ui:
 #    container_name: ui
@@ -129,6 +129,8 @@ services:
       - --import-realm
     volumes:
       - /keycloak/realm.json:/opt/keycloak/data/import/realm.json
+    networks:
+      - todo
 
 volumes:
   postgres_data:

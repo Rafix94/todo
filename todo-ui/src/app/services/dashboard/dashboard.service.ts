@@ -11,7 +11,7 @@ export class DashboardService {
   constructor(private http:HttpClient) { }
 
   getTasksDetails(email: String){
-    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+ "tasks?email="+email,{ observe: 'response',withCredentials: true });
+    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+ "/tasks?email="+email,{ observe: 'response',withCredentials: true });
   }
 
 }

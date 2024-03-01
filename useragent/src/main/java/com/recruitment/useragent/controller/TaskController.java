@@ -52,7 +52,7 @@ public class TaskController {
                     description = "HTTP Status Internal Server Error",
                     content = @Content(schema = @Schema(implementation = ErrorDto.class)))
     })
-    @GetMapping("/{customerId}")
+    @GetMapping
     public Page<TaskDto> getTasksForUser(
             @RequestParam String email,
             Pageable pageable) {

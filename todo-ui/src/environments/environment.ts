@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  rooturl : 'http://localhost:8093/todolist/'
+  rooturl : 'http://localhost:8093/todolist'
 };
 
 /*
