@@ -55,6 +55,10 @@ public class TaskService {
 
         existingTask.setTitle(updateTaskDto.getTitle());
         existingTask.setDescription(updateTaskDto.getDescription());
+        existingTask.setDueDate(updateTaskDto.getDueDate());
+        existingTask.setCategory(updateTaskDto.getCategory());
+        existingTask.setPriority(updateTaskDto.getPriority());
+        existingTask.setStatus(updateTaskDto.getStatus());
 
         Task updatedTask = taskRepository.save(existingTask);
         return TaskMapper.mapToTaskDto(updatedTask);

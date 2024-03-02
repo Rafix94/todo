@@ -34,4 +34,7 @@ export class DataService {
     return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks/" + id);
   }
 
+  updateTask(id: number, task: any): Observable<any> {
+    return this.http.put(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks/" + id, task);
+  }
 }

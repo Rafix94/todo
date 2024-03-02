@@ -42,20 +42,6 @@ export class TaskComponent implements OnInit {
     this.getData();
   }
 
-  nextPage(): void {
-    if (this.currentPage < this.totalPages - 1) {
-      this.currentPage++;
-      this.getData();
-    }
-  }
-
-  prevPage(): void {
-    if (this.currentPage > 0) {
-      this.currentPage--;
-      this.getData();
-    }
-  }
-
   announceSortChange(sortState: Sort) {
     this.sortDir = sortState.direction || 'asc';
     this.sortField = sortState.active || 'title';
@@ -68,7 +54,6 @@ export class TaskComponent implements OnInit {
   }
 
   getRowDetails(task: any): void {
-    console.log('asdasda');
     this.router.navigate(['/tasks', task.id]);
   }
 
