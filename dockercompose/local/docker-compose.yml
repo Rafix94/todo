@@ -66,8 +66,13 @@ services:
   useragent:
     container_name: useragent
     image: todo/useragent:v1
+    environment:
+      _JAVA_OPTIONS: >
+        -Xdebug
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     ports:
       - 8092:8092
+      - 5005:5005
     healthcheck:
       test: "curl --fail --silent localhost:8092/actuator/health/readiness | grep UP || exit 1"
       interval: 20s

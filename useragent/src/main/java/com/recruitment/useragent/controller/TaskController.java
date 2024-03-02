@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import java.util.List;
 @Tag(
         name = "Task management API",
         description = "CRUD operation for task")
@@ -55,8 +55,10 @@ public class TaskController {
     @GetMapping
     public Page<TaskDto> getTasksForUser(
             @RequestParam String email,
-            @RequestParam Pageable pageable) {
-        return taskService.getTasksForCustomer(email, pageable);
+            Pageable pageable,
+            @RequestParam(required = false) String searchQuery
+    ) {
+        return taskService.getTasksForCustomer(email, pageable, searchQuery);
     }
 
     @Operation(

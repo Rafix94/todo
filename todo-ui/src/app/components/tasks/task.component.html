@@ -1,7 +1,9 @@
 <app-header></app-header>
 <div class="site-section">
   <div>
-    <table mat-table [dataSource]="data" class="mat-elevation-z8 demo-table">
+    <app-search (searchEvent)="search($event)"></app-search>
+
+    <table mat-table [dataSource]="data" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8 demo-table">
 
       <!-- Position Column -->
       <ng-container matColumnDef="No.">
@@ -10,32 +12,32 @@
       </ng-container>
 
       <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef> title </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> title </th>
         <td mat-cell *matCellDef="let element"> {{element.title}} </td>
       </ng-container>
 
       <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef> description </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> description </th>
         <td mat-cell *matCellDef="let element"> {{element.description}} </td>
       </ng-container>
 
       <ng-container matColumnDef="dueDate">
-        <th mat-header-cell *matHeaderCellDef> dueDate </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> dueDate </th>
         <td mat-cell *matCellDef="let element"> {{element.dueDate}} </td>
       </ng-container>
 
       <ng-container matColumnDef="priority">
-        <th mat-header-cell *matHeaderCellDef> priority </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> priority </th>
         <td mat-cell *matCellDef="let element"> {{element.priority}} </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef> status </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> status </th>
         <td mat-cell *matCellDef="let element"> {{element.status}} </td>
       </ng-container>
 
       <ng-container matColumnDef="category">
-        <th mat-header-cell *matHeaderCellDef> category </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> category </th>
         <td mat-cell *matCellDef="let element"> {{element.category}} </td>
       </ng-container>
 
@@ -45,7 +47,7 @@
     <mat-paginator [length]="totalElements"
                    [pageSize]="pageSize"
                    [pageSizeOptions]="[5, 10, 20]"
-                   (page)="currentPage = $event.pageIndex; getData($event.pageSize)">
+                   (page)="currentPage = $event.pageIndex; updateSize($event.pageSize)">
     </mat-paginator>
   </div>
 </div>

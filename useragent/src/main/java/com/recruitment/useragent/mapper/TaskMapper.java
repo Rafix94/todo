@@ -13,6 +13,7 @@ public interface TaskMapper {
                 .category(task.getCategory())
                 .priority(task.getPriority())
                 .status(task.getStatus())
+                .description(task.getDescription())
                 .build();
     }
     static Task mapToTask(TaskDto taskDto) {
@@ -22,6 +23,7 @@ public interface TaskMapper {
                 .category(taskDto.getCategory())
                 .priority(taskDto.getPriority())
                 .status(taskDto.getStatus())
+                .description(taskDto.getDescription())
                 .build();
     }
 }

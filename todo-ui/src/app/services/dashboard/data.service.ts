@@ -15,12 +15,17 @@ export class DataService {
     return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+ "/tasks?email="+email,{ observe: 'response',withCredentials: true });
   }
 
-  getData(page: number, pageSize: number, email: string): Observable<any> {
+  getData(page: number, pageSize: number, email: string, sortField: string, sortDirection: string, searchQuery: string): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', pageSize.toString());
-      // .set('observe', 'response')
-      // .set('withCredentials', true);
+
+    if (sortField && sortDirection) {
+      params = params.set('sort', `${sortField},${sortDirection}`);
+    }
+    if (searchQuery) {
+      params = params.set('searchQuery', searchQuery);
+    }
 
     return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks?email=" + email, { params });
   }

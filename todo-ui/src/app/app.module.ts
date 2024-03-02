@@ -8,7 +8,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-
+import { SearchComponent } from "./components/search/search.component";
 
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -46,6 +46,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     LoginComponent,
     DashboardComponent,
     TaskComponent,
+    SearchComponent,
   ],
   imports: [
     BrowserModule,

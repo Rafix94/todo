@@ -25,9 +25,16 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public Page<TaskDto> getTasksForCustomer(String email, Pageable pageable) {
-        userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User", "email", String.valueOf(email)));
-        Page<Task> tasksPage = taskRepository.findByCustomerEmail(email, pageable);
+    public Page<TaskDto> getTasksForCustomer(String email, Pageable pageable, String searchQuery) {
+        Customer customer = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User", "email", String.valueOf(email)));
+        Page<Task> tasksPage;
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            tasksPage = taskRepository.findByCustomerIdAndSearchQuery(customer.getId(), searchQuery, pageable);
+        } else {
+            // If searchQuery is empty, retrieve all tasks for the customer
+            tasksPage = taskRepository.findByCustomerId(customer.getId(), pageable);
+        }
+
         return tasksPage.map(TaskMapper::mapToTaskDto);
     }
 
