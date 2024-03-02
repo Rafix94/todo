@@ -10,8 +10,10 @@ import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 
-import { MatInputModule, MatPaginatorModule, MatProgressSpinnerModule,
-  MatSortModule, MatTableModule } from "@angular/material";
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import BrowserAnimationsModule
 import { MatFormFieldModule } from '@angular/material/form-field'; // Import MatFormFieldModule
@@ -19,7 +21,6 @@ import { MatFormFieldModule } from '@angular/material/form-field'; // Import Mat
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 import {TaskComponent} from "./components/tasks/task.component";
-import {TableComponent} from "./components/table/table.component";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -45,7 +46,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     LoginComponent,
     DashboardComponent,
     TaskComponent,
-    TableComponent
   ],
   imports: [
     BrowserModule,

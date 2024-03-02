@@ -10,13 +10,13 @@ services:
       interval: 20s
       timeout: 10s
       retries: 15
-      start_period: 15s
+      start_period: 300s
     networks:
       - todo
-    deploy:
-      resources:
-        limits:
-          memory: 200m
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 500m
 
   eureka:
     container_name: eureka
@@ -126,9 +126,9 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     command:
       - start-dev
-      - --import-realm
-    volumes:
-      - /keycloak/realm.json:/opt/keycloak/data/import/realm.json
+#      - --import-realm
+#    volumes:
+#      - /keycloak/realm.json:/opt/keycloak/data/import/realm.json
     networks:
       - todo
 

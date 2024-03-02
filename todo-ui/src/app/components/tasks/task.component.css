@@ -10,19 +10,28 @@
   padding: 3rem 0;
 }
 
-label {
-  font-size: 1rem;
-  text-align: left;
-  display: flex;
+.demo-table {
+  width: 100%;
 }
 
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: 0px;
-  margin-left:  0px;
+.mat-column-demo-position {
+  width: 32px;
+  border-right: 1px solid currentColor;
+  padding-right: 24px;
+  text-align: center;
 }
 
-.table-responsive-md {
-  margin: 50px;
+.mat-column-demo-name {
+  padding-left: 16px;
+  font-size: 20px;
+}
+
+.mat-column-demo-weight {
+  font-style: italic;
+}
+
+.mat-column-demo-symbol {
+  width: 32px;
+  text-align: center;
+  font-weight: bold;
 }

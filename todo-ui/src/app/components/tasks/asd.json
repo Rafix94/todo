@@ -1,0 +1,38 @@
+{
+  "content": [
+    {
+      "id": null,
+      "title": "title1",
+      "description": null,
+      "dueDate": "2024-03-03",
+      "priority": "H",
+      "status": "P",
+      "category": "IT"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 20,
+    "sort": {
+      "unsorted": true,
+      "empty": true,
+      "sorted": false
+    },
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 1,
+  "last": true,
+  "numberOfElements": 1,
+  "size": 20,
+  "number": 0,
+  "sort": {
+    "unsorted": true,
+    "empty": true,
+    "sorted": false
+  },
+  "first": true,
+  "empty": false
+}

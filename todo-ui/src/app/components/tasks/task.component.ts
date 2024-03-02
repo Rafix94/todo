@@ -14,6 +14,7 @@ export class TaskComponent implements OnInit {
   pageSize = 10;
   totalPages = 0;
   user: any;
+  displayedColumns: string[] = ['No.', 'title', 'description', 'dueDate', 'priority', 'status', 'category'];
 
   constructor(private dataService: DataService) { }
 
@@ -24,7 +25,6 @@ export class TaskComponent implements OnInit {
 
   getData(): void {
     this.dataService.getData(this.currentPage, this.pageSize, this.user.email).subscribe((response: any) => {
-      console.log(response.content);
       this.data = response.content;
       this.totalPages = response.totalPages;
     });
