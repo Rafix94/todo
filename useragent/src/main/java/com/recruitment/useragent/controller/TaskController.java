@@ -55,7 +55,7 @@ public class TaskController {
     @GetMapping
     public Page<TaskDto> getTasksForUser(
             @RequestParam String email,
-            Pageable pageable) {
+            @RequestParam Pageable pageable) {
         return taskService.getTasksForCustomer(email, pageable);
     }
 

@@ -6,7 +6,7 @@
       <!-- Position Column -->
       <ng-container matColumnDef="No.">
         <th mat-header-cell *matHeaderCellDef> No. </th>
-        <td mat-cell *matCellDef="let index = index"> {{index + 1}} </td>
+        <td mat-cell *matCellDef="let index = index"> {{ currentPage * pageSize + index + 1 }} </td>
       </ng-container>
 
       <ng-container matColumnDef="title">
@@ -42,14 +42,10 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-  </div>
-  <div class="row mb-5">
-    <div class="col">
-      <div class="">
-        <button class="btn btn-back" routerLink="/dashboard">
-          BACK
-        </button>
-      </div>
-    </div>
+    <mat-paginator [length]="totalElements"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="[5, 10, 20]"
+                   (page)="currentPage = $event.pageIndex; getData($event.pageSize)">
+    </mat-paginator>
   </div>
 </div>

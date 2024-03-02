@@ -18,9 +18,9 @@ export class DataService {
   getData(page: number, pageSize: number, email: string): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('pageSize', pageSize.toString())
+      .set('size', pageSize.toString());
       // .set('observe', 'response')
-      .set('withCredentials', true);
+      // .set('withCredentials', true);
 
     return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks?email=" + email, { params });
   }
