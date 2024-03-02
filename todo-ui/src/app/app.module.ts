@@ -21,6 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field'; // Import Mat
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 import {TaskComponent} from "./components/tasks/task.component";
+import { TaskDetailsComponent } from './components/task-details/task-details.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -47,6 +48,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     DashboardComponent,
     TaskComponent,
     SearchComponent,
+    TaskDetailsComponent,
   ],
   imports: [
     BrowserModule,

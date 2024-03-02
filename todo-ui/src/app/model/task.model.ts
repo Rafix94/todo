@@ -1,5 +1,5 @@
 
-export class Tasks {
+export class Task {
 
   public id: number;
   public title: string;

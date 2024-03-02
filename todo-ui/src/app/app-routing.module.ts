@@ -6,6 +6,7 @@ import { AuthKeyClockGuard } from './routeguards/auth.route';
 import { HomeComponent } from './components/home/home.component';
 
 import { TaskComponent } from './components/tasks/task.component';
+import {TaskDetailsComponent} from "./components/task-details/task-details.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -17,6 +18,8 @@ const routes: Routes = [
   { path: 'tasks', component: TaskComponent, canActivate: [AuthKeyClockGuard],data: {
     // roles: ['USER','ADMIN']
   }},
+  { path: 'tasks/:taskId', component: TaskDetailsComponent, canActivate: [AuthKeyClockGuard] }
+
 ];
 
 @NgModule({

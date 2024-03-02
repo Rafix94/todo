@@ -38,9 +38,10 @@ public class ProjectSecurityConfig {
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests)->requests
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/tasks").permitAll()//.hasRole("USER")
-                        .requestMatchers("/user").authenticated()
-                        .requestMatchers("/register").permitAll())
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/tasks").authenticated()
+                        .requestMatchers("/tasks/**").authenticated()
+                        .anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2ResourceServerCustomizer ->
                         oauth2ResourceServerCustomizer.jwt(jwtCustomizer -> jwtCustomizer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
         return http.build();

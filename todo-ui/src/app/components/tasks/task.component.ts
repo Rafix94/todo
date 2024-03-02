@@ -3,6 +3,7 @@
 import { Component, OnInit } from '@angular/core';
 import {DataService} from "../../services/dashboard/data.service";
 import { Sort} from '@angular/material/sort';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-task',
@@ -20,8 +21,9 @@ export class TaskComponent implements OnInit {
   sortField: string = 'title';
   sortDir: string = 'asc';
   searchQuery: string = '';
+  row: any;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private router: Router) { }
 
   ngOnInit(): void {
     this.user = JSON.parse(sessionStorage.getItem('userdetails') || "");
@@ -29,7 +31,7 @@ export class TaskComponent implements OnInit {
   }
 
   getData(): void {
-    this.dataService.getData(this.currentPage, this.pageSize, this.user.email, this.sortField, this.sortDir, this.searchQuery).subscribe((response: any) => {
+    this.dataService.getTasks(this.currentPage, this.pageSize, this.user.email, this.sortField, this.sortDir, this.searchQuery).subscribe((response: any) => {
       this.data = response.content;
       this.totalPages = response.totalPages;
       this.totalElements = response.totalElements;
@@ -63,6 +65,11 @@ export class TaskComponent implements OnInit {
   search(query: string) {
     this.searchQuery = query;
     this.getData();
+  }
+
+  getRowDetails(task: any): void {
+    console.log('asdasda');
+    this.router.navigate(['/tasks', task.id]);
   }
 
 }

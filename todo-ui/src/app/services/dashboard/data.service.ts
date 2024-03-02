@@ -15,7 +15,7 @@ export class DataService {
     return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+ "/tasks?email="+email,{ observe: 'response',withCredentials: true });
   }
 
-  getData(page: number, pageSize: number, email: string, sortField: string, sortDirection: string, searchQuery: string): Observable<any> {
+  getTasks(page: number, pageSize: number, email: string, sortField: string, sortDirection: string, searchQuery: string): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', pageSize.toString());
@@ -28,6 +28,10 @@ export class DataService {
     }
 
     return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks?email=" + email, { params });
+  }
+
+  getTaskDetails(id: number): Observable<any> {
+    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks/" + id);
   }
 
 }

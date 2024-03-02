@@ -68,4 +68,10 @@ public class TaskService {
 
         return true;
     }
+
+    public TaskDto getTaskDetails(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
+        return TaskMapper.mapToTaskDto(task);
+    }
 }

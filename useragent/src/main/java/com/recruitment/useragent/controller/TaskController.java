@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +62,29 @@ public class TaskController {
     ) {
         return taskService.getTasksForCustomer(email, pageable, searchQuery);
     }
+
+    @Operation(
+            summary = "Get task details",
+            description = "REST API to fetch details of a single task"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+            @ApiResponse(responseCode = "404", description = "HTTP Status Not Found"),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    })
+    @GetMapping("/{taskId}")
+    public ResponseEntity<TaskDto> getTaskDetails(@PathVariable Long taskId) {
+        TaskDto taskDto = taskService.getTaskDetails(taskId);
+        if (taskDto != null) {
+            return ResponseEntity.ok(taskDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @Operation(
             summary = "Create tasks",

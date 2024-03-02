@@ -8,6 +8,7 @@ public interface TaskMapper {
 
     static TaskDto mapToTaskDto(Task task) {
         return TaskDto.builder()
+                .id(task.getId())
                 .title(task.getTitle())
                 .dueDate(task.getDueDate())
                 .category(task.getCategory())
