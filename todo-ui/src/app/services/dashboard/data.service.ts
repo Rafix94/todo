@@ -23,22 +23,22 @@ export class DataService {
       params = params.set('searchQuery', searchQuery);
     }
 
-    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks?email=" + email, { params });
+    return this.http.get(environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "?email=" + email, { params });
   }
 
   getTaskDetails(id: number): Observable<any> {
-    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks/" + id);
+    return this.http.get(environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "/" + id);
   }
 
   createTask(task: any, email: string): Observable<any> {
-    return this.http.post(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks?email=" + email, task);
+    return this.http.post(environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "?email=" + email, task);
   }
 
   updateTask(id: number, task: any): Observable<any> {
-    return this.http.put(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks/" + id, task);
+    return this.http.put(environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "/" + id, task);
   }
 
   deleteTask(id: number): Observable<any> {
-    return this.http.delete(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks/" + id);
+    return this.http.delete(environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "/" + id);
   }
 }

@@ -33,12 +33,12 @@ public class ProjectSecurityConfig {
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .cors(AbstractHttpConfigurer::disable)
-                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/register", "actuator/**")
+                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/user/register", "actuator/**")
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests)->requests
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/user/**", "user/register").permitAll()
                         .requestMatchers("/tasks").authenticated()
                         .requestMatchers("/tasks/**").authenticated()
                         .anyRequest().permitAll())

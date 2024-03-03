@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/model/user.model';
 import { KeycloakService } from 'keycloak-angular';
 import { KeycloakProfile } from 'keycloak-js';
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../../../environments/environment";
+import {AppConstants} from "../../constants/app.constants";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
@@ -9,13 +13,13 @@ import { KeycloakProfile } from 'keycloak-js';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  
+
   user = new User();
 
   public isLoggedIn = false;
   public userProfile: KeycloakProfile | null = null;
 
-  constructor(private readonly keycloak: KeycloakService) { }
+  constructor(private readonly keycloak: KeycloakService, private router : Router) { }
 
   public async ngOnInit() {
     this.isLoggedIn = await this.keycloak.isLoggedIn();
@@ -25,12 +29,16 @@ export class HeaderComponent implements OnInit {
       this.user.authStatus = 'AUTH';
       this.user.name = this.userProfile.firstName || "";
       window.sessionStorage.setItem("userdetails",JSON.stringify(this.user));
-      
     }
   }
 
   public login() {
     this.keycloak.login();
+  }
+
+  register(): void {
+    this.router.navigate(['/register'], { queryParams: { mode: 'add' } });
+
   }
 
   public logout() {

@@ -6,7 +6,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
-import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { SearchComponent } from "./components/search/search.component";
 
@@ -24,6 +23,7 @@ import {TaskComponent} from "./components/tasks/task.component";
 import { TaskDetailsComponent } from './components/task-details/task-details.component';
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
+import { RegistrationComponent } from './components/registration/registration.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -46,11 +46,11 @@ function initializeKeycloak(keycloak: KeycloakService) {
     AppComponent,
     HeaderComponent,
     HomeComponent,
-    LoginComponent,
     DashboardComponent,
     TaskComponent,
     SearchComponent,
     TaskDetailsComponent,
+    RegistrationComponent,
   ],
   imports: [
     BrowserModule,

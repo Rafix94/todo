@@ -3,3 +3,7 @@ spring:
     name: "useragent"
   config:
     import: "optional:configserver:http://configserver:8090/"
+keycloak:
+  auth-server-url: http://keycloak:8080/auth
+  realm: toDoListApp
+  resource: todolistpublicclient

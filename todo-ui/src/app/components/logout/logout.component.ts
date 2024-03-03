@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from 'src/app/services/login/login.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/model/user.model';
 
@@ -9,9 +8,9 @@ import { User } from 'src/app/model/user.model';
   styleUrls: ['./logout.component.css']
 })
 export class LogoutComponent implements OnInit {
-  
+
   user = new User();
-  constructor(private router : Router) { 
+  constructor(private router : Router) {
 
   }
 

@@ -10,21 +10,21 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private final CustomerRepository userRepository;
+    private final CustomerRepository customerRepository;
 
     public UserService(CustomerRepository userRepository) {
-        this.userRepository = userRepository;
+        this.customerRepository = userRepository;
     }
 
     public List<Customer> getAllUsers() {
-        return userRepository.findAll();
+        return customerRepository.findAll();
     }
 
     public Customer getUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User", "id", String.valueOf(userId)));
+        return customerRepository.findById(userId).orElseThrow(() -> new NotFoundException("User", "id", String.valueOf(userId)));
     }
 
-    public Customer createUser(Customer user) {
-        return userRepository.save(user);
+    public Customer createCustomer(Customer customer) {
+        return customerRepository.save(customer);
     }
 }
