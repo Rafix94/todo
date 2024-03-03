@@ -10,10 +10,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @OpenAPIDefinition(
         info = @Info(
-                title = "UserAgent microservice REST API Documentation",
-                description = "UserAgent microservice REST API Documentation",
-                version = "1",
-                contact = @Contact(name = "Rafał Grześ", email = "r.grzes94@gmail.com")
+                title = "UserAgent Microservice API Documentation",
+                description = "This API documentation provides information about the endpoints available in the UserAgent microservice. Use this documentation to understand how to interact with the UserAgent microservice.",
+                version = "1.0",
+                contact = @Contact(
+                        name = "Rafał Grześ",
+                        email = "r.grzes94@gmail.com",
+                        url = "https://github.com/example/useragent-microservice"
+                )
         )
 )
 @EnableJpaAuditing

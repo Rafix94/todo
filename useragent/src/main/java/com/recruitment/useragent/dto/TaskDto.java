@@ -11,18 +11,19 @@ import java.time.LocalDate;
 @Data
 @Builder
 @Schema(
-        name = "Task",
-        description = "Holds task information"
+        name = "TaskDto",
+        description = "Object representing a task"
 )
 public class TaskDto {
+
     @Schema(description = "The unique ID of the task")
     private Long id;
 
     @NotBlank(message = "Title is required")
-    @Schema(description = "The title of the task", example = "code")
+    @Schema(description = "The title of the task", example = "Code")
     private String title;
 
-    @Schema(description = "The description of the task", example = "todo list app")
+    @Schema(description = "The description of the task", example = "Todo list app")
     private String description;
 
     @NotNull(message = "Due date is required")

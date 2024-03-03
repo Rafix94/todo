@@ -17,20 +17,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 @Tag(
         name = "Task management API",
-        description = "CRUD operation for task")
+        description = "CRUD operations for tasks"
+)
 @RestController
 @RequestMapping(path="/tasks")
 @Validated
@@ -84,10 +76,9 @@ public class TaskController {
         }
     }
 
-
     @Operation(
-            summary = "Create tasks",
-            description = "REST API to create tasks"
+            summary = "Create task",
+            description = "REST API to create a task"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "HTTP Status Created"),

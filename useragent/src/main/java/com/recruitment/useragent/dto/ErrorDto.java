@@ -10,21 +10,22 @@ import java.time.LocalDateTime;
 
 @Schema(
         name = "ErrorDto",
-        description = "In case of error"
+        description = "Object representing an error response"
 )
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ErrorDto {
-    @Schema(description = "invoked path")
-    private  String invokedPath;
 
-    @Schema(description = "error code")
+    @Schema(description = "The path that caused the error", example = "/user/register")
+    private String invokedPath;
+
+    @Schema(description = "The HTTP status code associated with the error", example = "400")
     private HttpStatus httpStatus;
 
-    @Schema(description = "message")
-    private  String message;
+    @Schema(description = "The error message", example = "Invalid input")
+    private String message;
 
-    @Schema(description = "error occurrence date")
+    @Schema(description = "The timestamp when the error occurred", example = "2024-03-03T12:34:56")
     private LocalDateTime timestamp;
 }

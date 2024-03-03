@@ -11,15 +11,16 @@ import java.time.LocalDate;
 @Data
 @Builder
 @Schema(
-        name = "Task Update",
-        description = "Holds task update information"
+        name = "UpdateTaskDto",
+        description = "Object representing task update information"
 )
 public class UpdateTaskDto {
+
     @NotBlank(message = "Title is required")
-    @Schema(description = "The title of the task", example = "code")
+    @Schema(description = "The title of the task", example = "Code")
     private String title;
 
-    @Schema(description = "The description of the task", example = "todo list app")
+    @Schema(description = "The description of the task", example = "Todo list app")
     private String description;
 
     @NotNull(message = "Due date is required")
@@ -37,4 +38,5 @@ public class UpdateTaskDto {
     @NotBlank(message = "Category is required")
     @Schema(description = "The category of the task", example = "Work")
     private String category;
+
 }
