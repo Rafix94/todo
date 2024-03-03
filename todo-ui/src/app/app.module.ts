@@ -22,6 +22,8 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 import {TaskComponent} from "./components/tasks/task.component";
 import { TaskDetailsComponent } from './components/task-details/task-details.component';
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -66,6 +68,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
       cookieName: 'XSRF-TOKEN',
       headerName: 'X-XSRF-TOKEN',
     }),
+    MatIconModule,
+    MatButtonModule,
   ],
   providers: [
     {

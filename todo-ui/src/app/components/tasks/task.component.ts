@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import {DataService} from "../../services/dashboard/data.service";
 import { Sort} from '@angular/material/sort';
 import { Router } from '@angular/router';
+import { Task } from "../../model/task.model";
 
 @Component({
   selector: 'app-task',
@@ -17,7 +18,7 @@ export class TaskComponent implements OnInit {
   totalPages = 0;
   totalElements = 0;
   user: any;
-  displayedColumns: string[] = ['No.', 'title', 'description', 'dueDate', 'priority', 'status', 'category'];
+  displayedColumns: string[] = ['No.', 'title', 'description', 'dueDate', 'priority', 'status', 'category', 'actions'];
   sortField: string = 'title';
   sortDir: string = 'asc';
   searchQuery: string = '';
@@ -48,13 +49,24 @@ export class TaskComponent implements OnInit {
     this.getData();
   }
 
-  search(query: string) {
-    this.searchQuery = query;
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.searchQuery = filterValue.trim().toLowerCase();
     this.getData();
   }
 
-  getRowDetails(task: any): void {
-    this.router.navigate(['/tasks', task.id]);
+  showRow(task: Task): void {
+    this.router.navigate(['/tasks', task.id], { state: { editMode: false } });
+  }
+
+  editRow(task: Task) {
+    this.router.navigate(['/tasks', task.id], { queryParams: { editMode: true } });
+  }
+
+  deleteRow(task: Task) {
+    this.dataService.deleteTask(task.id).subscribe(() => {
+      this.getData();
+    });
   }
 
 }

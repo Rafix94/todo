@@ -1,45 +1,58 @@
 .task-details {
   max-width: 400px;
   margin: 0 auto;
-}
-
-.task-details h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }
 
 .field {
   margin-bottom: 15px;
 }
 
-.field label {
-  display: block;
+label {
+  font-weight: bold;
   margin-bottom: 5px;
 }
 
-.field input[type="text"],
-.field input[type="date"],
-.field select,
-.field textarea {
+input[type="text"],
+textarea,
+select {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
-.field textarea {
-  height: 100px;
+input[type="date"] {
+  width: calc(100% - 18px); /* Adjust for date picker arrow */
 }
 
-button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
+span {
+  display: inline-block;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.btn {
+  padding: 8px 16px;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #0056b3;
+.save-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.back-btn {
+  background-color: #ccc;
+  color: #333;
+}
+
+.btn:hover {
+  opacity: 0.8;
 }

@@ -1,33 +1,38 @@
 <div class="task-details">
-  <h2>Edit Task</h2>
+  <h2>{{ editMode ? 'Edit Task' : 'Task Details' }}</h2>
   <div class="field">
     <label for="title">Title:</label>
-    <input type="text" id="title" [(ngModel)]="task.title" name="title" required>
+    <input *ngIf="editMode" type="text" id="title" [(ngModel)]="task.title" name="title" required>
+    <span *ngIf="!editMode">{{ task.title }}</span>
   </div>
   <div class="field">
     <label for="description">Description:</label>
-    <textarea id="description" [(ngModel)]="task.description" name="description"></textarea>
+    <textarea *ngIf="editMode" id="description" [(ngModel)]="task.description" name="description"></textarea>
+    <span *ngIf="!editMode">{{ task.description }}</span>
   </div>
   <div class="field">
     <label for="dueDate">Due Date:</label>
-    <input type="date" id="dueDate" [(ngModel)]="task.dueDate" name="dueDate" required>
+    <input *ngIf="editMode" type="date" id="dueDate" [(ngModel)]="task.dueDate" name="dueDate" required>
+    <span *ngIf="!editMode">{{ task.dueDate | date }}</span>
   </div>
   <div class="field">
     <label for="priority">Priority:</label>
-    <select id="priority" [(ngModel)]="task.priority" name="priority">
-      <option value="H">High</option>
-      <option value="M">Medium</option>
-      <option value="L">Low</option>
+    <select *ngIf="editMode" id="priority" [(ngModel)]="task.priority" name="priority">
+      <option [value]="'H'">High</option>
+      <option [value]="'M'">Medium</option>
+      <option [value]="'L'">Low</option>
     </select>
+    <span *ngIf="!editMode">{{ priorityLabel(task.priority) }}</span>
   </div>
   <div class="field">
     <label for="status">Status:</label>
-    <select id="status" [(ngModel)]="task.status" name="status">
-      <option value="P">In Progress</option>
-      <option value="D">Done</option>
-      <option value="T">To Do</option>
+    <select *ngIf="editMode" id="status" [(ngModel)]="task.status" name="status">
+      <option [value]="'P'">In Progress</option>
+      <option [value]="'D'">Done</option>
+      <option [value]="'T'">To Do</option>
     </select>
+    <span *ngIf="!editMode">{{ statusLabel(task.status) }}</span>
   </div>
-  <button type="button" (click)="saveChanges()">Save</button>
-  <button type="button" (click)="goBack()">Back</button>
+  <button *ngIf="editMode" type="button" class="btn save-btn" (click)="saveChanges()">Save</button>
+  <button type="button" class="btn back-btn" (click)="goBack()">Back</button>
 </div>

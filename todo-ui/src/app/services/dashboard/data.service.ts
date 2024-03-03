@@ -37,4 +37,8 @@ export class DataService {
   updateTask(id: number, task: any): Observable<any> {
     return this.http.put(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks/" + id, task);
   }
+
+  deleteTask(id: number): Observable<any> {
+    return this.http.delete(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks/" + id);
+  }
 }
