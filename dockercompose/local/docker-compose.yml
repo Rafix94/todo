@@ -114,12 +114,12 @@ services:
         limits:
           memory: 300m
 
-#  ui:
-#    container_name: ui
-#    image: todo/ui:v1
-#    ports:
-#      - 4200:4200
-#    restart: always
+  ui:
+    container_name: ui
+    image: todo/ui:v1
+    ports:
+      - 4200:4200
+    restart: always
 
   keycloak:
     image: quay.io/keycloak/keycloak

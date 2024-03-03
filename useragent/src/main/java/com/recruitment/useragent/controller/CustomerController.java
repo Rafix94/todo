@@ -25,7 +25,7 @@ public class CustomerController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserRegistrationDto UserRegistrationDto) {
+    public ResponseEntity<Customer> registerUser(@RequestBody UserRegistrationDto UserRegistrationDto) {
         // Register user in Keycloak
         keycloakUserService.registerUser(UserRegistrationDto.getUsername(),
                 UserRegistrationDto.getEmail(), UserRegistrationDto.getPassword());
@@ -37,6 +37,8 @@ public class CustomerController {
         customer.setEmail(UserRegistrationDto.getEmail());
         userService.createCustomer(customer);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(customer);
     }
 }
