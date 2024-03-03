@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: "001-create-request-logs-table"
+      author: "rafal.grzes"
+      changes:
+        - createTable:
+            tableName: "request_logs"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: "request_path"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "request_method"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "request_body"
+                  type: "TEXT"
+              - column:
+                  name: "request_headers"
+                  type: "TEXT"
+              - column:
+                  name: "created_at"
+                  type: "TIMESTAMP"
+                  constraints:
+                    nullable: false
+                    defaultValueComputed: "CURRENT_TIMESTAMP"

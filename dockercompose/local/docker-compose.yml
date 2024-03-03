@@ -13,10 +13,6 @@ services:
       start_period: 300s
     networks:
       - todo
-#    deploy:
-#      resources:
-#        limits:
-#          memory: 500m
 
   eureka:
     container_name: eureka
@@ -109,11 +105,36 @@ services:
     depends_on:
       useragent:
         condition: service_healthy
+      postgres_edge_server:
+        condition: service_healthy
     deploy:
       resources:
         limits:
           memory: 300m
 
+
+  postgres_edge_server:
+    container_name: postgres_edge_server
+    image: postgres:16.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: edge_server_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data_edge:/var/lib/postgresql/data
+    networks:
+      - todo
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 200m
   ui:
     container_name: ui
     image: todo/ui:v1
@@ -129,16 +150,19 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm.json
     command:
       - start-dev
-#      - --import-realm
-#    volumes:
-#      - /keycloak/realm.json:/opt/keycloak/data/import/realm.json
+      - --import-realm
+    volumes:
+      - ./keycloak:/opt/jboss/keycloak/imports
     networks:
       - todo
 
 volumes:
   postgres_data:
+  postgres_data_edge:
 networks:
   todo:
     driver: "bridge"
+
