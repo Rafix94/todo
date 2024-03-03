@@ -14,13 +14,13 @@ Before running ToDoListApp, ensure you have the following installed on your syst
 
 To get started with ToDoListApp, follow these steps:
 
-1. **Build the Projects**: Navigate to the root directory of each project (`useragent`, `edgeserver`, `configserver`, `eureka`) and run the build script provided (`build_all.sh`). This script will compile the projects and build Docker images.
+1. **Build the Projects**: Navigate to the root directory of each project (`useragent`, `edgeserver`, `configserver`, `eureka`) and run the build script provided (`build.sh`). This script will compile the projects and build Docker images.
 
     ```bash
-    ./build_all.sh
+    ./build.sh
     ```
 
-2. **Run Docker Compose**: After building the projects, run Docker Compose to start all the services.
+2. **Run Docker Compose**: After building the projects, run Docker Compose `dockercompose/local/docker-compose.yml` to start all the services.
 
     ```bash
     docker-compose up
@@ -34,8 +34,6 @@ To get started with ToDoListApp, follow these steps:
 
 5. **Explore ToDoListApp**: Access the ToDoListApp through the user-friendly graphical user interface (GUI) available at http://localhost:4200/home.
 
-Sure, here's the text without formatting:
-
 ---
 
 ## App Details
@@ -44,7 +42,7 @@ Sure, here's the text without formatting:
 This application follows a microservices architecture and is managed using Docker Compose. It comprises various components that collaborate to deliver different functionalities.
 
 ### Components
-1. Config Server: This server provides configurations for other microservices such as edgeserver, eureka, and useragent. Configuration files are stored in the todo-config repository.
+1. Config Server: This server provides configurations for other microservices such as edgeserver, eureka, and useragent. Configuration files are stored in the todo-config repository https://github.com/Rafix94/todo-config.
 
 2. Eureka Server: Located at http://localhost:8091/, the Eureka server maintains a registry of registered microservices. Both edgeserver and useragent register with Eureka, enabling traffic load balancing across multiple instances.
 
