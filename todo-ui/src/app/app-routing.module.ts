@@ -18,7 +18,9 @@ const routes: Routes = [
   { path: 'tasks', component: TaskComponent, canActivate: [AuthKeyClockGuard],data: {
     // roles: ['USER','ADMIN']
   }},
-  { path: 'tasks/:taskId', component: TaskDetailsComponent,  data: {}, canActivate: [AuthKeyClockGuard]}
+  { path: 'tasks/:taskId', component: TaskDetailsComponent,  data: {}, canActivate: [AuthKeyClockGuard]},
+
+  { path: 'tasks/add', component: TaskDetailsComponent,  data: {}, canActivate: [AuthKeyClockGuard]}
 
 ];
 

@@ -1,10 +1,10 @@
 <app-header></app-header>
 <div class="site-section">
   <div>
-    <mat-form-field class="custom-form-field" appearance="outline">
-      <mat-label >Filter</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+    <mat-form-field appearance="fill">
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search">
     </mat-form-field>
+    <button mat-raised-button color="primary" (click)="addRow()">Add Task</button>
 
     <table mat-table [dataSource]="data" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
 

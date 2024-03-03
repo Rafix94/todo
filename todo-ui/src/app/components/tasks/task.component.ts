@@ -56,17 +56,21 @@ export class TaskComponent implements OnInit {
   }
 
   showRow(task: Task): void {
-    this.router.navigate(['/tasks', task.id], { state: { editMode: false } });
+    this.router.navigate(['/tasks', task.id], { state: { mode: 'show' } });
   }
 
   editRow(task: Task) {
-    this.router.navigate(['/tasks', task.id], { queryParams: { editMode: true } });
+    this.router.navigate(['/tasks', task.id], { queryParams: { mode: 'edit' } });
   }
 
   deleteRow(task: Task) {
     this.dataService.deleteTask(task.id).subscribe(() => {
       this.getData();
     });
+  }
+
+  addRow() {
+    this.router.navigate(['/tasks/add'], { queryParams: { mode: 'add' } });
   }
 
 }

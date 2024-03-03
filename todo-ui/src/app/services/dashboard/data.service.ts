@@ -11,10 +11,6 @@ export class DataService {
 
   constructor(private http:HttpClient) { }
 
-  getTasksDetails(email: String){
-    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+ "/tasks?email="+email,{ observe: 'response',withCredentials: true });
-  }
-
   getTasks(page: number, pageSize: number, email: string, sortField: string, sortDirection: string, searchQuery: string): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -27,18 +23,22 @@ export class DataService {
       params = params.set('searchQuery', searchQuery);
     }
 
-    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks?email=" + email, { params });
+    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks?email=" + email, { params });
   }
 
   getTaskDetails(id: number): Observable<any> {
-    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks/" + id);
+    return this.http.get(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks/" + id);
+  }
+
+  createTask(task: any, email: string): Observable<any> {
+    return this.http.post(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks?email=" + email, task);
   }
 
   updateTask(id: number, task: any): Observable<any> {
-    return this.http.put(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks/" + id, task);
+    return this.http.put(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks/" + id, task);
   }
 
   deleteTask(id: number): Observable<any> {
-    return this.http.delete(environment.rooturl + AppConstants.TASKS_API_URL+"/tasks/" + id);
+    return this.http.delete(environment.rooturl + AppConstants.TASKS_API_URL + "/tasks/" + id);
   }
 }

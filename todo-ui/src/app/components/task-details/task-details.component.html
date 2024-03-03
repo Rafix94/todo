@@ -1,38 +1,50 @@
+<app-header></app-header>
 <div class="task-details">
-  <h2>{{ editMode ? 'Edit Task' : 'Task Details' }}</h2>
+  <h2>{{ mode === 'add' ? 'Add Task' : (mode === 'edit' ? 'Edit Task' : 'Task Details') }}</h2>
   <div class="field">
     <label for="title">Title:</label>
-    <input *ngIf="editMode" type="text" id="title" [(ngModel)]="task.title" name="title" required>
-    <span *ngIf="!editMode">{{ task.title }}</span>
+    <input *ngIf="mode === 'add' || mode === 'edit'" type="text" id="title" [(ngModel)]="task.title" name="title" required>
+    <span *ngIf="mode !== 'add' && mode !== 'edit'">{{ task.title }}</span>
+    <div *ngIf="formErrors.title" class="error-message">{{ formErrors.title }}</div>
   </div>
   <div class="field">
     <label for="description">Description:</label>
-    <textarea *ngIf="editMode" id="description" [(ngModel)]="task.description" name="description"></textarea>
-    <span *ngIf="!editMode">{{ task.description }}</span>
+    <textarea *ngIf="mode === 'add' || mode === 'edit'" id="description" [(ngModel)]="task.description" name="description"></textarea>
+    <span *ngIf="mode !== 'add' && mode !== 'edit'">{{ task.description }}</span>
   </div>
   <div class="field">
     <label for="dueDate">Due Date:</label>
-    <input *ngIf="editMode" type="date" id="dueDate" [(ngModel)]="task.dueDate" name="dueDate" required>
-    <span *ngIf="!editMode">{{ task.dueDate | date }}</span>
+    <input *ngIf="mode === 'add' || mode === 'edit'" type="date" id="dueDate" [(ngModel)]="task.dueDate" name="dueDate" required>
+    <span *ngIf="mode !== 'add' && mode !== 'edit'">{{ task.dueDate | date }}</span>
+    <div *ngIf="formErrors.dueDate" class="error-message">{{ formErrors.dueDate }}</div>
   </div>
   <div class="field">
     <label for="priority">Priority:</label>
-    <select *ngIf="editMode" id="priority" [(ngModel)]="task.priority" name="priority">
+    <select *ngIf="mode === 'add' || mode === 'edit'" id="priority" [(ngModel)]="task.priority" name="priority" required>
       <option [value]="'H'">High</option>
       <option [value]="'M'">Medium</option>
       <option [value]="'L'">Low</option>
     </select>
-    <span *ngIf="!editMode">{{ priorityLabel(task.priority) }}</span>
+    <span *ngIf="mode !== 'add' && mode !== 'edit'">{{ priorityLabel(task.priority) }}</span>
+    <div *ngIf="formErrors.priority" class="error-message">{{ formErrors.priority }}</div>
   </div>
   <div class="field">
     <label for="status">Status:</label>
-    <select *ngIf="editMode" id="status" [(ngModel)]="task.status" name="status">
+    <select *ngIf="mode === 'add' || mode === 'edit'" id="status" [(ngModel)]="task.status" name="status" required>
       <option [value]="'P'">In Progress</option>
       <option [value]="'D'">Done</option>
       <option [value]="'T'">To Do</option>
     </select>
-    <span *ngIf="!editMode">{{ statusLabel(task.status) }}</span>
+    <span *ngIf="mode !== 'add' && mode !== 'edit'">{{ statusLabel(task.status) }}</span>
+    <div *ngIf="formErrors.status" class="error-message">{{ formErrors.status }}</div>
   </div>
-  <button *ngIf="editMode" type="button" class="btn save-btn" (click)="saveChanges()">Save</button>
+  <div class="field">
+    <label for="category">Category:</label>
+    <input *ngIf="mode === 'add' || mode === 'edit'" type="text" id="category" [(ngModel)]="task.category" name="category" required>
+    <span *ngIf="mode !== 'add' && mode !== 'edit'">{{ task.category }}</span>
+    <div *ngIf="formErrors.category" class="error-message">{{ formErrors.category }}</div>
+  </div>
+  <button *ngIf="mode === 'add'" type="button" class="btn add-btn" (click)="saveChanges()">Add Task</button>
+  <button *ngIf="mode === 'edit'" type="button" class="btn save-btn" (click)="saveChanges()">Save</button>
   <button type="button" class="btn back-btn" (click)="goBack()">Back</button>
 </div>

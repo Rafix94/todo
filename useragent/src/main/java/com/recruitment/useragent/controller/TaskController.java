@@ -96,7 +96,7 @@ public class TaskController {
                     description = "HTTP Status Internal Server Error",
                     content = @Content(schema = @Schema(implementation = ErrorDto.class)))
     })
-    @PostMapping("/{customerId}")
+    @PostMapping
     public ResponseEntity<TaskDto> createTaskForUser(
             @RequestParam String email,
             @Valid @RequestBody TaskDto taskDto) {

@@ -14,27 +14,5 @@ table {
   width: 100%;
 }
 
-.mat-header-cell, .mat-cell {
-  white-space: nowrap; /* Prevent text from wrapping */
-  overflow: hidden; /* Hide overflow text */
-  text-overflow: ellipsis; /* Show ellipsis for overflow text */
-}
-
-.custom-form-field {
-  width: 100%;
-  position: relative;
-}
-
-.filter-label {
-  position: marker;
-  top: 250px;
-  left: 0;
-  font-size: 12px;
-  z-index: 1;
-}
-
-.custom-form-field .mat-input-element {
-  padding-top: 20px;
-}
 
 
