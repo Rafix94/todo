@@ -21,9 +21,7 @@ import java.time.LocalDateTime;
 @Component
 public class RequestLoggingFilter implements GlobalFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestLoggingFilter.class);
-
-    private RequestLogRepository requestLogRepository;
+    private final RequestLogRepository requestLogRepository;
 
     @Autowired
     public RequestLoggingFilter(RequestLogRepository requestLogRepository) {
@@ -32,20 +30,31 @@ public class RequestLoggingFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        HttpHeaders headers = exchange.getRequest().getHeaders();
-        String path = exchange.getRequest().getPath().toString();
+        HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
+        String requestPath = exchange.getRequest().getPath().toString();
         HttpMethod requestMethod = exchange.getRequest().getMethod();
         String requestBody = exchange.getAttributeOrDefault(ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR, "");
 
-        RequestLogEntity requestLogEntity = RequestLogEntity.builder()
-                .createdAt(LocalDateTime.now())
-                .requestPath(path)
-                .requestMethod(requestMethod.toString())
-                .requestBody(requestBody)
-                .requestHeaders(headers.toString())
-                .build();
+        exchange.getResponse().beforeCommit(() -> {
+            HttpHeaders responseHeaders = exchange.getResponse().getHeaders();
+            int responseStatusCode = exchange.getResponse().getStatusCode().value();
+            // You can log the response body if needed, but be cautious with large payloads
+            // String responseBody = exchange.getAttributeOrDefault(ServerWebExchangeUtils.CACHED_RESPONSE_BODY_ATTR, "");
 
-        requestLogRepository.save(requestLogEntity);
+            RequestLogEntity requestLogEntity = RequestLogEntity.builder()
+                    .createdAt(LocalDateTime.now())
+                    .requestPath(requestPath)
+                    .requestMethod(requestMethod.toString())
+                    .requestBody(requestBody)
+                    .requestHeaders(requestHeaders.toString())
+                    .responseStatusCode(responseStatusCode)
+                    .responseHeaders(responseHeaders.toString())
+                    .build();
+
+            requestLogRepository.save(requestLogEntity);
+            return Mono.empty();
+        });
+
         return chain.filter(exchange);
     }
 }

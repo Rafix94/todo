@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: "002-ass-response-status-code"
+      author: "rafal.grzes"
+      changes:
+        - addColumn:
+            tableName: "request_logs"
+            columns:
+              - column:
+                  name: "response_status_code"
+                  type: "integer"
+              - column:
+                  name: "response_headers"
+                  type: "TEXT"

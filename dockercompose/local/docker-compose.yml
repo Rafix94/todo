@@ -150,12 +150,11 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm.json
     command:
       - start-dev
       - --import-realm
     volumes:
-      - ./keycloak:/opt/jboss/keycloak/imports
+      - ./keycloak:/opt/keycloak/data/import
     networks:
       - todo
 

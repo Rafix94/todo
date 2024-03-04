@@ -25,14 +25,7 @@ To get started with ToDoListApp, follow these steps:
     ```bash
     docker-compose up
     ```
-
-3. **Access Keycloak Admin Console**: Once the services are up and running, access the Keycloak Admin Console at [http://localhost:8080/](http://localhost:8080/) using the following credentials:
-    - Username: admin
-    - Password: admin
-
-4. **Create Realm and Import Configuration**: In the Keycloak Admin Console, go to **Realms** and create a new realm. Then import the realm configuration file located at `dockercompose/local/keycloak/realm.json`.
-
-5. **Explore ToDoListApp**: Access the ToDoListApp through the user-friendly graphical user interface (GUI) available at http://localhost:4200/home.
+3. **Explore ToDoListApp**: Access the ToDoListApp through the user-friendly graphical user interface (GUI) available at http://localhost:4200/home.
 
 ---
 

@@ -34,7 +34,12 @@ public class RequestLogEntity {
     @Column(name = "request_headers", columnDefinition = "TEXT")
     private String requestHeaders;
 
+    @Column(name = "response_status_code")
+    private Integer responseStatusCode;
+
+    @Column(name = "response_headers")
+    private String responseHeaders;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
-
 }
