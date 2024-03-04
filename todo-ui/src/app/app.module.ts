@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER,NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
+import { HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -24,7 +24,6 @@ import { TaskDetailsComponent } from './components/task-details/task-details.com
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import { RegistrationComponent } from './components/registration/registration.component';
-import {DEFAULT_TIMEOUT, TimeoutInterceptor} from "./services/interceptors/timeout.interceptor";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -79,8 +78,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
       multi: true,
       deps: [KeycloakService],
     },
-    [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }],
-    [{ provide: DEFAULT_TIMEOUT, useValue: 30000 }]
   ]
 })
 export class AppModule {

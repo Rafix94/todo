@@ -24,7 +24,8 @@ public class EdgeserverApplication {
                         .path("/todolist/useragent/**")
                         .filters(filterSpec -> filterSpec.rewritePath("/todolist/useragent/(?<segment>.*)","/${segment}")
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
-                                .circuitBreaker(config -> config.setName("userAgentCircuitBreaker")))
+                                .circuitBreaker(config -> config.setName("userAgentCircuitBreaker"))
+                        )
                         .uri("lb://USERAGENT"))
                 .build();
     }

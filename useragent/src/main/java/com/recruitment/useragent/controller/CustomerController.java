@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,8 @@ public class CustomerController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping("/register")
-    public ResponseEntity<Customer> registerUser(@RequestBody UserRegistrationDto userRegistrationDto) {
+    @Transactional
+    public ResponseEntity<Customer> registerUser(@RequestBody UserRegistrationDto userRegistrationDto) throws InterruptedException {
         // Register user in Keycloak
         keycloakUserService.registerUser(userRegistrationDto.getUsername(),
                 userRegistrationDto.getEmail(), userRegistrationDto.getPassword());
