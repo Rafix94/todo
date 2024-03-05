@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>{
     Page<Task> findByCustomerId(Long customerId, Pageable pageable);
-    @Query("SELECT t FROM Task t WHERE t.customer.id = :customerId AND (LOWER(t.title) LIKE %:searchQuery% OR LOWER(t.description) LIKE %:searchQuery%)")
+    @Query("SELECT t FROM Task t WHERE t.customer.id = :customerId AND (LOWER(t.title) LIKE CONCAT('%', LOWER(:searchQuery), '%') OR LOWER(t.description) LIKE CONCAT('%', LOWER(:searchQuery), '%'))")
     Page<Task> findByCustomerIdAndSearchQuery(Long customerId, String searchQuery, Pageable pageable);
 }
