@@ -1,6 +1,5 @@
 package com.recruitment.useragent.repository;
 
-import antlr.collections.impl.IntRange;
 import com.recruitment.useragent.entity.Customer;
 import com.recruitment.useragent.entity.Task;
 import org.jeasy.random.EasyRandom;
@@ -11,7 +10,6 @@ import org.jeasy.random.randomizers.range.LongRangeRandomizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -27,7 +25,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,10 +81,7 @@ class TaskRepositoryTest {
         assertEquals(expectedTasks.size(), actualTasks.size());
         assertEquals(expectedTasks.size(), taskPage.getTotalElements());
 
-        for (int i = 0; i < expectedTasks.size(); i++) {
-            assertEquals(expectedTasks.get(i).getTitle(), actualTasks.get(i).getTitle());
-        }
-
+        assertArrayEquals(expectedTasks.toArray(), actualTasks.toArray());
     }
 
     @Test
