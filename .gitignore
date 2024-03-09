@@ -62,3 +62,4 @@ atlassian-ide-plugin.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 
+/dockercompose/local/.data/
