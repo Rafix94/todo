@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 @Tag(name = "User Registration", description = "Operations related to user registration")
@@ -40,8 +42,11 @@ public class CustomerController {
     @Transactional
     public ResponseEntity<Customer> registerUser(@RequestBody UserRegistrationDto userRegistrationDto) throws InterruptedException {
         // Register user in Keycloak
-        keycloakUserService.registerUser(userRegistrationDto.getUsername(),
-                userRegistrationDto.getEmail(), userRegistrationDto.getPassword());
+        keycloakUserService.registerUser(
+                userRegistrationDto.getUsername(),
+                userRegistrationDto.getEmail(),
+                userRegistrationDto.getPassword(),
+                List.of("USER"));
 
         // Save user in application database
         Customer customer = new Customer();

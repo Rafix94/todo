@@ -3,6 +3,8 @@ package com.recruitment.useragent.controller;
 import com.recruitment.useragent.dto.ErrorDto;
 import com.recruitment.useragent.dto.TaskDto;
 import com.recruitment.useragent.dto.UpdateTaskDto;
+import com.recruitment.useragent.entity.Task;
+import com.recruitment.useragent.mapper.TaskMapper;
 import com.recruitment.useragent.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,8 +18,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Map;
 
 @Tag(
         name = "Task management API",
@@ -26,12 +39,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path="/tasks")
 @Validated
+@PreAuthorize("hasRole('USER')")
 public class TaskController {
     private final TaskService taskService;
 
     @Autowired
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
+    }
+
+    private String getAuthenticatedUserEmail() {
+        Jwt principal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (String) principal.getClaims().get("email");
     }
 
     @Operation(
@@ -46,12 +65,18 @@ public class TaskController {
                     content = @Content(schema = @Schema(implementation = ErrorDto.class)))
     })
     @GetMapping
-    public Page<TaskDto> getTasksForUser(
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Page<TaskDto>> getTasksForUser(
             @RequestParam String email,
             Pageable pageable,
-            @RequestParam(required = false) String searchQuery
-    ) {
-        return taskService.getTasksForCustomer(email, pageable, searchQuery);
+            @RequestParam(required = false) String searchQuery) {
+        String authEmail = getAuthenticatedUserEmail();
+        if (authEmail != null && authEmail.equals(email)) {
+            Page<TaskDto> tasksForCustomer = taskService.getTasksForCustomer(email, pageable, searchQuery);
+            return ResponseEntity.ok(tasksForCustomer);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
     @Operation(
@@ -68,11 +93,13 @@ public class TaskController {
     })
     @GetMapping("/{taskId}")
     public ResponseEntity<TaskDto> getTaskDetails(@PathVariable Long taskId) {
-        TaskDto taskDto = taskService.getTaskDetails(taskId);
-        if (taskDto != null) {
-            return ResponseEntity.ok(taskDto);
+        String authEmail = getAuthenticatedUserEmail();
+        Task task = taskService.getTaskDetails(taskId);
+
+        if (task != null && task.getCustomer().getEmail().equals(authEmail)) {
+            return ResponseEntity.ok(TaskMapper.mapToTaskDto(task));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
@@ -91,10 +118,13 @@ public class TaskController {
     public ResponseEntity<TaskDto> createTaskForUser(
             @RequestParam String email,
             @Valid @RequestBody TaskDto taskDto) {
-        TaskDto createdTask = taskService.createTaskForUser(email, taskDto);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(createdTask);
+        String authEmail = getAuthenticatedUserEmail();
+        if (authEmail != null && authEmail.equals(email)) {
+            TaskDto createdTask = taskService.createTaskForUser(email, taskDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
     @Operation(
@@ -113,11 +143,13 @@ public class TaskController {
     public ResponseEntity<TaskDto> updateTask(
             @PathVariable Long taskId,
             @Valid @RequestBody UpdateTaskDto updateTaskDto) {
-        TaskDto updatedTask = taskService.updateTask(taskId, updateTaskDto);
-        if (updatedTask != null) {
+        String authEmail = getAuthenticatedUserEmail();
+        Task task = taskService.getTaskDetails(taskId);
+        if (task != null && task.getCustomer().getEmail().equals(authEmail)) {
+            TaskDto updatedTask = taskService.updateTask(taskId, updateTaskDto);
             return ResponseEntity.ok(updatedTask);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
@@ -135,7 +167,13 @@ public class TaskController {
     })
     @DeleteMapping("/{taskId}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
-        taskService.deleteTask(taskId);
-        return ResponseEntity.noContent().build();
+        String authEmail = getAuthenticatedUserEmail();
+        Task task = taskService.getTaskDetails(taskId);
+        if (task != null && task.getCustomer().getEmail().equals(authEmail)) {
+            taskService.deleteTask(taskId);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 }
