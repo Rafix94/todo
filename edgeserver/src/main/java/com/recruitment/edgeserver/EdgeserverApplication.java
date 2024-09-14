@@ -31,7 +31,7 @@ public class EdgeserverApplication {
                                 .circuitBreaker(
                                         circuitBreakerConfig -> circuitBreakerConfig.setName("userAgentCircuitBreaker")
                                                 .setFallbackUri("forward:/support"))
-                                ).uri("lb://USERAGENT"))
+                        ).uri("lb://USERAGENT"))
                 .build();
     }
 

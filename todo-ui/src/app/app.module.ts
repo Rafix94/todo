@@ -19,10 +19,10 @@ import { MatFormFieldModule } from '@angular/material/form-field'; // Import Mat
 
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
-import {TaskComponent} from "./components/tasks/task.component";
+import { TaskComponent } from "./components/tasks/task.component";
 import { TaskDetailsComponent } from './components/task-details/task-details.component';
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
 import { RegistrationComponent } from './components/registration/registration.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
@@ -77,7 +77,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       useFactory: initializeKeycloak,
       multi: true,
       deps: [KeycloakService],
-    },
+    }
   ]
 })
 export class AppModule {

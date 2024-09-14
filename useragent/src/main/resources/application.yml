@@ -3,7 +3,22 @@ spring:
     name: "useragent"
   config:
     import: "optional:configserver:http://configserver:8090/"
+  cloud:
+    bus:
+      enabled: true
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: your-app-group
 keycloak:
   auth-server-url: http://keycloak:8080/auth
   realm: toDoListApp
   resource: todolistpublicclient
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    bus-refresh:
+      enabled: true

@@ -45,6 +45,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-bus-kafka</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -60,7 +68,7 @@
                 <version>3.4.0</version>
                 <configuration>
                     <to>
-                        <image>todo/${project.artifactId}:v1</image>
+                        <image>ravv1/${project.artifactId}:v1</image>
                     </to>
                 </configuration>
             </plugin>

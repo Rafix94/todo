@@ -22,4 +22,4 @@ cd ..
 
 # Build todo-ui
 cd todo-ui || exit
-docker build . -t todo/ui:v1
+docker build . -t ravv1/ui:v1
