@@ -21,9 +21,10 @@ public class SecurityConfig {
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
         return serverHttpSecurity
                 .authorizeExchange(exchange ->
-                        exchange.pathMatchers(HttpMethod.OPTIONS).permitAll()  // Allow OPTIONS requests
-                                .pathMatchers(HttpMethod.GET).permitAll()          // Allow GET requests
-                                .pathMatchers("/todolist/useragent/**").authenticated())  // Require authentication for other requests
+                        exchange.pathMatchers(HttpMethod.OPTIONS).permitAll()
+                                .pathMatchers(HttpMethod.POST, "/todolist/useragent/user/register").permitAll()
+                                .pathMatchers("/todolist/useragent/**").authenticated()
+                                .anyExchange().permitAll()) // Allow any other exchange (e.g., health checks)
                 .oauth2ResourceServer(oAuth2ResourceServerSpec ->
                         oAuth2ResourceServerSpec.jwt(Customizer.withDefaults()))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
