@@ -38,8 +38,6 @@ public class RequestLoggingFilter implements GlobalFilter {
         exchange.getResponse().beforeCommit(() -> {
             HttpHeaders responseHeaders = exchange.getResponse().getHeaders();
             int responseStatusCode = exchange.getResponse().getStatusCode().value();
-            // You can log the response body if needed, but be cautious with large payloads
-            // String responseBody = exchange.getAttributeOrDefault(ServerWebExchangeUtils.CACHED_RESPONSE_BODY_ATTR, "");
 
             RequestLogEntity requestLogEntity = RequestLogEntity.builder()
                     .createdAt(LocalDateTime.now())
