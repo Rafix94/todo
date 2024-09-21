@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   rooturl : 'http://localhost:8093/todolist',
-  keycloak : 'http://localhost:80'
+  keycloak : 'http://localhost:8080'
 };
 
 /*
