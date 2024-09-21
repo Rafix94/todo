@@ -54,6 +54,27 @@
               ],
               "outputHashing": "all"
             },
+            "local-kubernetes": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local-kubernetes.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -73,6 +94,9 @@
             },
             "development": {
               "browserTarget": "bank-app-ui:build:development"
+            },
+            "local-kubernetes": {
+              "browserTarget": "bank-app-ui:build:local-kubernetes"
             }
           },
           "defaultConfiguration": "development"

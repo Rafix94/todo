@@ -1,0 +1,17 @@
+deployment:
+  name: configserver
+  label: configserver
+  replicaCount: 1
+  configEnabled: false
+  eurekaEnabled: true
+  containerPort: 8090
+  dbEnabled: false
+  image:
+    repository: ravv1/configserver
+    tag: v1
+
+service:
+  name: configserver
+  type: ClusterIP
+  port: 8090
+  targetPort: 8090

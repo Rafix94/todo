@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER,NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -14,8 +14,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import BrowserAnimationsModule
-import { MatFormFieldModule } from '@angular/material/form-field'; // Import MatFormFieldModule
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
@@ -24,20 +24,28 @@ import { TaskDetailsComponent } from './components/task-details/task-details.com
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { RegistrationComponent } from './components/registration/registration.component';
+import { environment } from "../environments/environment";
 
 function initializeKeycloak(keycloak: KeycloakService) {
-  return () =>
-    keycloak.init({
+  return () => {
+    console.log('Initializing Keycloak...'); // Log before initialization
+    return keycloak.init({
       config: {
-        url: 'http://localhost:8080/',
+        url: environment.keycloak,
         realm: 'toDoListApp',
         clientId: 'todolistpublicclient',
       },
       initOptions: {
         pkceMethod: 'S256',
         redirectUri: 'http://localhost:4200/dashboard',
-      },loadUserProfileAtStartUp: false
+      },
+      loadUserProfileAtStartUp: false
+    }).then(() => {
+      console.log('Keycloak initialized successfully'); // Log on successful initialization
+    }).catch((error) => {
+      console.error('Keycloak initialization failed:', error); // Log errors during initialization
     });
+  };
 }
 
 @NgModule({
@@ -80,6 +88,4 @@ function initializeKeycloak(keycloak: KeycloakService) {
     }
   ]
 })
-export class AppModule {
-
-}
+export class AppModule { }

@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 @SpringBootApplication
+@EnableDiscoveryClient
 public class EdgeserverApplication {
 
     public static void main(String[] args) {
@@ -32,7 +34,7 @@ public class EdgeserverApplication {
                                 .circuitBreaker(
                                         circuitBreakerConfig -> circuitBreakerConfig.setName("userAgentCircuitBreaker")
                                                 .setFallbackUri("forward:/support"))
-                        ).uri("lb://USERAGENT"))
+                        ).uri("http://useragent:8092"))
                 .build();
     }
 

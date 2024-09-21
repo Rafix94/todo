@@ -1,0 +1,16 @@
+deployment:
+  name: ui
+  label: ui
+  replicaCount: 1
+  configEnabled: false
+  containerPort: 4200
+  dbEnabled: false
+  image:
+    repository: ravv1/ui
+    tag: v1
+
+service:
+  name: ui
+  type: LoadBalancer
+  port: 4200
+  targetPort: 4200

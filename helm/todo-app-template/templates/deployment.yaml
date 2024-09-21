@@ -1,0 +1,62 @@
+{{- define "common.deployment" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name }}
+  labels:
+    app: {{ .Values.deployment.label }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.label }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployment.label }}
+    spec:
+      containers:
+        - name: {{ .Values.deployment.label }}
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.deployment.containerPort }}
+              protocol: TCP
+          env:
+            - name: SERVER_PORT
+              value: "{{ .Values.deployment.containerPort }}"  # Ensure this is quoted
+            - name: SPRING_APPLICATION_NAME
+              value: "{{ .Values.deployment.name }}"  # Ensure this is quoted
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.global.name }}
+                  key: SPRING_PROFILES_ACTIVE
+            {{- if .Values.deployment.configEnabled }}
+            - name: SPRING_CONFIG_IMPORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.global.name }}
+                  key: SPRING_CONFIG_IMPORT
+            {{- end }}
+            {{- if .Values.deployment.discoveryEnabled }}
+            - name: SPRING_CLOUD_KUBERNETES_DISCOVERY_DISCOVERY_SERVER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.global.name }}
+                  key: SPRING_CLOUD_KUBERNETES_DISCOVERY_DISCOVERY_SERVER_URL
+            {{- end }}
+            {{- if .Values.deployment.dbEnabled }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.secretName }}
+                  key: db_password
+            {{- end }}
+            {{- if .Values.deployment.keycloakClientEnabled }}
+            - name: KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.secretName }}
+                  key: keycloak_client_secret
+            {{- end }}
+{{- end }}

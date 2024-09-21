@@ -1,0 +1,5 @@
+global:
+  name: local-configmap
+  activeProfile: local-kubernetes
+  configServerURL: "optional:configserver:http://configserver:8090/"
+  discoverServerURL: "http://spring-cloud-kubernetes-discoveryserver:80"

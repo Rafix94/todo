@@ -1,0 +1,19 @@
+deployment:
+  name: edgeserver
+  label: edgeserver
+  replicaCount: 1
+  configEnabled: true
+  containerPort: 8093
+  discoveryEnabled: true
+  dbEnabled: true
+  keycloakClientEnabled: false
+  secretName: edgeserver-secret
+  image:
+    repository: ravv1/edgeserver
+    tag: v1
+
+service:
+  name: edgeserver
+  type: LoadBalancer
+  port: 8093
+  targetPort: 8093

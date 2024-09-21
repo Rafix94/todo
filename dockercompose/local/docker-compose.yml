@@ -30,8 +30,8 @@ services:
       configserver:
         condition: service_healthy
 
-  postgres:
-    container_name: postgres
+  postgres-useragent:
+    container_name: postgres-useragent
     image: postgres:16.2
     restart: always
     environment:
@@ -41,7 +41,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - useragent_data:/var/lib/postgresql/data
     networks:
       - todo
     healthcheck:
@@ -73,7 +73,7 @@ services:
         condition: service_healthy
       eureka:
         condition: service_healthy
-      postgres:
+      postgres-useragent:
         condition: service_healthy
 
   edgeserver:
@@ -92,10 +92,10 @@ services:
     depends_on:
       useragent:
         condition: service_healthy
-      postgres_edge_server:
+      postgres-edgeserver:
         condition: service_healthy
 
-  postgres_edge_server:
+  postgres-edgeserver:
     container_name: postgres_edge_server
     image: postgres:16.2
     environment:
@@ -163,7 +163,7 @@ services:
     networks:
       - todo
 volumes:
-  postgres_data:
+  useragent_data:
   postgres_data_edge:
   zookeeper_data:
     driver: local

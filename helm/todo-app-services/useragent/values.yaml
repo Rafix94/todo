@@ -1,0 +1,19 @@
+deployment:
+  name: useragent
+  label: useragent
+  replicaCount: 1
+  configEnabled: true
+  containerPort: 8092
+  discoveryEnabled: true
+  dbEnabled: true
+  keycloakClientEnabled: true
+  secretName: useragent-secret
+  image:
+    repository: ravv1/useragent
+    tag: v1
+
+service:
+  name: useragent
+  type: ClusterIP
+  port: 8092
+  targetPort: 8092
