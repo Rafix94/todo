@@ -1,5 +1,6 @@
 package com.recruitment.edgeserver.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,12 +12,13 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 
-import java.util.List;
 
 @Configuration
+@AllArgsConstructor
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+    private CorsProperties corsProperties;
     @Bean
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
         return serverHttpSecurity
@@ -34,10 +36,11 @@ public class SecurityConfig {
     @Bean
     public CorsWebFilter corsFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedHeader("*");
-        corsConfig.addAllowedMethod("*");
-        corsConfig.setAllowCredentials(true);
-        corsConfig.setAllowedOriginPatterns(List.of("*"));
+
+        corsConfig.setAllowedOrigins(corsProperties.getAllowedOrigins());
+        corsConfig.setAllowedMethods(corsProperties.getAllowedMethods());
+        corsConfig.addAllowedHeader(corsProperties.getAllowedHeaders());
+        corsConfig.setAllowCredentials(corsProperties.getAllowCredentials());
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);

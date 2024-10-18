@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-script
+data:
+  init-script.sql: |
+    CREATE DATABASE edgeserver;
+    CREATE DATABASE useragent;
+
+    CREATE USER useragent WITH PASSWORD 'useragent_password';
+    CREATE USER edgeserver WITH PASSWORD 'edgeserver_password';
+
+    GRANT ALL PRIVILEGES ON DATABASE useragent TO useragent;
+    GRANT ALL PRIVILEGES ON DATABASE edgeserver TO edgeserver;
+
+    \c useragent;
+    GRANT ALL PRIVILEGES ON SCHEMA public TO useragent;
+
+    \c edgeserver;
+    GRANT ALL PRIVILEGES ON SCHEMA public TO edgeserver;

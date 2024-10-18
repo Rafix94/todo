@@ -7,8 +7,12 @@ deployment:
   dbEnabled: false
   image:
     repository: ravv1/ui
-    tag: v1
-
+    tag: v1-amd64-prod
+  resources:
+    requests:
+      memory: "2Gi"
+    limits:
+      memory: "4Gi"
 service:
   name: ui
   type: LoadBalancer

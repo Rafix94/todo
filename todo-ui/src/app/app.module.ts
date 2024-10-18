@@ -29,24 +29,46 @@ import { environment } from "../environments/environment";
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => {
     console.log('Initializing Keycloak...'); // Log before initialization
-    return keycloak.init({
-      config: {
-        url: environment.keycloak,
-        realm: 'toDoListApp',
-        clientId: 'todolistpublicclient',
-      },
-      initOptions: {
-        pkceMethod: 'S256',
-        redirectUri: 'http://localhost:4200/dashboard',
-      },
-      loadUserProfileAtStartUp: false
-    }).then(() => {
-      console.log('Keycloak initialized successfully'); // Log on successful initialization
-    }).catch((error) => {
-      console.error('Keycloak initialization failed:', error); // Log errors during initialization
+
+    const timeoutDuration = 100000;
+
+    const redirectUri = `${window.location.origin}/dashboard`;
+
+    return new Promise((resolve, reject) => {
+      // Start Keycloak initialization
+      const initPromise = keycloak.init({
+        config: {
+          url: environment.keycloak,
+          realm: 'toDoListApp',
+          clientId: 'todolistpublicclient',
+        },
+        initOptions: {
+          checkLoginIframe: false,
+          pkceMethod: 'S256',
+          redirectUri: redirectUri,
+        },
+        loadUserProfileAtStartUp: false
+      });
+
+      // Set a timeout for initialization
+      const timeoutId = setTimeout(() => {
+        reject(new Error('Keycloak initialization timed out')); // Reject if timeout occurs
+        console.log('Keycloak initialization is taking too long...');
+      }, timeoutDuration);
+
+      initPromise.then(() => {
+        clearTimeout(timeoutId); // Clear the timeout if initialization succeeds
+        console.log('Keycloak initialized successfully'); // Log on successful initialization
+        resolve(true); // Resolve the promise
+      }).catch((error) => {
+        clearTimeout(timeoutId); // Clear the timeout if initialization fails
+        console.error('Keycloak initialization failed:', error); // Log errors during initialization
+        reject(error); // Reject the promise with the error
+      });
     });
   };
 }
+
 
 @NgModule({
   bootstrap: [AppComponent],

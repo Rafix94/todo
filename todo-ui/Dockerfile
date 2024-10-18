@@ -8,6 +8,6 @@ RUN npm install -g @angular/cli
 RUN npm install
 
 # Set a default profile
-ENV NODE_ENV=${SPRING_PROFILES_ACTIVE}
+ENV NODE_ENV=${ANGULAR_ENV}
 
-CMD ["sh", "-c", "ng serve --configuration=local-kubernetes --host 0.0.0.0"]
+CMD ["sh", "-c", "NODE_OPTIONS='--max-old-space-size=8192' ng serve --configuration=${NODE_ENV} --host 0.0.0.0 --disable-host-check"]

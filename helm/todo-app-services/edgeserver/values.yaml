@@ -11,9 +11,16 @@ deployment:
   image:
     repository: ravv1/edgeserver
     tag: v1
-
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      cpu: "1"
+      memory: "512Mi"
 service:
   name: edgeserver
+  protocol: https
   type: LoadBalancer
-  port: 8093
+  port: 443
   targetPort: 8093

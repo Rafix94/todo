@@ -59,4 +59,13 @@ spec:
                   name: {{ .Values.deployment.secretName }}
                   key: keycloak_client_secret
             {{- end }}
-{{- end }}
+          resources:
+            {{- if .Values.deployment.resources }}
+            requests:
+              cpu: {{ .Values.deployment.resources.requests.cpu | quote }}
+              memory: {{ .Values.deployment.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.deployment.resources.limits.cpu | quote }}
+              memory: {{ .Values.deployment.resources.limits.memory | quote }}
+            {{- end }}
+  {{- end }}

@@ -115,14 +115,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bus-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -147,10 +139,14 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>3.4.0</version>
                 <configuration>
+                    <container>
+                        <ports>
+                            <port>8092</port>
+                        </ports>
+                    </container>
                     <to>
                         <image>ravv1/${project.artifactId}:v1</image>
                     </to>
-
                 </configuration>
             </plugin>
         </plugins>

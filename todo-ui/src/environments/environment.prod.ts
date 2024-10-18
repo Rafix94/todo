@@ -3,9 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  name: 'prod',
   production: true,
-  rooturl : 'http://localhost:8093/todolist',
-  keycloak : 'http://localhost:8080'
+  rooturl : 'http://34.67.81.153:8093/todolist',
+  keycloak : 'http://35.224.146.27:80'
 };
 
 /*

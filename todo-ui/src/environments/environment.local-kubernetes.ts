@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  name: 'local-kubernetes',
   rooturl : 'http://localhost:8093/todolist',
   keycloak : 'http://localhost:8080'
 };
