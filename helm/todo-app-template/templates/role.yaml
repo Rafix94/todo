@@ -1,0 +1,11 @@
+{{- define "common.role" -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Values.rbac.roleName }}
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: ["", "extensions", "apps"]
+    resources: ["pods", "services", "endpoints"]
+    verbs: ["get", "list", "watch"]
+{{- end -}}

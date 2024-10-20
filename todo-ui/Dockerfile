@@ -1,13 +1,33 @@
-FROM node:alpine
+# Stage 1: Build the Angular app
+FROM node:16 AS build
 
-WORKDIR /usr/src/app
+# Set working directory inside the container
+WORKDIR /app
 
-COPY . .
+# Copy package.json and package-lock.json for dependency installation
+COPY package*.json ./
 
-RUN npm install -g @angular/cli
+# Install Angular dependencies
 RUN npm install
 
-# Set a default profile
-ENV NODE_ENV=${ANGULAR_ENV}
+# Copy the Angular app source code
+COPY . .
 
-CMD ["sh", "-c", "NODE_OPTIONS='--max-old-space-size=8192' ng serve --configuration=${NODE_ENV} --host 0.0.0.0 --disable-host-check"]
+# Build the Angular app based on the environment
+ARG env=local
+RUN npm run build -- --configuration=$env
+
+# Stage 2: Set up NGINX to serve the app
+FROM nginx:alpine
+
+# Copy the build output to NGINX's default public directory
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copy the custom NGINX configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start NGINX server
+CMD ["nginx", "-g", "daemon off;"]

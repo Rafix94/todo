@@ -1,0 +1,16 @@
+global:
+  name: local-configmap
+  activeProfile: local
+  configServerURL: "optional:configserver:http://configserver:8090/"
+  discoverServerURL: "http://spring-cloud-kubernetes-discoveryserver:80"
+ui:
+  deployment:
+    image:
+      tag: v1-local
+edgeserver:
+  service:
+    name: edgeserver
+    protocol: http
+    type: LoadBalancer
+    port: 8093
+    targetPort: 8093

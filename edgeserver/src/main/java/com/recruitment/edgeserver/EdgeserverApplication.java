@@ -2,6 +2,8 @@ package com.recruitment.edgeserver;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
@@ -11,6 +13,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -22,6 +25,15 @@ public class EdgeserverApplication {
     public static void main(String[] args) {
         SpringApplication.run(EdgeserverApplication.class, args);
     }
+
+    @Value("${gateway.ui-uri}")
+    private String uiUri;
+
+    @Value("${gateway.redirect-host}")
+    private String redirectHost;
+
+    @Autowired
+    private Environment env;
 
     @Bean
     public RouteLocator routeConfig(RouteLocatorBuilder routeLocatorBuilder) {
@@ -37,22 +49,35 @@ public class EdgeserverApplication {
                                 )
                         )
                         .uri("http://useragent:8092"))
+
                 .route("http_to_https_redirect", predicateSpec -> predicateSpec
                         .path("/**")
                         .and()
-                        .host("todolist.ooguy.com")
+                        .host(redirectHost)
                         .and()
                         .predicate(exchange -> {
                             String scheme = exchange.getRequest().getURI().getScheme();
-                            return "http".equalsIgnoreCase(scheme);
-                        })                        .filters(filterSpec -> filterSpec
-                                .redirect(302, "https://todolist.ooguy.com")
+                            return "http".equalsIgnoreCase(scheme) && !isLocalProfile();
+                        })
+                        .filters(filterSpec -> filterSpec
+                                .redirect(302, "https://" + redirectHost)
                         )
-                        .uri("http://localhost"))
+                        .uri(redirectHost)
+                )
+                // UI route
                 .route("ui_route", predicateSpec -> predicateSpec
                         .path("/**")
-                        .uri("http://ui:4200"))
+                        .uri(uiUri))
                 .build();
+    }
+
+    private boolean isLocalProfile() {
+        for (String profile : env.getActiveProfiles()) {
+            if ("local".equalsIgnoreCase(profile)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Bean

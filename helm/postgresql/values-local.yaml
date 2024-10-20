@@ -344,7 +344,52 @@ primary:
     ##      #!/bin/sh
     ##      echo "Do something."
     ##
-    scripts: {}
+    scripts:
+      init.sh: |
+        #!/bin/bash
+        set -e  # Exit immediately if a command exits with a non-zero status
+        
+        export PGPASSWORD="$POSTGRES_PASSWORD"
+        
+        psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
+          SELECT 'CREATE DATABASE useragent;' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'useragent') \gexec
+          SELECT 'CREATE DATABASE edgeserver;' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'edgeserver') \gexec
+        EOSQL
+        psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
+          DO \$\$
+          BEGIN
+            IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'useragent') THEN
+              EXECUTE 'CREATE USER useragent WITH PASSWORD ''useragent_password''';
+              RAISE NOTICE 'User useragent created.';
+            ELSE
+              RAISE NOTICE 'User useragent already exists.';
+            END IF;
+  
+            IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'edgeserver') THEN
+              EXECUTE 'CREATE USER edgeserver WITH PASSWORD ''edgeserver_password''';
+              RAISE NOTICE 'User edgeserver created.';
+            ELSE
+              RAISE NOTICE 'User edgeserver already exists.';
+            END IF;
+          END
+          \$\$;
+        EOSQL
+        
+        psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
+          GRANT ALL PRIVILEGES ON DATABASE useragent TO useragent;
+          GRANT ALL PRIVILEGES ON DATABASE edgeserver TO edgeserver;
+        EOSQL
+        
+        psql -v ON_ERROR_STOP=1 --username "postgres" -d useragent <<-EOSQL
+          CREATE SCHEMA IF NOT EXISTS public; -- Ensure the public schema exists
+          GRANT ALL PRIVILEGES ON SCHEMA public TO useragent;
+        EOSQL
+        
+        psql -v ON_ERROR_STOP=1 --username "postgres" -d edgeserver <<-EOSQL
+          CREATE SCHEMA IF NOT EXISTS public; -- Ensure the public schema exists
+          GRANT ALL PRIVILEGES ON SCHEMA public TO edgeserver;
+        EOSQL
+
     ## @param primary.initdb.scriptsConfigMap ConfigMap with scripts to be run at first boot
     ## NOTE: This will override `primary.initdb.scripts`
     ##

@@ -31,6 +31,11 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.global.name }}
                   key: SPRING_PROFILES_ACTIVE
+            - name: ANGULAR_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.global.name }}
+                  key: ANGULAR_PROFILES_ACTIVE
             {{- if .Values.deployment.configEnabled }}
             - name: SPRING_CONFIG_IMPORT
               valueFrom:
@@ -58,6 +63,16 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.deployment.secretName }}
                   key: keycloak_client_secret
+            {{- end }}
+            {{- if .Values.deployment.discoveryServerEnabled }}
+            readinessProbe:
+              httpGet:
+                path: /actuator/health/readiness
+                port: {{ .Values.deployment.containerPort }}
+            livenessProbe:
+              httpGet:
+                path: /actuator/health/liveness
+                port: {{ .Values.deployment.containerPort }}
             {{- end }}
           resources:
             {{- if .Values.deployment.resources }}

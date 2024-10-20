@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "bank-app-ui": {
+    "todo-list-app-ui": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -16,7 +16,7 @@
             "allowedCommonJsDependencies": [
               "base64-js",
               "js-sha256"
-           ],
+            ],
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -36,14 +36,19 @@
             "production": {
               "budgets": [
                 {
+                  "type": "all",
+                  "maximumWarning": "150kb",
+                  "maximumError": "2000kb"
+                },
+                {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "100kb",
+                  "maximumError": "1500kb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "150kb",
+                  "maximumError": "2000kb"
                 }
               ],
               "fileReplacements": [
@@ -54,23 +59,28 @@
               ],
               "outputHashing": "all"
             },
-            "local-kubernetes": {
+            "local": {
               "budgets": [
                 {
+                  "type": "all",
+                  "maximumWarning": "150kb",
+                  "maximumError": "2000kb"
+                },
+                {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "100kb",
+                  "maximumError": "1500kb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "150kb",
+                  "maximumError": "2000kb"
                 }
               ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.local-kubernetes.ts"
+                  "with": "src/environments/environment.local.ts"
                 }
               ],
               "outputHashing": "all"
@@ -84,8 +94,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "200kb",
+                  "maximumError": "300kb"
                 }
               ],
               "fileReplacements": [
@@ -111,16 +121,16 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "bank-app-ui:build:production"
+              "browserTarget": "todo-list-app-ui:build:production"
             },
             "development": {
-              "browserTarget": "bank-app-ui:build:development"
+              "browserTarget": "todo-list-app-ui:build:development"
             },
-            "local-kubernetes": {
-              "browserTarget": "bank-app-ui:build:local-kubernetes"
+            "local": {
+              "browserTarget": "todo-list-app-ui:build:local"
             },
             "prod": {
-              "browserTarget": "bank-app-ui:build:prod"
+              "browserTarget": "todo-list-app-ui:build:prod"
             }
           },
           "defaultConfiguration": "development"
@@ -128,7 +138,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "bank-app-ui:build"
+            "browserTarget": "todo-list-app-ui:build"
           }
         },
         "test": {
