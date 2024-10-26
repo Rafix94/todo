@@ -5,8 +5,8 @@
 export const environment = {
   name: 'prod',
   production: true,
-  rooturl : 'http://34.67.81.153:8093/todolist',
-  keycloak : 'http://35.224.146.27:80'
+  rooturl : 'https://todolist.ooguy.com/todolist',
+  keycloak : 'https://todolistauth.giize.com/'
 };
 
 /*

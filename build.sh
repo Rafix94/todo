@@ -22,5 +22,5 @@ cd ..
 
 # Build todo-ui
 cd todo-ui || exit
-docker buildx build --platform linux/amd64 --build-arg ANGULAR_ENV=local -t ravv1/ui:v1-local .
-docker buildx build --platform linux/amd64 --build-arg ANGULAR_ENV=prod -t ravv1/ui:v1-prod .
+docker buildx build --platform linux/amd64 --build-arg env=local -t ravv1/ui:v1-local .
+docker buildx build --platform linux/amd64 --build-arg env=prod -t ravv1/ui:v1-prod .
