@@ -1,10 +1,12 @@
 # ToDoListApp
 
-ToDoListApp is a task management application that allows users to organize their tasks efficiently.
+ToDoListApp is a task management application that allows users to organize their tasks efficiently. The application is hosted on a Google Cloud cluster and can be accessed at [https://todolist.ooguy.com/](https://todolist.ooguy.com/).
+
+Please note that both the frontend and Keycloak use self-signed certificates. You may need to allow insecure connections in your browser settings, as these connections might be treated as insecure.
+
+# Setup Instructions
 
 ## Prerequisites
-
-Before you get started with ToDoListApp, ensure you have the following tools installed and configured:
 
 ### 1. Docker
 Docker is required to run containers for services such as PostgreSQL, Keycloak, and others. You can download and install Docker from the [official Docker website](https://docs.docker.com/get-docker/).
@@ -47,7 +49,6 @@ helm version
 ```
 
 ---
-
 
 ## Getting Started
 
@@ -137,7 +138,7 @@ After setting up Keycloak and creating the client for the User Agent, you will n
 
 
 
-3. **Explore ToDoListApp**: Access the ToDoListApp through the user-friendly graphical user interface (GUI) available at http://localhost:4200/home.
+7. **Explore ToDoListApp**: Access the ToDoListApp through the graphical user interface (GUI) available at http://localhost:4200/home.
 
 ---
 
