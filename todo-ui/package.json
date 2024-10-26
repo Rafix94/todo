@@ -1,5 +1,5 @@
 {
-  "name": "bank-app-ui",
+  "name": "todo-list-app-ui",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",

@@ -25,28 +25,44 @@ export class AuthKeyClockGuard extends KeycloakAuthGuard {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ) {
-    // Force the user to log in if currently unauthenticated.
+    console.log('isAccessAllowed method called'); // Log when method is called
+    console.log('Route:', route); // Log route details
+    console.log('State:', state); // Log state details
+
     if (!this.authenticated) {
+      console.log('User is not authenticated. Redirecting to login.');
       await this.keycloak.login({
         redirectUri: window.location.origin + state.url,
       });
-    }else{
+    } else {
+      console.log('User is authenticated');
+
       this.userProfile = await this.keycloak.loadUserProfile();
+
       this.user.authStatus = 'AUTH';
       this.user.name = this.userProfile.firstName || "";
       this.user.email = this.userProfile.email || "";
-      window.sessionStorage.setItem("userdetails",JSON.stringify(this.user));
+
+      window.sessionStorage.setItem("userdetails", JSON.stringify(this.user));
+      console.log('User details saved to session storage:', this.user);
     }
 
-    // Get the roles required from the route.
     const requiredRoles = route.data["roles"];
+    console.log('Required roles for this route:', requiredRoles);
 
-    // Allow the user to to proceed if no additional roles are required to access the route.
     if (!(requiredRoles instanceof Array) || requiredRoles.length === 0) {
+      console.log('No specific roles required. Access granted.');
       return true;
     }
 
-    // Allow the user to proceed if all the required roles are present.
-    return requiredRoles.some((role) => this.roles.includes(role));
+    const hasRequiredRole = requiredRoles.some((role) => this.roles.includes(role));
+    console.log('User roles:', this.roles);
+    console.log('User has required role:', hasRequiredRole);
+
+    if (!hasRequiredRole) {
+      console.warn('Access denied: User does not have the required role');
+    }
+
+    return hasRequiredRole;
   }
 }

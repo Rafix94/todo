@@ -1,0 +1,20 @@
+deployment:
+  name: ui
+  label: ui
+  replicaCount: 1
+  configEnabled: false
+  containerPort: 80
+  dbEnabled: false
+  image:
+    repository: ravv1/ui
+    tag: v1-amd64
+  resources:
+    requests:
+      memory: "2Gi"
+    limits:
+      memory: "4Gi"
+service:
+  name: ui
+  type: LoadBalancer
+  port: 4200
+  targetPort: 80

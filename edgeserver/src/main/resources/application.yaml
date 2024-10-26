@@ -3,6 +3,3 @@ spring:
     name: "edgeserver"
   config:
     import: "optional:configserver:http://configserver:8090/"
-
-server:
-  port: 8093

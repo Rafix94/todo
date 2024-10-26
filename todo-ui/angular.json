@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "bank-app-ui": {
+    "todo-list-app-ui": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -16,8 +16,8 @@
             "allowedCommonJsDependencies": [
               "base64-js",
               "js-sha256"
-           ],
-            "outputPath": "dist/bank-app-ui",
+            ],
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -33,17 +33,48 @@
             "scripts": []
           },
           "configurations": {
-            "production": {
+            "local": {
               "budgets": [
                 {
+                  "type": "all",
+                  "maximumWarning": "150kb",
+                  "maximumError": "2000kb"
+                },
+                {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "100kb",
+                  "maximumError": "1500kb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "150kb",
+                  "maximumError": "2000kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "prod": {
+              "budgets": [
+                {
+                  "type": "all",
+                  "maximumWarning": "150kb",
+                  "maximumError": "2000kb"
+                },
+                {
+                  "type": "initial",
+                  "maximumWarning": "100kb",
+                  "maximumError": "1500kb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "150kb",
+                  "maximumError": "2000kb"
                 }
               ],
               "fileReplacements": [
@@ -69,10 +100,16 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "bank-app-ui:build:production"
+              "browserTarget": "todo-list-app-ui:build:production"
             },
             "development": {
-              "browserTarget": "bank-app-ui:build:development"
+              "browserTarget": "todo-list-app-ui:build:development"
+            },
+            "local": {
+              "browserTarget": "todo-list-app-ui:build:local"
+            },
+            "prod": {
+              "browserTarget": "todo-list-app-ui:build:prod"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +117,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "bank-app-ui:build"
+            "browserTarget": "todo-list-app-ui:build"
           }
         },
         "test": {

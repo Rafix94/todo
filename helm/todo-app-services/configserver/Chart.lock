@@ -1,0 +1,6 @@
+dependencies:
+- name: todo-app-template
+  repository: file://../../todo-app-template
+  version: 0.1.0
+digest: sha256:b276178ecdfaaac8e5ecd0747efeff609b4bf0e9b325814bab3f845bbf731398
+generated: "2024-09-17T22:08:23.366658+02:00"

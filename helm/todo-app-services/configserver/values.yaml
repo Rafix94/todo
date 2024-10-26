@@ -1,0 +1,22 @@
+deployment:
+  name: configserver
+  label: configserver
+  replicaCount: 1
+  configEnabled: false
+  containerPort: 8090
+  dbEnabled: false
+  image:
+    repository: ravv1/configserver
+    tag: v1
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      cpu: "1"
+      memory: "512Mi"
+service:
+  name: configserver
+  type: ClusterIP
+  port: 8090
+  targetPort: 8090

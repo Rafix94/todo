@@ -63,3 +63,8 @@ atlassian-ide-plugin.xml
 .idea/**/uiDesigner.xml
 
 /dockercompose/local/.data/
+
+# Helm files
+helm/*/Chart.lock
+helm/*/charts/*.tgz
+

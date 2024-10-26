@@ -1,0 +1,21 @@
+{{- define "common.service" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name }}
+spec:
+  selector:
+    app: {{ .Values.deployment.label }}
+  type: {{ .Values.service.type }}
+  ports:
+    - name: {{ .Values.service.protocol | default "http" }}
+      protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+  {{- if .Values.service.discoveryServerEnabled }}
+    - name: discovery-http
+      protocol: TCP
+      port: {{ .Values.service.discoveryServerPort | default 8761 }}
+      targetPort: {{ .Values.service.discoveryServerTargetPort | default 8761 }}
+  {{- end }}
+{{- end -}}

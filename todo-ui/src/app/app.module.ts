@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER,NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -14,8 +14,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import BrowserAnimationsModule
-import { MatFormFieldModule } from '@angular/material/form-field'; // Import MatFormFieldModule
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
@@ -24,21 +24,51 @@ import { TaskDetailsComponent } from './components/task-details/task-details.com
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { RegistrationComponent } from './components/registration/registration.component';
+import { environment } from "../environments/environment";
 
 function initializeKeycloak(keycloak: KeycloakService) {
-  return () =>
-    keycloak.init({
-      config: {
-        url: 'http://localhost:8080/',
-        realm: 'toDoListApp',
-        clientId: 'todolistpublicclient',
-      },
-      initOptions: {
-        pkceMethod: 'S256',
-        redirectUri: 'http://localhost:4200/dashboard',
-      },loadUserProfileAtStartUp: false
+  return () => {
+    console.log('Initializing Keycloak...'); // Log before initialization
+
+    const timeoutDuration = 100000;
+
+    const redirectUri = `${window.location.origin}/dashboard`;
+
+    return new Promise((resolve, reject) => {
+      // Start Keycloak initialization
+      const initPromise = keycloak.init({
+        config: {
+          url: environment.keycloak,
+          realm: 'toDoListApp',
+          clientId: 'todolistpublicclient',
+        },
+        initOptions: {
+          checkLoginIframe: false,
+          pkceMethod: 'S256',
+          redirectUri: redirectUri,
+        },
+        loadUserProfileAtStartUp: false
+      });
+
+      // Set a timeout for initialization
+      const timeoutId = setTimeout(() => {
+        reject(new Error('Keycloak initialization timed out')); // Reject if timeout occurs
+        console.log('Keycloak initialization is taking too long...');
+      }, timeoutDuration);
+
+      initPromise.then(() => {
+        clearTimeout(timeoutId); // Clear the timeout if initialization succeeds
+        console.log('Keycloak initialized successfully'); // Log on successful initialization
+        resolve(true); // Resolve the promise
+      }).catch((error) => {
+        clearTimeout(timeoutId); // Clear the timeout if initialization fails
+        console.error('Keycloak initialization failed:', error); // Log errors during initialization
+        reject(error); // Reject the promise with the error
+      });
     });
+  };
 }
+
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -80,6 +110,4 @@ function initializeKeycloak(keycloak: KeycloakService) {
     }
   ]
 })
-export class AppModule {
-
-}
+export class AppModule { }

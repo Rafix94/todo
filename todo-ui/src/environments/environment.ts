@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  rooturl : 'http://localhost:8093/todolist'
+  rooturl : 'https://todolist.ooguy.com/todolist',
+  keycloak : 'https://todolistauth.giize.com/'
 };
 
 /*
