@@ -11,7 +11,16 @@ POSTGRES_RELEASE=postgresql
 KEYCLOAK_CHART=helm/keycloak
 POSTGRES_CHART=helm/postgresql
 
-all: postgres keycloak app
+all: dependencies postgres keycloak app
+
+# Update Helm chart dependencies for all relevant charts
+dependencies:
+	@echo "Updating Helm chart dependencies for $(CHART_PATH)..."
+	$(HELM) dependency update $(CHART_PATH)
+	@echo "Updating Helm chart dependencies for $(KEYCLOAK_CHART)..."
+	$(HELM) dependency update $(KEYCLOAK_CHART)
+	@echo "Updating Helm chart dependencies for $(POSTGRES_CHART)..."
+	$(HELM) dependency update $(POSTGRES_CHART)
 
 # Install PostgreSQL
 postgres:

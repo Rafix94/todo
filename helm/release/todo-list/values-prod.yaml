@@ -1,0 +1,16 @@
+edgeserver:
+  service:
+    name: edgeserver
+    port: 443
+    protocol: https
+    targetPort: 8093
+    type: LoadBalancer
+global:
+  activeProfile: prod
+  configServerURL: optional:configserver:http://configserver:8090/
+  discoverServerURL: http://spring-cloud-kubernetes-discoveryserver:80
+  name: prod-configmap
+ui:
+  deployment:
+    image:
+      tag: v1-prod
