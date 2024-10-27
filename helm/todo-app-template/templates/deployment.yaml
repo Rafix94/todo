@@ -31,11 +31,6 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.global.name }}
                   key: SPRING_PROFILES_ACTIVE
-            - name: ANGULAR_PROFILES_ACTIVE
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.global.name }}
-                  key: ANGULAR_PROFILES_ACTIVE
             {{- if .Values.deployment.configEnabled }}
             - name: SPRING_CONFIG_IMPORT
               valueFrom:
