@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,7 +25,10 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { RegistrationComponent } from './components/registration/registration.component';
 import { environment } from "../environments/environment";
-import { TeamComponent } from './components/team/team.component';
+import { TeamsComponent } from './components/teams/teams.component';
+import { ShowTeamsComponent } from './components/show-teams/show-teams.component';
+import { AddTeamComponent } from './components/add-team/add-team.component';
+import { TeamMembersComponent } from './components/team-members/team-members.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => {
@@ -82,7 +85,10 @@ function initializeKeycloak(keycloak: KeycloakService) {
     SearchComponent,
     TaskDetailsComponent,
     RegistrationComponent,
-    TeamComponent,
+    TeamsComponent,
+    ShowTeamsComponent,
+    AddTeamComponent,
+    TeamMembersComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,6 +108,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     }),
     MatIconModule,
     MatButtonModule,
+    ReactiveFormsModule,
   ],
   providers: [
     {

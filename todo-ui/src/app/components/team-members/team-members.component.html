@@ -1,0 +1,22 @@
+<app-header></app-header>
+<div class="main-content">
+  <div class="container-fluid content-top-gap">
+    <div class="welcome-msg pt-3 pb-4">
+      <h1>Team Members</h1>
+      <h2 class="text-dark">{{ teams?.name }}</h2>
+      <p>{{ teams?.description }}</p>
+    </div>
+
+    <div *ngIf="teams">
+      <h3>Members:</h3>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let member of teams.members">
+          {{ member }}
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="!teams">
+      <p>Team not found.</p>
+    </div>
+  </div>
+</div>
