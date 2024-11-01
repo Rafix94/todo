@@ -25,6 +25,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { RegistrationComponent } from './components/registration/registration.component';
 import { environment } from "../environments/environment";
+import { TeamComponent } from './components/team/team.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => {
@@ -81,6 +82,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     SearchComponent,
     TaskDetailsComponent,
     RegistrationComponent,
+    TeamComponent,
   ],
   imports: [
     BrowserModule,

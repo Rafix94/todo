@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: "001-create-task-table"
+      author: "rafal.grzes"
+      changes:
+        - createTable:
+            tableName: "task"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: "title"
+                  type: "varchar(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "description"
+                  type: "text"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "created_by"
+                  type: "uuid"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "assigned_to"
+                  type: "uuid"
+              - column:
+                  name: "created_at"
+                  type: "datetime"
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: "updated_at"
+                  type: "datetime"

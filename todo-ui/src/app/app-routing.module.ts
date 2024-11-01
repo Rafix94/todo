@@ -5,8 +5,9 @@ import { AuthKeyClockGuard } from './routeguards/auth.route';
 import { HomeComponent } from './components/home/home.component';
 
 import { TaskComponent } from './components/tasks/task.component';
-import {TaskDetailsComponent} from "./components/task-details/task-details.component";
-import {RegistrationComponent} from "./components/registration/registration.component";
+import { TaskDetailsComponent } from "./components/task-details/task-details.component";
+import { RegistrationComponent } from "./components/registration/registration.component";
+import { TeamComponent } from './components/team/team.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'tasks', component: TaskComponent, canActivate: [AuthKeyClockGuard],data: {}},
   { path: 'tasks/:taskId', component: TaskDetailsComponent,  data: {}, canActivate: [AuthKeyClockGuard]},
   { path: 'tasks/add', component: TaskDetailsComponent,  data: {}, canActivate: [AuthKeyClockGuard]},
+  { path: 'team', component: TeamComponent }, // Add this line
   { path: 'register', component: RegistrationComponent,  data: {}}
 
 ];

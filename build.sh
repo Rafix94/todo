@@ -5,6 +5,11 @@ cd useragent || exit
 mvn compile jib:dockerBuild
 cd ..
 
+# Build taskmanager
+cd taskmanager || exit
+mvn compile jib:dockerBuild
+cd ..
+
 # Build edgeserver
 cd edgeserver || exit
 mvn compile jib:dockerBuild

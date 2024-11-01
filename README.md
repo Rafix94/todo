@@ -87,12 +87,7 @@ make keycloak --always-make
 ```
 After starting Keycloak, you will need to forward the Keycloak service to your local machine to access the admin console. Run the following command to forward the traffic:
 
-```bash
-kubectl port-forward svc/keycloak 8080:80
-```
-Once the port is forwarded, you can access the Keycloak Admin Console at:
-
-- URL: [http://localhost:8080](http://localhost:8080/)
+- URL: [http://localhost](http://localhost/)
 
 #### Retrieve Keycloak Admin Credentials
 The credentials to log in to the Keycloak Admin Console are stored in Kubernetes secrets.
@@ -119,7 +114,7 @@ keycloak/realm-local.json
 ### 6. **Update Keycloak Client Secret**:
 After setting up Keycloak and creating the client for the User Agent, you will need to copy the generated client secret and update your Kubernetes secrets.
 
-1. **Open Keycloak Admin Console**: Navigate to the Keycloak Admin Console at [http://localhost:8080](http://localhost:8080) and log in with your admin credentials.
+1. **Open Keycloak Admin Console**: Navigate to the Keycloak Admin Console at [http://localhost:80](http://localhost:80) and log in with your admin credentials.
 
 2. **Select the User Agent Client**: In the left sidebar, go to **Clients** and select the `userAgentClient`.
 
@@ -140,6 +135,7 @@ After setting up Keycloak and creating the client for the User Agent, you will n
     ```bash
     kubectl apply -f kubernetes/environments/local/secrets/useragent-secret.yaml
     kubectl apply -f kubernetes/environments/local/secrets/edgeserver-secret.yaml
+    kubectl apply -f kubernetes/environments/local/secrets/taskmanager-secret.yaml
     ```
 
 ### 7. **Install the Application**:

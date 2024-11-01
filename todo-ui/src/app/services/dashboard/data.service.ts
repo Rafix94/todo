@@ -25,12 +25,12 @@ export class DataService {
       params = params.set('searchQuery', searchQuery);
     }
 
-    return this.http.get(environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "?email=" + email, { params });
+    return this.http.get(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL, { params });
   }
 
   getTaskDetails(id: number): Observable<any> {
     console.log(`getTaskDetails called for ID: ${id}`);
-    const url = environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "/" + id;
+    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
     console.log(`Request URL: ${url}`);
     return this.http.get(url);
   }
@@ -38,7 +38,7 @@ export class DataService {
   createTask(task: any, email: string): Observable<any> {
     console.log('createTask called with:');
     console.log(`Email: ${email}, Task:`, task);
-    const url = environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "?email=" + email;
+    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "?email=" + email;
     console.log(`Request URL: ${url}`);
     return this.http.post(url, task);
   }
@@ -46,14 +46,14 @@ export class DataService {
   updateTask(id: number, task: any): Observable<any> {
     console.log(`updateTask called with ID: ${id}`);
     console.log(`Task:`, task);
-    const url = environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "/" + id;
+    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
     console.log(`Request URL: ${url}`);
     return this.http.put(url, task);
   }
 
   deleteTask(id: number): Observable<any> {
     console.log(`deleteTask called for ID: ${id}`);
-    const url = environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "/" + id;
+    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
     console.log(`Request URL: ${url}`);
     return this.http.delete(url);
   }
