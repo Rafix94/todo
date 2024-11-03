@@ -32,9 +32,11 @@ public class CustomerController {
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@RequestBody UserRegistrationDto userRegistrationDto) {
         keycloakUserService.registerUser(
-                userRegistrationDto.getUsername(),
-                userRegistrationDto.getEmail(),
-                userRegistrationDto.getPassword(),
+                userRegistrationDto.username(),
+                userRegistrationDto.firstName(),
+                userRegistrationDto.lastName(),
+                userRegistrationDto.email(),
+                userRegistrationDto.password(),
                 List.of("USER"));
 
         return ResponseEntity

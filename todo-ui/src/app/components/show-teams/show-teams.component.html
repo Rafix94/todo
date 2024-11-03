@@ -6,13 +6,19 @@
     </div>
 
     <div class="row">
-      <!-- Teams List -->
       <div class="col-md-4 mb-4" *ngFor="let team of teams">
         <div class="card card_border border-primary-top p-4">
           <h3 class="text-dark number">{{ team.name }}</h3>
-          <p class="stat-text">{{ team.description }}</p>
-          <p class="stat-text">Members: {{ team.members.length }}</p>
-          <button class="btn btn-primary" (click)="viewTeamDetails(team.id)">View Team</button> <!-- Optional button to view details -->
+
+          <button class="btn btn-primary" (click)="viewTeamDetails(team.id)">
+            View Team
+          </button>
+
+          <button [ngClass]="{'btn-primary': !team.isMember, 'btn-secondary': team.isMember}"
+            [disabled]="false"
+            (click)="joinTeam(team.id)">
+            {{ team.isMember ? 'Already a Member' : 'Join Team' }}
+          </button>
         </div>
       </div>
     </div>

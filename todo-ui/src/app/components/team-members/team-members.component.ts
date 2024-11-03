@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TeamsService } from 'src/app/services/teams.service';
-import { Team } from 'src/app/model/team.model';
+import {TeamDetailsDto} from "../../model/teamDetailsDto";
 
 @Component({
   selector: 'app-team-members',
@@ -9,7 +9,7 @@ import { Team } from 'src/app/model/team.model';
   styleUrls: ['./team-members.component.css']
 })
 export class TeamMembersComponent implements OnInit {
-  teams: Team | null = null;
+  teams: TeamDetailsDto | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -17,10 +17,10 @@ export class TeamMembersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const teamId = this.route.snapshot.paramMap.get('id'); // Get the team ID from the route
+    const teamId = this.route.snapshot.paramMap.get('id');
     if (teamId) {
-      this.teamService.getAllTeams().subscribe((teams) => {
-        this.teams = teams.find(t => t.id === teamId) || null; // Find the team by ID
+      this.teamService.getTeamDetails(teamId).subscribe((team) => {
+        this.teams = team || null;
       });
     }
   }

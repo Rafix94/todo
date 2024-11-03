@@ -1,53 +1,41 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Team } from '../model/team.model';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { AppConstants } from 'src/app/constants/app.constants';
+import { environment } from "../../environments/environment";
+import { TeamDetailsDto } from '../model/teamDetailsDto';
+import {TeamSummaryDto} from "../model/teamSummaryDto";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeamsService {
-  // Sample data for mocking
-  private teams: Team[] = [
-    {
-      id: '1',
-      name: 'Development Team',
-      description: 'Responsible for development tasks',
-      members: ['user1@example.com', 'user2@example.com']
-    },
-    {
-      id: '2',
-      name: 'Design Team',
-      description: 'Responsible for design tasks',
-      members: ['user3@example.com', 'user4@example.com']
-    },
-    {
-      id: '3',
-      name: 'Marketing Team',
-      description: 'Responsible for marketing strategies',
-      members: ['user5@example.com']
-    }
-  ];
+  private baseUrl = environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TEAMS_API_URL;
 
-  getUserTeams(): Observable<Team[]> {
-    // Here you can filter teams based on user logic if needed
-    return of(this.teams);
+  constructor(private http: HttpClient) {
+    console.log('TeamsService initialized');
   }
 
-  getAllTeams(): Observable<Team[]> {
-    return of(this.teams);
+  getAllTeams(): Observable<TeamSummaryDto[]> {
+    const url = `${this.baseUrl}`;
+    return this.http.get<TeamSummaryDto[]>(url);
   }
 
-  createTeam(team: Team): Observable<Team> {
-    // Simulating the creation of a team by pushing it to the teams array
-    this.teams.push({ ...team, id: (this.teams.length + 1).toString() });
-    return of(team);
+  getTeamDetails(teamId: string): Observable<TeamDetailsDto> {
+    const url = `${this.baseUrl}/${teamId}`;
+    return this.http.get<TeamDetailsDto>(url);
   }
 
-  selectTeam(teamId: string) {
-    sessionStorage.setItem('selectedTeamId', teamId);
+  createTeam(team: TeamDetailsDto): Observable<TeamDetailsDto> {
+    const url = `${this.baseUrl}`;
+    return this.http.post<TeamDetailsDto>(url, team);
   }
 
-  getSelectedTeamId(): string | null {
-    return sessionStorage.getItem('selectedTeamId');
+  joinTeam(teamId: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/join/${teamId}`, {});
+  }
+
+  getTeamMembers(teamId: string): Observable<TeamSummaryDto[]> {
+    return this.http.get<TeamSummaryDto[]>(`${this.baseUrl}/${teamId}/members`);
   }
 }

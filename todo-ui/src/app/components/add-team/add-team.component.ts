@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TeamsService } from 'src/app/services/teams.service';
-import { Team } from 'src/app/model/team.model';
+import { TeamDetailsDto } from 'src/app/model/teamDetailsDto';
 
 @Component({
   selector: 'app-add-team',
@@ -19,13 +19,18 @@ export class AddTeamComponent {
   ) {
     this.addTeamForm = this.formBuilder.group({
       name: ['', Validators.required],
-      description: ['', Validators.required]
     });
   }
 
   onSubmit(): void {
     if (this.addTeamForm.valid) {
-      const newTeam: Team = this.addTeamForm.value;
+      const newTeam: TeamDetailsDto = {
+        id: '',
+        name: this.addTeamForm.get('name')?.value,
+        members: []
+      };
+
+      // Now pass the newTeam object to your service
       this.teamService.createTeam(newTeam).subscribe(() => {
         this.router.navigate(['/teams']);
       });

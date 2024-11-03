@@ -4,17 +4,26 @@
     <div class="welcome-msg pt-3 pb-4">
       <h1>Team Members</h1>
       <h2 class="text-dark">{{ teams?.name }}</h2>
-      <p>{{ teams?.description }}</p>
     </div>
 
-    <div *ngIf="teams">
+    <div *ngIf="teams && teams.members.length > 0">
       <h3>Members:</h3>
       <ul class="list-group">
         <li class="list-group-item" *ngFor="let member of teams.members">
-          {{ member }}
+          <div>
+            <strong>Name:</strong> {{ member.userName }}
+          </div>
+          <div>
+            <strong>Email:</strong> {{ member.email }}
+          </div>
         </li>
       </ul>
     </div>
+
+    <div *ngIf="teams && teams.members.length === 0">
+      <p>No members found in this team.</p>
+    </div>
+
     <div *ngIf="!teams">
       <p>Team not found.</p>
     </div>
