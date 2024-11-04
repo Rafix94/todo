@@ -13,7 +13,7 @@ export class DataService {
     console.log('DataService initialized');
   }
 
-  getTasks(page: number, pageSize: number, email: string, sortField: string, sortDirection: string, searchQuery: string): Observable<any> {
+  getTasks(page: number, pageSize: number, email: string, sortField: string, sortDirection: string, searchQuery: string, s: string): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', pageSize.toString());

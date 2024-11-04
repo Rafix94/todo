@@ -4,6 +4,7 @@ import com.recruitment.useragent.dto.TeamDetailsDto;
 import com.recruitment.useragent.dto.TeamMemberDto;
 import com.recruitment.useragent.dto.TeamSummaryDto;
 import com.recruitment.useragent.mapper.TeamMapper;
+import com.recruitment.useragent.model.MembershipStatus;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
@@ -73,17 +74,24 @@ public class KeycloakUserService {
         return new ArrayList<>(groupsResource.groups());
     }
 
-    public List<TeamSummaryDto> getAllTeamsWithMembershipStatus() {
+    public List<TeamSummaryDto> getAllTeamsWithMembershipStatus(MembershipStatus membershipStatus) {
         String uuid = SecurityContextHolder.getContext().getAuthentication().getName();
         List<GroupRepresentation> groups = listGroups();
         UserResource userResource = keycloak.realm(realmName).users().get(uuid);
 
         List<GroupRepresentation> userGroups = userResource.groups();
 
-        return groups.stream().map(group -> {
-            boolean isMember = userGroups.stream().anyMatch(userGroup -> userGroup.getId().equals(group.getId()));
-            return new TeamSummaryDto(group.getId(), group.getName(), isMember);
-        }).collect(Collectors.toList());
+        return groups.stream()
+                .filter(group -> switch (membershipStatus) {
+                    case MEMBER -> userGroups.stream().anyMatch(userGroup -> userGroup.getId().equals(group.getId()));
+                    case NOT_MEMBER -> userGroups.stream().noneMatch(userGroup -> userGroup.getId().equals(group.getId()));
+                    case ALL -> true;
+                })
+                .map(group -> {
+                    boolean isMember = userGroups.stream().anyMatch(userGroup -> userGroup.getId().equals(group.getId()));
+                    return new TeamSummaryDto(group.getId(), group.getName(), isMember);
+                })
+                .collect(Collectors.toList());
     }
 
     public TeamDetailsDto createGroup(TeamDetailsDto teamDetailsDto) {

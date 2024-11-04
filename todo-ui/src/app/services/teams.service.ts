@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConstants } from 'src/app/constants/app.constants';
 import { environment } from "../../environments/environment";
 import { TeamDetailsDto } from '../model/teamDetailsDto';
-import {TeamSummaryDto} from "../model/teamSummaryDto";
+import { TeamSummaryDto } from "../model/teamSummaryDto";
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +16,17 @@ export class TeamsService {
     console.log('TeamsService initialized');
   }
 
-  getAllTeams(): Observable<TeamSummaryDto[]> {
-    const url = `${this.baseUrl}`;
-    return this.http.get<TeamSummaryDto[]>(url);
+  // Add filter parameter for flexible filtering options
+  getAllTeams(membershipStatus: 'MEMBER' | 'NOT_MEMBER' | 'ALL' = 'ALL'): Observable<TeamSummaryDto[]> {
+    let url = `${this.baseUrl}`;
+    let params = new HttpParams();
+
+    // Add filter to the query params if provided
+    if (['MEMBER', 'NOT_MEMBER', 'ALL'].includes(membershipStatus)) {
+      params = params.set('membershipStatus', membershipStatus);
+    }
+
+    return this.http.get<TeamSummaryDto[]>(url, { params });
   }
 
   getTeamDetails(teamId: string): Observable<TeamDetailsDto> {

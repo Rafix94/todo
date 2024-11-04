@@ -29,6 +29,7 @@ import { TeamsComponent } from './components/teams/teams.component';
 import { ShowTeamsComponent } from './components/show-teams/show-teams.component';
 import { AddTeamComponent } from './components/add-team/add-team.component';
 import { TeamMembersComponent } from './components/team-members/team-members.component';
+import { MatSelectModule } from '@angular/material/select';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => {
@@ -96,6 +97,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     FormsModule,
     KeycloakAngularModule,
     HttpClientModule,
