@@ -4,12 +4,12 @@
     <!-- Team Selection -->
     <mat-form-field appearance="fill">
       <mat-label>Select Team</mat-label>
-      <mat-select [(value)]="selectedTeam" (selectionChange)="onTeamChange($event)">
+      <mat-select [(value)]="selectedTeam" (selectionChange)="onTeamChange($event)" panelClass="custom-select-panel">
         <mat-option *ngFor="let team of teams" [value]="team.id">{{ team.name }}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <!-- Search Bar -->
+    <!-- Search Bar for Filtering -->
     <mat-form-field appearance="fill" class="search-bar">
       <input matInput (keyup)="applyFilter($event)" placeholder="Search Tasks">
     </mat-form-field>
@@ -19,59 +19,34 @@
   </div>
 
   <!-- Task Table -->
-  <table mat-table [dataSource]="data" matSort (matSortChange)="announceSortChange($event)" class="mat-elevation-z8">
-    <!-- Columns Definition -->
-    <ng-container matColumnDef="No.">
-      <th mat-header-cell *matHeaderCellDef> No. </th>
-      <td mat-cell *matCellDef="let index = index"> {{ currentPage * pageSize + index + 1 }} </td>
-    </ng-container>
-
+  <table mat-table [dataSource]="data" matSort class="mat-elevation-z8">
+    <!-- Title Column -->
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
-      <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+      <td mat-cell *matCellDef="let task"> {{ task.title }} </td>
     </ng-container>
 
+    <!-- Description Column -->
     <ng-container matColumnDef="description">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
-      <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+      <td mat-cell *matCellDef="let task"> {{ task.description }} </td>
     </ng-container>
 
-    <ng-container matColumnDef="dueDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Due Date </th>
-      <td mat-cell *matCellDef="let element"> {{element.dueDate}} </td>
+    <!-- Assigned To Column -->
+    <ng-container matColumnDef="assignedTo">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Assigned To </th>
+      <td mat-cell *matCellDef="let task"> {{ task.assignedTo || 'Unassigned' }} </td>
     </ng-container>
 
-    <ng-container matColumnDef="priority">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Priority </th>
-      <td mat-cell *matCellDef="let element"> {{element.priority}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
-      <td mat-cell *matCellDef="let element"> {{element.status}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="category">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
-      <td mat-cell *matCellDef="let element"> {{element.category}} </td>
-    </ng-container>
-
+    <!-- Actions Column -->
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> Actions </th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-icon-button (click)="editRow(element)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button (click)="showRow(element)">
-          <mat-icon>visibility</mat-icon>
-        </button>
-        <button mat-icon-button (click)="deleteRow(element)">
-          <mat-icon>delete</mat-icon>
-        </button>
+      <td mat-cell *matCellDef="let task">
+        <button mat-button color="warn" (click)="deleteRow(task)">Delete</button>
       </td>
     </ng-container>
 
-    <!-- Table Rows -->
+    <!-- Header and Row Declarations -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
@@ -79,7 +54,7 @@
   <!-- Pagination -->
   <mat-paginator [length]="totalElements"
                  [pageSize]="pageSize"
-                 [pageSizeOptions]="[5, 10, 20]"
-                 (page)="currentPage = $event.pageIndex; updateSize($event.pageSize)">
+                 [pageSizeOptions]="[5, 10, 25]"
+                 (page)="onPageChange($event)">
   </mat-paginator>
 </div>

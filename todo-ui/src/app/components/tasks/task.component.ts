@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort, Sort } from '@angular/material/sort';
 import { DataService } from "../../services/dashboard/data.service";
-import { Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { Task } from "../../model/task.model";
 import { TeamsService } from 'src/app/services/teams.service';
@@ -19,20 +20,33 @@ export class TaskComponent implements OnInit {
   totalPages = 0;
   totalElements = 0;
   user: any;
-  displayedColumns: string[] = ['No.', 'title', 'description', 'dueDate', 'priority', 'status', 'category', 'actions'];
-  sortField: string = 'title';
-  sortDir: string = 'asc';
+  displayedColumns: string[] = ['title', 'description', 'assignedTo', 'actions'];
+  sortField: string = 'title'; // Default sorting column
+  sortDir: string = 'asc';      // Default sorting direction
   searchQuery: string = '';
 
-  constructor(private dataService: DataService, private teamService: TeamsService, private router: Router) { }
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(
+    private dataService: DataService,
+    private teamService: TeamsService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.user = JSON.parse(sessionStorage.getItem('userdetails') || "{}");
     this.loadTeams(); // Load the teams the user belongs to
   }
 
+  ngAfterViewInit(): void {
+    // Bind the MatSort and MatPaginator to the data table
+    this.sort.sortChange.subscribe((sortState: Sort) => this.announceSortChange(sortState));
+    this.paginator.page.subscribe((pageEvent: PageEvent) => this.onPageChange(pageEvent));
+  }
+
   loadTeams(): void {
-    this.teamService.getAllTeams( 'MEMBER' ).subscribe((teams: any[]) => {
+    this.teamService.getAllTeams('MEMBER').subscribe((teams: any[]) => {
       this.teams = teams;
       if (this.teams.length > 0) {
         this.selectedTeam = this.teams[0].id; // Select the first team by default
@@ -43,52 +57,54 @@ export class TaskComponent implements OnInit {
 
   getData(): void {
     if (!this.selectedTeam) return; // Ensure a team is selected
-    this.dataService.getTasks(this.currentPage, this.pageSize, this.user.email, this.selectedTeam, this.sortField, this.sortDir, this.searchQuery)
-      .subscribe((response: any) => {
-        this.data = response.content;
-        this.totalPages = response.totalPages;
-        this.totalElements = response.totalElements;
-      });
-  }
 
-  updateSize(pageSize: number) {
-    this.pageSize = pageSize;
-    this.getData();
-  }
-
-  announceSortChange(sortState: Sort) {
-    this.sortDir = sortState.direction || 'asc';
-    this.sortField = sortState.active || 'title';
-    this.getData();
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.searchQuery = filterValue.trim().toLowerCase();
-    this.getData();
-  }
-
-  onTeamChange(event: any) {
-    this.selectedTeam = event.value;
-    this.currentPage = 0; // Reset to the first page for new team selection
-    this.getData();
-  }
-
-  showRow(task: Task): void {
-    this.router.navigate(['/tasks', task.id], { state: { mode: 'show' } });
-  }
-
-  editRow(task: Task) {
-    this.router.navigate(['/tasks', task.id], { queryParams: { mode: 'edit' } });
-  }
-
-  deleteRow(task: Task) {
-    this.dataService.deleteTask(task.id).subscribe(() => {
-      this.getData();
+    // Fetch the data with the updated sorting and pagination values
+    this.dataService.getTasks(
+      this.currentPage,
+      this.pageSize,
+      this.selectedTeam,
+      this.sortField,
+      this.sortDir,
+      this.searchQuery
+    ).subscribe((response: any) => {
+      this.data = response.content;
+      this.totalPages = response.totalPages;
+      this.totalElements = response.totalElements;
     });
   }
 
-  addRow() {
+  onPageChange(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.getData();
+  }
+
+  announceSortChange(sortState: Sort): void {
+    this.sortDir = sortState.direction || 'asc';
+    this.sortField = sortState.active || 'title';
+    this.getData(); // Fetch the data again with updated sorting parameters
+  }
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.searchQuery = filterValue;
+    this.currentPage = 0; // Reset to the first page for a new filter
+    this.getData();
+  }
+
+  onTeamChange(event: any): void {
+    this.selectedTeam = event.value;
+    this.currentPage = 0; // Reset to the first page for a new team selection
+    this.getData();
+  }
+
+  deleteRow(task: Task): void {
+    this.dataService.deleteTask(task.id).subscribe(() => {
+      this.getData(); // Refresh data after deletion
+    });
+  }
+
+  addRow(): void {
     this.router.navigate(['/tasks/add'], { queryParams: { mode: 'add' } });
   }
 }

@@ -20,7 +20,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 import { TaskComponent } from "./components/tasks/task.component";
-import { TaskDetailsComponent } from './components/task-details/task-details.component';
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { RegistrationComponent } from './components/registration/registration.component';
@@ -30,6 +29,7 @@ import { ShowTeamsComponent } from './components/show-teams/show-teams.component
 import { AddTeamComponent } from './components/add-team/add-team.component';
 import { TeamMembersComponent } from './components/team-members/team-members.component';
 import { MatSelectModule } from '@angular/material/select';
+import {MatCardModule} from "@angular/material/card";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => {
@@ -84,7 +84,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     DashboardComponent,
     TaskComponent,
     SearchComponent,
-    TaskDetailsComponent,
     RegistrationComponent,
     TeamsComponent,
     ShowTeamsComponent,
@@ -111,6 +110,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MatIconModule,
     MatButtonModule,
     ReactiveFormsModule,
+    MatCardModule,
   ],
   providers: [
     {

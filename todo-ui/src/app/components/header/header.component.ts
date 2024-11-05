@@ -41,4 +41,6 @@ export class HeaderComponent implements OnInit {
     let redirectURI: string = `${window.location.origin}/home`;
     this.keycloak.logout(redirectURI);
   }
+
+
 }

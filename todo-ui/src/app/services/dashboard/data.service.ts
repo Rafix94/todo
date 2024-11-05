@@ -13,7 +13,7 @@ export class DataService {
     console.log('DataService initialized');
   }
 
-  getTasks(page: number, pageSize: number, email: string, sortField: string, sortDirection: string, searchQuery: string, s: string): Observable<any> {
+  getTasks(page: number, pageSize: number, selectedTeam: string, sortField: string, sortDirection: string, searchQuery: string): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', pageSize.toString());
@@ -23,6 +23,9 @@ export class DataService {
     }
     if (searchQuery) {
       params = params.set('searchQuery', searchQuery);
+    }
+    if (selectedTeam) {
+      params = params.set('teamId', selectedTeam);
     }
 
     return this.http.get(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL, { params });
@@ -35,11 +38,8 @@ export class DataService {
     return this.http.get(url);
   }
 
-  createTask(task: any, email: string): Observable<any> {
-    console.log('createTask called with:');
-    console.log(`Email: ${email}, Task:`, task);
-    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "?email=" + email;
-    console.log(`Request URL: ${url}`);
+  createTask(task: any): Observable<any> {
+    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL;
     return this.http.post(url, task);
   }
 
