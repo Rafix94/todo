@@ -7,7 +7,6 @@ import com.todolist.taskmanager.mapper.TaskMapper;
 import com.todolist.taskmanager.model.Task;
 import com.todolist.taskmanager.repository.TaskRepository;
 import com.todolist.taskmanager.dto.TaskDto;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,16 +22,15 @@ import java.util.UUID;
 public class TaskService {
     TaskRepository taskRepository;
 
-    public Page<TaskDto> getTasksCreatedByUser(Pageable pageable) {
+    public Page<TaskDto> getTasksByTeam(UUID teamId, Pageable pageable) {
         UUID uuid = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
-        Page<Task> tasks = taskRepository.findByCreatedBy(uuid, pageable);
+        Page<Task> tasks = taskRepository.findByTeamId(teamId, pageable);
 
         return tasks.map(TaskMapper::mapToTaskDto);
     }
 
     public TaskDto createTask(CreateTaskDto createTaskDto) {
         Task task = taskRepository.save(TaskMapper.mapToTask(createTaskDto));
-
         return TaskMapper.mapToTaskDto(task);
     }
 

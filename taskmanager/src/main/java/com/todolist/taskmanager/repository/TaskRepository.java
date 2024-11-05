@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Page<Task> findByCreatedBy(UUID createdBy, Pageable pageable);
+    Page<Task> findByTeamId(UUID teamId, Pageable pageable);
 }

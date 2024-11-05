@@ -11,12 +11,14 @@ public interface TaskMapper {
                 task.getTitle(),
                 task.getDescription(),
                 task.getCreatedBy(),
-                task.getAssignedTo()
+                task.getAssignedTo(),
+                task.getTeamId()
         );
     }
 
     static Task mapToTask(CreateTaskDto createTaskDto) {
         return Task.builder()
+                .teamId(createTaskDto.teamId())
                 .title(createTaskDto.title())
                 .description(createTaskDto.description())
                 .build();

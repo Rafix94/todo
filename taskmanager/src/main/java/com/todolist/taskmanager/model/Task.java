@@ -31,6 +31,9 @@ public class Task extends BaseEntity {
     @Setter
     private UUID assignedTo;
 
+    @Column
+    private UUID teamId;
+
     @PrePersist
     protected void onCreate() {
         createdBy = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());

@@ -13,5 +13,6 @@ public record TaskDto(
         String title,
         String description,
         UUID createdBy,
-        UUID assignedTo
+        UUID assignedTo,
+        UUID teamId
 ) {}
