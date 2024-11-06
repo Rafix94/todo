@@ -7,12 +7,14 @@ import com.todolist.taskmanager.mapper.TaskMapper;
 import com.todolist.taskmanager.model.Task;
 import com.todolist.taskmanager.repository.TaskRepository;
 import com.todolist.taskmanager.dto.TaskDto;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.UUID;
 
@@ -20,24 +22,41 @@ import java.util.UUID;
 @Transactional
 @AllArgsConstructor
 public class TaskService {
-    TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final KeycloakUserService keycloakUserService;
 
     public Page<TaskDto> getTasksByTeam(UUID teamId, Pageable pageable) {
-        UUID uuid = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
         Page<Task> tasks = taskRepository.findByTeamId(teamId, pageable);
 
-        return tasks.map(TaskMapper::mapToTaskDto);
+        return tasks.map(this::getTaskDto);
     }
 
     public TaskDto createTask(CreateTaskDto createTaskDto) {
         Task task = taskRepository.save(TaskMapper.mapToTask(createTaskDto));
-        return TaskMapper.mapToTaskDto(task);
+
+        return getTaskDto(task);
     }
 
     public TaskDto getTaskById(long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
-        return TaskMapper.mapToTaskDto(task);
+
+        return getTaskDto(task);
+    }
+
+    @NotNull
+    private TaskDto getTaskDto(Task task) {
+        String creatorEmail = keycloakUserService.getUserById(task.getCreatedBy().toString())
+                .map(UserRepresentation::getEmail)
+                .orElse("Unknown");
+
+        String assigneeEmail = task.getAssignedTo() != null
+                ? keycloakUserService.getUserById(task.getAssignedTo().toString())
+                .map(UserRepresentation::getEmail)
+                .orElse("Unassigned")
+                : "Unassigned";
+
+        return TaskMapper.mapToTaskDto(task, creatorEmail, assigneeEmail);
     }
 
     public void deleteTaskById(long taskId) {
@@ -55,17 +74,19 @@ public class TaskService {
             task.setTitle(updateTaskDto.title());
         }
         task = taskRepository.save(task);
-        return TaskMapper.mapToTaskDto(task);
+
+
+        return getTaskDto(task);
     }
 
-    public TaskDto assignTaskToUser(long taskId) {
+    public TaskDto assignTask(long taskId) {
+
+        UUID uuid = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
-        UUID uuid = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
         task.setAssignedTo(uuid);
 
         task = taskRepository.save(task);
-        return TaskMapper.mapToTaskDto(task);
+        return getTaskDto(task);
     }
-
 }

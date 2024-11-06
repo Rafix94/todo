@@ -32,9 +32,7 @@ export class DataService {
   }
 
   getTaskDetails(id: number): Observable<any> {
-    console.log(`getTaskDetails called for ID: ${id}`);
     const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
-    console.log(`Request URL: ${url}`);
     return this.http.get(url);
   }
 
@@ -44,17 +42,18 @@ export class DataService {
   }
 
   updateTask(id: number, task: any): Observable<any> {
-    console.log(`updateTask called with ID: ${id}`);
-    console.log(`Task:`, task);
     const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
-    console.log(`Request URL: ${url}`);
     return this.http.put(url, task);
   }
 
   deleteTask(id: number): Observable<any> {
-    console.log(`deleteTask called for ID: ${id}`);
     const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
-    console.log(`Request URL: ${url}`);
     return this.http.delete(url);
+  }
+
+
+  assignTask(taskId: number): Observable<Task> {
+    // Calls the API endpoint with the taskId in the URL path
+    return this.http.put<Task>(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + taskId + "/" + "assign", {});
   }
 }

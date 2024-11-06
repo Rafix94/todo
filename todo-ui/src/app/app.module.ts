@@ -8,6 +8,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { SearchComponent } from "./components/search/search.component";
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -30,6 +31,7 @@ import { AddTeamComponent } from './components/add-team/add-team.component';
 import { TeamMembersComponent } from './components/team-members/team-members.component';
 import { MatSelectModule } from '@angular/material/select';
 import {MatCardModule} from "@angular/material/card";
+import { AddTaskDialogComponent } from './add-task-dialog/add-task-dialog.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => {
@@ -89,6 +91,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     ShowTeamsComponent,
     AddTeamComponent,
     TeamMembersComponent,
+    AddTaskDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -100,6 +103,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     FormsModule,
     KeycloakAngularModule,
     HttpClientModule,
+    MatDialogModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,

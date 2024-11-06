@@ -5,6 +5,8 @@ import { DataService } from "../../services/dashboard/data.service";
 import { Router } from '@angular/router';
 import { Task } from "../../model/task.model";
 import { TeamsService } from 'src/app/services/teams.service';
+import { MatDialog } from "@angular/material/dialog";
+import { AddTaskDialogComponent } from "../../add-task-dialog/add-task-dialog.component";
 
 @Component({
   selector: 'app-task',
@@ -20,9 +22,9 @@ export class TaskComponent implements OnInit {
   totalPages = 0;
   totalElements = 0;
   user: any;
-  displayedColumns: string[] = ['title', 'description', 'assignedTo', 'actions'];
-  sortField: string = 'title'; // Default sorting column
-  sortDir: string = 'asc';      // Default sorting direction
+  displayedColumns: string[] = ['title', 'description', 'assignedTo', 'createdBy', 'actions'];
+  sortField: string = 'title';
+  sortDir: string = 'asc';
   searchQuery: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -31,16 +33,16 @@ export class TaskComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private teamService: TeamsService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
     this.user = JSON.parse(sessionStorage.getItem('userdetails') || "{}");
-    this.loadTeams(); // Load the teams the user belongs to
+    this.loadTeams();
   }
 
   ngAfterViewInit(): void {
-    // Bind the MatSort and MatPaginator to the data table
     this.sort.sortChange.subscribe((sortState: Sort) => this.announceSortChange(sortState));
     this.paginator.page.subscribe((pageEvent: PageEvent) => this.onPageChange(pageEvent));
   }
@@ -49,16 +51,15 @@ export class TaskComponent implements OnInit {
     this.teamService.getAllTeams('MEMBER').subscribe((teams: any[]) => {
       this.teams = teams;
       if (this.teams.length > 0) {
-        this.selectedTeam = this.teams[0].id; // Select the first team by default
-        this.getData(); // Fetch initial data for the first team
+        this.selectedTeam = this.teams[0].id;
+        this.getData();
       }
     });
   }
 
   getData(): void {
-    if (!this.selectedTeam) return; // Ensure a team is selected
+    if (!this.selectedTeam) return;
 
-    // Fetch the data with the updated sorting and pagination values
     this.dataService.getTasks(
       this.currentPage,
       this.pageSize,
@@ -82,29 +83,52 @@ export class TaskComponent implements OnInit {
   announceSortChange(sortState: Sort): void {
     this.sortDir = sortState.direction || 'asc';
     this.sortField = sortState.active || 'title';
-    this.getData(); // Fetch the data again with updated sorting parameters
+    this.getData();
   }
 
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
     this.searchQuery = filterValue;
-    this.currentPage = 0; // Reset to the first page for a new filter
+    this.currentPage = 0;
     this.getData();
   }
 
   onTeamChange(event: any): void {
     this.selectedTeam = event.value;
-    this.currentPage = 0; // Reset to the first page for a new team selection
+    this.currentPage = 0;
     this.getData();
   }
 
   deleteRow(task: Task): void {
     this.dataService.deleteTask(task.id).subscribe(() => {
-      this.getData(); // Refresh data after deletion
+      this.getData();
     });
   }
 
-  addRow(): void {
-    this.router.navigate(['/tasks/add'], { queryParams: { mode: 'add' } });
+  openAddTaskDialog(): void {
+    const dialogRef = this.dialog.open(AddTaskDialogComponent, {
+      width: '400px',
+      data: { teamId: this.selectedTeam }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.addTask(result);
+      }
+    });
+  }
+
+  addTask(newTask: Task): void {
+    this.dataService.createTask(newTask)
+      .subscribe(() => {
+        this.getData();
+      });
+  }
+
+  assignTask(task: Task): void {
+    const assignedTo = this.user.id; // Assign to the current user’s ID
+    this.dataService.assignTask(task.id).subscribe(() => {
+      this.getData(); // Refresh the task list after assignment
+    });
   }
 }

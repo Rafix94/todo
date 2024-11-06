@@ -14,5 +14,7 @@ public record TaskDto(
         String description,
         UUID createdBy,
         UUID assignedTo,
+        String creatorEmail,
+        String assigneeEmail,
         UUID teamId
 ) {}
