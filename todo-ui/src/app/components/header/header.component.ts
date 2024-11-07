@@ -16,13 +16,13 @@ export class HeaderComponent implements OnInit {
   public isLoggedIn = false;
   public userProfile: KeycloakProfile | null = null;
 
-  constructor(private readonly keycloak: KeycloakService, private router: Router) { }
+  constructor(private readonly keycloakService: KeycloakService, private router: Router) { }
 
   public async ngOnInit() {
-    this.isLoggedIn = await this.keycloak.isLoggedIn();
+    this.isLoggedIn = await this.keycloakService.isLoggedIn();
 
     if (this.isLoggedIn) {
-      this.userProfile = await this.keycloak.loadUserProfile();
+      this.userProfile = await this.keycloakService.loadUserProfile();
       this.user.authStatus = 'AUTH';
       this.user.name = this.userProfile.firstName || "";
       window.sessionStorage.setItem("userdetails", JSON.stringify(this.user));
@@ -30,16 +30,18 @@ export class HeaderComponent implements OnInit {
   }
 
   public login() {
-    this.keycloak.login();
+    this.keycloakService.login();
   }
 
   register(): void {
-    this.router.navigate(['/register'], { queryParams: { mode: 'add' } });
+    this.keycloakService.register({
+      redirectUri: `${window.location.origin}/dashboard`  // Specify where to redirect after registration
+    }).catch(error => console.error('Error during Keycloak registration:', error));
   }
 
   public logout() {
     let redirectURI: string = `${window.location.origin}/home`;
-    this.keycloak.logout(redirectURI);
+    this.keycloakService.logout(redirectURI);
   }
 
 

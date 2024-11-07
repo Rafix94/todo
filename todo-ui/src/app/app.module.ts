@@ -23,7 +23,6 @@ import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { TaskComponent } from "./components/tasks/task.component";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
-import { RegistrationComponent } from './components/registration/registration.component';
 import { environment } from "../environments/environment";
 import { TeamsComponent } from './components/teams/teams.component';
 import { ShowTeamsComponent } from './components/show-teams/show-teams.component';
@@ -86,7 +85,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     DashboardComponent,
     TaskComponent,
     SearchComponent,
-    RegistrationComponent,
     TeamsComponent,
     ShowTeamsComponent,
     AddTeamComponent,
