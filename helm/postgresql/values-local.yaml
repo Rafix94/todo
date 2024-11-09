@@ -397,7 +397,7 @@ primary:
           CREATE SCHEMA IF NOT EXISTS public; -- Ensure the public schema exists
           GRANT ALL PRIVILEGES ON SCHEMA public TO edgeserver;
         EOSQL
-        psql -v ON_ERROR_STOP=1 --username "taskmanager" -d taskmanager <<-EOSQL
+        psql -v ON_ERROR_STOP=1 --username "postgres" -d taskmanager <<-EOSQL
           CREATE SCHEMA IF NOT EXISTS public; -- Ensure the public schema exists
           GRANT ALL PRIVILEGES ON SCHEMA public TO taskmanager;
         EOSQL

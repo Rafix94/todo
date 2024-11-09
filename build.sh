@@ -2,27 +2,22 @@
 
 # Build useragent
 cd useragent || exit
-mvn compile jib:dockerBuild
+mvn clean compile jib:dockerBuild
 cd ..
 
 # Build taskmanager
 cd taskmanager || exit
-mvn compile jib:dockerBuild
+mvn clean compile jib:dockerBuild
 cd ..
 
 # Build edgeserver
 cd edgeserver || exit
-mvn compile jib:dockerBuild
+mvn clean compile jib:dockerBuild
 cd ..
 
 # Build configserver
 cd configserver || exit
-mvn compile jib:dockerBuild
-cd ..
-
-# Build eureka
-cd eureka || exit
-mvn compile jib:dockerBuild
+mvn clean compile jib:dockerBuild
 cd ..
 
 # Build todo-ui

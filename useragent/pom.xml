@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.recruitment</groupId>
     <artifactId>useragent</artifactId>
@@ -127,7 +127,7 @@
                         </ports>
                     </container>
                     <to>
-                        <image>ravv1/${project.artifactId}:v1</image>
+                        <image>ravv1/${project.artifactId}:v4</image>
                     </to>
                 </configuration>
             </plugin>

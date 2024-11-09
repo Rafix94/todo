@@ -112,31 +112,39 @@ keycloak/realm-local.json
 2. Once Keycloak is running and you have logged in with the admin credentials, go to the Keycloak Admin Console, navigate to **Realm Settings**, and import the `realm-local.json` file.
 
 ### 6. **Update Keycloak Client Secret**:
-After setting up Keycloak and creating the client for the User Agent, you will need to copy the generated client secret and update your Kubernetes secrets.
+After setting up Keycloak and creating the clients for both the User Agent (`userAgentClient`) and the Task Manager (`taskManagerClient`), follow these steps to update the Kubernetes secrets.
 
-1. **Open Keycloak Admin Console**: Navigate to the Keycloak Admin Console at [http://localhost:80](http://localhost:80) and log in with your admin credentials.
+1. **Open Keycloak Admin Console**: Navigate to the Keycloak Admin Console at `http://localhost:80` and log in using your admin credentials.
 
-2. **Select the User Agent Client**: In the left sidebar, go to **Clients** and select the `userAgentClient`.
+2. **Select the User Agent Client**:
+   - **User Agent Client**:
+      - In the left sidebar, go to **Clients** and select `userAgentClient`.
+      - Go to the **Credentials** tab and regenerate the client secret.
+      - Copy the generated client secret.
+   - **Task Manager Client**
+      - Similarly, go to **Clients** and select `taskManagerClient`.
+      - Go to the **Credentials** tab, regenerate the client secret, and copy it.
+3. **Base64 Encode Each Client Secret**:
 
-3. **Regenerate the Client Secret**: Go to the **Credentials** tab and regenerate the client secret.
+   Use the following commands in your terminal to base64 encode each client secret:
+   ```bash
+   echo -n 'your_userAgent_client_secret' | base64
+   echo -n 'your_taskManager_client_secret' | base64
+   ```
 
-4. **Copy the Client Secret**: Copy the generated client secret.
+4. **Update Secret Value**:
+   Update the encoded client secrets in the corresponding YAML files:
+   - **For `userAgentClient`**: Open `useragent-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
+   - **For `taskManagerClient`**: Open `taskmanager-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
 
-5. **Base64 Encode the Client Secret**: Use the following command in your terminal to base64 encode the client secret:
+7. **Apply the Changes to Your Kubernetes Cluster:**
 
-    ```bash
-    echo -n 'your_client_secret' | base64
-    ```
-
-6. **Update Secret Value**: Take the output from the previous command and update the secret value in `useragent-secret.yaml` under `data.keycloak_client_secret`.
-
-7. **Apply the Changes**: After updating the `useragent-secret.yaml` file, apply the changes to your Kubernetes cluster:
-
-    ```bash
-    kubectl apply -f kubernetes/environments/local/secrets/useragent-secret.yaml
-    kubectl apply -f kubernetes/environments/local/secrets/edgeserver-secret.yaml
-    kubectl apply -f kubernetes/environments/local/secrets/taskmanager-secret.yaml
-    ```
+   After updating the YAML files, apply the changes with the following commands:
+   ```bash
+   kubectl apply -f kubernetes/environments/local/secrets/useragent-secret.yaml
+   kubectl apply -f kubernetes/environments/local/secrets/taskmanager-secret.yaml
+   kubectl apply -f kubernetes/environments/local/secrets/edgeserver-secret.yaml
+   ```
 
 ### 7. **Install the Application**:
 Install the ToDoListApp with the following command:
@@ -155,15 +163,16 @@ Access the ToDoListApp through the graphical user interface (GUI) available at [
 ### Overview
 This application follows a microservices architecture and is managed using Docker Compose. It comprises various components that collaborate to deliver different functionalities.
 
+from pathlib import Path
+
 ### Components
-1. **Config Server**: This server provides configurations for other microservices such as edgeserver, eureka, and useragent. Configuration files are stored in the todo-config repository [https://github.com/Rafix94/todo-config](https://github.com/Rafix94/todo-config).
 
-2. **Eureka Server**: Located at [http://localhost:8091/](http://localhost:8091/), the Eureka server maintains a registry of registered microservices. Both edgeserver and useragent register with Eureka, enabling traffic load balancing across multiple instances.
+1. **Config Server**: This server provides configurations for other microservices, such as EdgeServer, Eureka, and UserAgent. Configuration files are stored in the `todo-config` repository [here](https://github.com/Rafix94/todo-config).
 
-3. **Edgeserver**: Serving as a load balancer, this component implements the circuit breaker pattern for the useragent service. It logs and stores all incoming requests, including their paths, methods, bodies, and headers, in a PostgreSQL database managed by Liquibase.
+2. **EdgeServer**: Acting as a load balancer, this component implements the circuit breaker pattern specifically for the UserAgent service. It logs and stores all incoming requests, including their paths, methods, bodies, and headers, in a PostgreSQL database managed by Liquibase.
 
-4. **Keycloak**: Used for securing the application using a stateless method with JWT tokens, Keycloak facilitates Single Sign-On (SSO) and addresses security challenges inherent in microservices architecture.
+3. **Keycloak**: Responsible for securing the application via stateless authentication with JWT tokens, Keycloak enables Single Sign-On (SSO) and manages both user and team assignments. This centralizes identity and access management, addressing key security challenges in a microservices architecture.
 
-5. **Useragent**: This microservice handles user requests and provides CRUD (Create, Read, Update, Delete) operations for tasks. It also manages user registration. The API is documented and accessible at [http://localhost:8092/swagger-ui/index.html#](http://localhost:8092/swagger-ui/index.html#). Similar to edgeserver, it utilizes a PostgreSQL database managed by Liquibase for storing data.
+4. **UserAgent**: This microservice manages users and teams, with teams also being handled by Keycloak.
 
---- 
+5. **Task Manager**: This microservice provides CRUD (Create, Read, Update, Delete) operations for tasks.
