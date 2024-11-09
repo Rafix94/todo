@@ -6,7 +6,7 @@ deployment:
   containerPort: 8094
   discoveryEnabled: true
   dbEnabled: true
-  keycloakClientEnabled: false
+  keycloakClientEnabled: true
   secretName: taskmanager-secret
   image:
     repository: ravv1/taskmanager
