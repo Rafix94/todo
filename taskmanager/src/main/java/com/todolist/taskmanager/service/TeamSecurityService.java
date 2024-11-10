@@ -30,12 +30,9 @@ public class TeamSecurityService {
         return userGroups != null && userGroups.contains("/" + teamId);
     }
 
-    public boolean isOwnerAndInTeam(long taskId) {
+    public boolean taskBelongsToUsersTeam(long taskId) {
         TaskDto taskDto = taskService.getTaskById(taskId);
-        UUID uuid = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
 
-
-        return taskDto.createdBy().equals(uuid) &&
-                userBelongsToTeam(taskDto.teamId());
+        return userBelongsToTeam(taskDto.teamId());
     }
 }
