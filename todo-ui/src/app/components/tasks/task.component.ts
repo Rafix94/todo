@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort, Sort } from '@angular/material/sort';
 import { DataService } from "../../services/dashboard/data.service";
-import { Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { Task } from "../../model/task.model";
+import { TeamsService } from 'src/app/services/teams.service';
+import { MatDialog } from "@angular/material/dialog";
+import { AddTaskDialogComponent } from "../../add-task-dialog/add-task-dialog.component";
 
 @Component({
   selector: 'app-task',
@@ -11,74 +15,120 @@ import { Task } from "../../model/task.model";
 })
 export class TaskComponent implements OnInit {
   data: any[] = [];
+  teams: any[] = [];
+  selectedTeam: string | null = null;
   currentPage = 0;
   pageSize = 10;
   totalPages = 0;
   totalElements = 0;
   user: any;
-  displayedColumns: string[] = ['No.', 'title', 'description', 'dueDate', 'priority', 'status', 'category', 'actions'];
+  displayedColumns: string[] = ['title', 'description', 'assignedTo', 'createdBy', 'actions'];
   sortField: string = 'title';
   sortDir: string = 'asc';
   searchQuery: string = '';
-  row: any;
 
-  constructor(private dataService: DataService, private router: Router) { }
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(
+    private dataService: DataService,
+    private teamService: TeamsService,
+    private router: Router,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
-    // Fetch user details from session storage and initialize data
     this.user = JSON.parse(sessionStorage.getItem('userdetails') || "{}");
-    console.log('User details:', this.user); // Log user details
-    this.getData(); // Call to fetch initial data
+    this.loadTeams();
+  }
+
+  ngAfterViewInit(): void {
+    this.sort.sortChange.subscribe((sortState: Sort) => this.announceSortChange(sortState));
+    this.paginator.page.subscribe((pageEvent: PageEvent) => this.onPageChange(pageEvent));
+  }
+
+  loadTeams(): void {
+    this.teamService.getAllTeams('MEMBER').subscribe((teams: any[]) => {
+      this.teams = teams;
+      if (this.teams.length > 0) {
+        this.selectedTeam = this.teams[0].id;
+        this.getData();
+      }
+    });
   }
 
   getData(): void {
-    this.dataService.getTasks(this.currentPage, this.pageSize, this.user.email, this.sortField, this.sortDir, this.searchQuery).subscribe((response: any) => {
+    if (!this.selectedTeam) return;
+
+    this.dataService.getTasks(
+      this.currentPage,
+      this.pageSize,
+      this.selectedTeam,
+      this.sortField,
+      this.sortDir,
+      this.searchQuery
+    ).subscribe((response: any) => {
       this.data = response.content;
       this.totalPages = response.totalPages;
       this.totalElements = response.totalElements;
     });
   }
 
-  updateSize(pageSize: number) {
-    this.pageSize = pageSize; // Update page size
-    console.log('Page size updated to:', this.pageSize); // Log new page size
-    this.getData(); // Fetch data again with new page size
+  onPageChange(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.getData();
   }
 
-  announceSortChange(sortState: Sort) {
-    this.sortDir = sortState.direction || 'asc'; // Set sort direction
-    this.sortField = sortState.active || 'title'; // Set active sort field
-    console.log('Sort changed:', this.sortField, this.sortDir); // Log sort changes
-    this.getData(); // Fetch data with updated sort
+  announceSortChange(sortState: Sort): void {
+    this.sortDir = sortState.direction || 'asc';
+    this.sortField = sortState.active || 'title';
+    this.getData();
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value; // Get filter value from input
-    this.searchQuery = filterValue.trim().toLowerCase(); // Update search query
-    console.log('Filter applied:', this.searchQuery); // Log filter value
-    this.getData(); // Fetch data with updated search
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.searchQuery = filterValue;
+    this.currentPage = 0;
+    this.getData();
   }
 
-  showRow(task: Task): void {
-    // Navigate to task detail view
-    this.router.navigate(['/tasks', task.id], { state: { mode: 'show' } });
+  onTeamChange(event: any): void {
+    this.selectedTeam = event.value;
+    this.currentPage = 0;
+    this.getData();
   }
 
-  editRow(task: Task) {
-    // Navigate to task edit view
-    this.router.navigate(['/tasks', task.id], { queryParams: { mode: 'edit' } });
-  }
-
-  deleteRow(task: Task) {
-    // Call service to delete task and refresh data
+  deleteRow(task: Task): void {
     this.dataService.deleteTask(task.id).subscribe(() => {
-      console.log('Task deleted:', task.id); // Log deletion
-      this.getData(); // Refresh data after deletion
+      this.getData();
     });
   }
 
-  addRow() {
-    // Navigate to add task view
-    this.router.navigate(['/tasks/add'], { queryParams: { mode: 'add' } });
+  openAddTaskDialog(): void {
+    const dialogRef = this.dialog.open(AddTaskDialogComponent, {
+      width: '400px',
+      data: { teamId: this.selectedTeam }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.addTask(result);
+      }
+    });
+  }
+
+  addTask(newTask: Task): void {
+    this.dataService.createTask(newTask)
+      .subscribe(() => {
+        this.getData();
+      });
+  }
+
+  assignTask(task: Task): void {
+    const assignedTo = this.user.id; // Assign to the current user’s ID
+    this.dataService.assignTask(task.id).subscribe(() => {
+      this.getData(); // Refresh the task list after assignment
+    });
   }
 }

@@ -1,18 +1,68 @@
-.heading-21921 {
-  position: relative;
-  padding: 0;
-  line-height: 1;
-  font-weight: 900 !important;
-  text-align: left;
-}
+/* General Styling */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 .site-section {
-  padding: 3rem 0;
+  padding: 20px;
 }
 
-table {
+.top-bar {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  flex-grow: 1;
+}
+
+/* Table Styling */
+table.mat-table {
   width: 100%;
+  border-collapse: collapse;
 }
 
+.mat-header-cell, .mat-cell {
+  padding: 16px;
+}
 
+.mat-header-cell {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
 
+.mat-row:hover .mat-cell {
+  background-color: #e0f7fa;
+}
+
+.mat-paginator {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* Ensure the top bar is well aligned */
+.top-bar {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Specific fix for mat-select dropdown positioning */
+mat-form-field {
+  width: 250px; /* Adjust this based on your needs */
+}
+/* Custom overlay panel styling */
+.custom-select-panel .mat-select-panel {
+  margin-top: 0; /* Removes offset if needed */
+  position: absolute !important;
+  z-index: 1000; /* Ensures it stays on top */
+}
+
+/* Adjust positioning if there's a shadow or extra padding */
+.mat-select-panel {
+  transform: none !important;
+}

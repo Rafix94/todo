@@ -354,6 +354,7 @@ primary:
         psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
           SELECT 'CREATE DATABASE useragent;' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'useragent') \gexec
           SELECT 'CREATE DATABASE edgeserver;' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'edgeserver') \gexec
+          SELECT 'CREATE DATABASE taskmanager;' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'taskmanager') \gexec
         EOSQL
         psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
           DO \$\$
@@ -371,6 +372,12 @@ primary:
             ELSE
               RAISE NOTICE 'User edgeserver already exists.';
             END IF;
+            IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'taskmanager') THEN
+              EXECUTE 'CREATE USER taskmanager WITH PASSWORD ''taskmanager_password''';
+              RAISE NOTICE 'User taskmanager created.';
+            ELSE
+              RAISE NOTICE 'User taskmanager already exists.';
+            END IF;
           END
           \$\$;
         EOSQL
@@ -378,6 +385,7 @@ primary:
         psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
           GRANT ALL PRIVILEGES ON DATABASE useragent TO useragent;
           GRANT ALL PRIVILEGES ON DATABASE edgeserver TO edgeserver;
+          GRANT ALL PRIVILEGES ON DATABASE taskmanager TO taskmanager;
         EOSQL
         
         psql -v ON_ERROR_STOP=1 --username "postgres" -d useragent <<-EOSQL
@@ -388,6 +396,10 @@ primary:
         psql -v ON_ERROR_STOP=1 --username "postgres" -d edgeserver <<-EOSQL
           CREATE SCHEMA IF NOT EXISTS public; -- Ensure the public schema exists
           GRANT ALL PRIVILEGES ON SCHEMA public TO edgeserver;
+        EOSQL
+        psql -v ON_ERROR_STOP=1 --username "postgres" -d taskmanager <<-EOSQL
+          CREATE SCHEMA IF NOT EXISTS public; -- Ensure the public schema exists
+          GRANT ALL PRIVILEGES ON SCHEMA public TO taskmanager;
         EOSQL
 
     ## @param primary.initdb.scriptsConfigMap ConfigMap with scripts to be run at first boot

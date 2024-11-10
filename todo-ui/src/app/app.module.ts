@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,6 +8,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { SearchComponent } from "./components/search/search.component";
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -20,11 +21,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 import { TaskComponent } from "./components/tasks/task.component";
-import { TaskDetailsComponent } from './components/task-details/task-details.component';
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
-import { RegistrationComponent } from './components/registration/registration.component';
 import { environment } from "../environments/environment";
+import { TeamsComponent } from './components/teams/teams.component';
+import { ShowTeamsComponent } from './components/show-teams/show-teams.component';
+import { AddTeamComponent } from './components/add-team/add-team.component';
+import { TeamMembersComponent } from './components/team-members/team-members.component';
+import { MatSelectModule } from '@angular/material/select';
+import {MatCardModule} from "@angular/material/card";
+import { AddTaskDialogComponent } from './add-task-dialog/add-task-dialog.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => {
@@ -79,8 +85,11 @@ function initializeKeycloak(keycloak: KeycloakService) {
     DashboardComponent,
     TaskComponent,
     SearchComponent,
-    TaskDetailsComponent,
-    RegistrationComponent,
+    TeamsComponent,
+    ShowTeamsComponent,
+    AddTeamComponent,
+    TeamMembersComponent,
+    AddTaskDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,9 +97,11 @@ function initializeKeycloak(keycloak: KeycloakService) {
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     FormsModule,
     KeycloakAngularModule,
     HttpClientModule,
+    MatDialogModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
@@ -100,6 +111,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
     }),
     MatIconModule,
     MatButtonModule,
+    ReactiveFormsModule,
+    MatCardModule,
   ],
   providers: [
     {

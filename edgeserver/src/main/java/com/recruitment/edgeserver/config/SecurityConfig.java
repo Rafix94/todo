@@ -24,8 +24,9 @@ public class SecurityConfig {
         return serverHttpSecurity
                 .authorizeExchange(exchange ->
                         exchange.pathMatchers(HttpMethod.OPTIONS).permitAll()
-                                .pathMatchers(HttpMethod.POST, "/todolist/useragent/user/register").permitAll()
+                                .pathMatchers("/", "/index.html", "/static/**", "/home", "/dashboard", "/profile", "/settings", "/**").permitAll()
                                 .pathMatchers("/todolist/useragent/**").authenticated()
+                                .pathMatchers("/todolist/task-manager/**").authenticated()
                                 .anyExchange().permitAll())
                 .oauth2ResourceServer(oAuth2ResourceServerSpec ->
                         oAuth2ResourceServerSpec.jwt(Customizer.withDefaults()))

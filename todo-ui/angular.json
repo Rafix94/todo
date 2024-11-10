@@ -34,6 +34,11 @@
           },
           "configurations": {
             "local": {
+              "sourceMap": {
+                "scripts": true,
+                "styles": true,
+                "vendor": true
+              },
               "budgets": [
                 {
                   "type": "all",
@@ -42,8 +47,7 @@
                 },
                 {
                   "type": "initial",
-                  "maximumWarning": "100kb",
-                  "maximumError": "1500kb"
+                  "maximumError",: "1500kb"
                 },
                 {
                   "type": "anyComponentStyle",

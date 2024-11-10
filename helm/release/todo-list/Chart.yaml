@@ -39,3 +39,6 @@ dependencies:
   - name: edgeserver
     version: 0.1.0
     repository: file://../../todo-app-services/edgeserver
+  - name: taskmanager
+    version: 0.1.0
+    repository: file://../../todo-app-services/taskmanager

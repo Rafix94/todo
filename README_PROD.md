@@ -37,6 +37,7 @@ In production, images must be pushed to Docker Hub:
 docker push docker.io/ravv1/configserver:v1
 docker push docker.io/ravv1/edgeserver:v1
 docker push docker.io/ravv1/useragent:v1
+docker push docker.io/ravv1/taskmanager:v1
 docker push docker.io/ravv1/ui:v1-prod
 ```
 

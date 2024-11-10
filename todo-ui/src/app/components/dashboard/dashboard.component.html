@@ -9,15 +9,20 @@
     <!-- User data -->
     <div class="statistics">
       <div class="row">
-        <div class="col-xl-6">
-          <div class="row">
-            <div class="col-sm-6 statistics-grid" routerLink="/tasks">
-              <div class="card card_border border-primary-top p-4">
-                <i style="font-size: 3em; color : #343a40;" class="fa fa-tasks"> </i>
-                <h3 class="text-dark number">Tasks</h3>
-                <p class="stat-text">View Your Tasks</p>
-              </div>
-            </div>
+        <!-- Tasks Card -->
+        <div class="col-sm-6 statistics-grid" routerLink="/tasks">
+          <div class="card card_border border-primary-top p-4">
+            <i style="font-size: 3em; color : #343a40;" class="fa fa-tasks"></i>
+            <h3 class="text-dark number">Tasks</h3>
+            <p class="stat-text">View Your Tasks</p>
+          </div>
+        </div>
+
+        <div class="col-sm-6 statistics-grid" routerLink="/teams">
+          <div class="card card_border border-primary-top p-4">
+            <i style="font-size: 3em; color : #343a40;" class="fa fa-users"></i> <!-- Add team icon -->
+            <h3 class="text-dark number">Teams</h3>
+            <p class="stat-text">Manage Your Teams</p>
           </div>
         </div>
       </div>

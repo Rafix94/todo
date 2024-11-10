@@ -1,0 +1,26 @@
+deployment:
+  name: taskmanager
+  label: taskmanager
+  replicaCount: 1
+  configEnabled: false
+  containerPort: 8094
+  discoveryEnabled: true
+  dbEnabled: true
+  keycloakClientEnabled: true
+  secretName: taskmanager-secret
+  image:
+    repository: ravv1/taskmanager
+    tag: v1
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      cpu: "1"
+      memory: "512Mi"
+service:
+  name: taskmanager
+  protocol: http
+  type: ClusterIP
+  port: 8094
+  targetPort: 8094

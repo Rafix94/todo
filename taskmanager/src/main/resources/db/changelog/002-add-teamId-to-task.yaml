@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: "add-teamId-to-task"
+      author: "yourname"
+      changes:
+        - addColumn:
+            tableName: "task"
+            columns:
+              - column:
+                  name: "team_id"
+                  type: "UUID"
+                  constraints:
+                    nullable: true

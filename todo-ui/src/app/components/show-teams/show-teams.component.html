@@ -1,0 +1,26 @@
+<app-header></app-header>
+<div class="main-content">
+  <div class="container-fluid content-top-gap">
+    <div class="welcome-msg pt-3 pb-4">
+      <h1>Your Teams</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-4" *ngFor="let team of teams">
+        <div class="card card_border border-primary-top p-4">
+          <h3 class="text-dark number">{{ team.name }}</h3>
+
+          <button class="btn btn-primary" (click)="viewTeamDetails(team.id)">
+            View Team
+          </button>
+
+          <button [ngClass]="{'btn-primary': !team.isMember, 'btn-secondary': team.isMember}"
+            [disabled]="false"
+            (click)="joinTeam(team.id)">
+            {{ team.isMember ? 'Already a Member' : 'Join Team' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -13,7 +13,7 @@ export class DataService {
     console.log('DataService initialized');
   }
 
-  getTasks(page: number, pageSize: number, email: string, sortField: string, sortDirection: string, searchQuery: string): Observable<any> {
+  getTasks(page: number, pageSize: number, selectedTeam: string, sortField: string, sortDirection: string, searchQuery: string): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', pageSize.toString());
@@ -24,37 +24,36 @@ export class DataService {
     if (searchQuery) {
       params = params.set('searchQuery', searchQuery);
     }
+    if (selectedTeam) {
+      params = params.set('teamId', selectedTeam);
+    }
 
-    return this.http.get(environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "?email=" + email, { params });
+    return this.http.get(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL, { params });
   }
 
   getTaskDetails(id: number): Observable<any> {
-    console.log(`getTaskDetails called for ID: ${id}`);
-    const url = environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "/" + id;
-    console.log(`Request URL: ${url}`);
+    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
     return this.http.get(url);
   }
 
-  createTask(task: any, email: string): Observable<any> {
-    console.log('createTask called with:');
-    console.log(`Email: ${email}, Task:`, task);
-    const url = environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "?email=" + email;
-    console.log(`Request URL: ${url}`);
+  createTask(task: any): Observable<any> {
+    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL;
     return this.http.post(url, task);
   }
 
   updateTask(id: number, task: any): Observable<any> {
-    console.log(`updateTask called with ID: ${id}`);
-    console.log(`Task:`, task);
-    const url = environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "/" + id;
-    console.log(`Request URL: ${url}`);
+    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
     return this.http.put(url, task);
   }
 
   deleteTask(id: number): Observable<any> {
-    console.log(`deleteTask called for ID: ${id}`);
-    const url = environment.rooturl + AppConstants.USER_AGENT_API_URL + AppConstants.TASKS_API_URL + "/" + id;
-    console.log(`Request URL: ${url}`);
+    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
     return this.http.delete(url);
+  }
+
+
+  assignTask(taskId: number): Observable<Task> {
+    // Calls the API endpoint with the taskId in the URL path
+    return this.http.put<Task>(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + taskId + "/" + "assign", {});
   }
 }
