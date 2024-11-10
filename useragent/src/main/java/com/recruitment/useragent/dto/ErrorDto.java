@@ -3,15 +3,14 @@ package com.recruitment.useragent.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-@Schema(
-        name = "ErrorDto",
-        description = "Object representing an error response"
-)
+@Schema(name = "ErrorDto", description = "Object representing an error response")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

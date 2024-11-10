@@ -34,41 +34,6 @@ public class KeycloakUserService {
         this.realmName = realmName;
     }
 
-    public void registerUser(String username,
-                             String firstName,
-                             String lastName,
-                             String email,
-                             String password,
-                             List<String> roleNames) {
-        UsersResource usersResource = keycloak.realm(realmName).users();
-
-        UserRepresentation user = new UserRepresentation();
-        user.setUsername(username);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setEnabled(true);
-
-        CredentialRepresentation credential = new CredentialRepresentation();
-        credential.setType(CredentialRepresentation.PASSWORD);
-        credential.setValue(password);
-        user.setCredentials(Collections.singletonList(credential));
-
-        try (Response response = usersResource.create(user)) {
-            String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
-            assignRolesToUser(userId, roleNames);
-        }
-    }
-
-    private void assignRolesToUser(String userId, List<String> roleNames) {
-        RealmResource realmResource = keycloak.realm(realmName);
-        UsersResource usersResource = realmResource.users();
-
-        roleNames.stream()
-                .map(role -> realmResource.roles().get(role).toRepresentation())
-                .forEach(role -> usersResource.get(userId).roles().realmLevel().add(Collections.singletonList(role)));
-    }
-
     private List<GroupRepresentation> listGroups() {
         GroupsResource groupsResource = keycloak.realm(realmName).groups();
         return new ArrayList<>(groupsResource.groups());
