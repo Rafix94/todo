@@ -91,6 +91,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-starter</artifactId>
+            <version>23.0.7</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
@@ -130,7 +135,7 @@
                         </jvmFlags>
                     </container>
                     <to>
-                        <image>ravv1/${project.artifactId}:v5</image>
+                        <image>ravv1/${project.artifactId}:v1</image>
                     </to>
                 </configuration>
             </plugin>

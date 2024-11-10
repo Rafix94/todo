@@ -1,14 +1,14 @@
 package com.todolist.taskmanager.service;
 
 import com.todolist.taskmanager.dto.TaskDto;
+import com.todolist.taskmanager.exception.NotFoundException;
 import lombok.AllArgsConstructor;
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.idm.GroupRepresentation;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,18 +16,23 @@ import java.util.UUID;
 public class TeamSecurityService {
 
     private final TaskService taskService;
+    private final KeycloakUserService keycloakUserService;
 
 
     public boolean userBelongsToTeam(UUID teamId) {
-        KeycloakAuthenticationToken authentication =
-                (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        JwtAuthenticationToken authentication = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
-        KeycloakPrincipal<?> principal = (KeycloakPrincipal<?>) authentication.getPrincipal();
-        AccessToken accessToken = principal.getKeycloakSecurityContext().getToken();
+        List<String> userGroups = (List<String>) authentication.getTokenAttributes().get("groups");
 
-        Set<String> userGroups = (Set<String>) accessToken.getOtherClaims().get("groups");
+        List<GroupRepresentation> groups = keycloakUserService.getGroups();
 
-        return userGroups != null && userGroups.contains("/" + teamId);
+        GroupRepresentation groupRepresentation = groups.stream()
+                .filter(groupRepresentation1 -> groupRepresentation1.getId().equals(teamId.toString()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Team", "id", String.valueOf(teamId.toString())));
+
+
+        return userGroups.contains("/" + groupRepresentation.getName());
     }
 
     public boolean taskBelongsToUsersTeam(long taskId) {

@@ -42,8 +42,4 @@ export class TeamsService {
   joinTeam(teamId: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/join/${teamId}`, {});
   }
-
-  getTeamMembers(teamId: string): Observable<TeamSummaryDto[]> {
-    return this.http.get<TeamSummaryDto[]>(`${this.baseUrl}/${teamId}/members`);
-  }
 }
