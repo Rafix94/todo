@@ -24,7 +24,10 @@ public class SecurityConfig {
         return serverHttpSecurity
                 .authorizeExchange(exchange ->
                         exchange.pathMatchers(HttpMethod.OPTIONS).permitAll()
-                                .anyExchange().authenticated())
+                                .pathMatchers("/", "/index.html", "/static/**", "/home", "/dashboard", "/profile", "/settings", "/**").permitAll()
+                                .pathMatchers("/todolist/useragent/**").authenticated()
+                                .pathMatchers("/todolist/task-manager/**").authenticated()
+                                .anyExchange().permitAll())
                 .oauth2ResourceServer(oAuth2ResourceServerSpec ->
                         oAuth2ResourceServerSpec.jwt(Customizer.withDefaults()))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)

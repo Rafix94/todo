@@ -51,11 +51,11 @@ public class EdgeserverApplication {
                         )
                         .uri("http://useragent:8092"))
                 .route("task_manager_route", predicateSpec -> predicateSpec
-                        .path("/todolist/task-manager/**") // Match path
+                        .path("/todolist/task-manager/**")
                         .filters(filterSpec -> filterSpec
-                                .rewritePath("/todolist/task-manager/(?<segment>.*)", "/${segment}") // Remove the path prefix
+                                .rewritePath("/todolist/task-manager/(?<segment>.*)", "/${segment}")
                         )
-                        .uri("http://taskmanager:8094")) // Route to the taskmanager service
+                        .uri("http://taskmanager:8094"))
                 .route("ui_route", predicateSpec -> predicateSpec
                         .path("/**")
                         .uri("http://ui:4200"))
