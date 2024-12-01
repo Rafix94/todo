@@ -93,13 +93,13 @@ For production, use an Ingress IP address to access Keycloak:
    kubectl get svc -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx -o jsonpath='{.items[0].status.loadBalancer.ingress[0].ip}'
    ```
    
-2. Configure DNS to point the domain `http://todolistauth.giize.com/` to this IP.
+2. Configure DNS to point the domain `https://todolistauth.giize.com/` to this IP.
 
 Once configured, access the Keycloak Admin Console at:
 
-- URL: [http://todolistauth.giize.com/](http://todolistauth.giize.com/)
+- URL: [https://todolistauth.giize.com/](http://todolistauth.giize.com/)
 
-To retrieve the external IP for the edge server, set up a DNS record to point `http://todolist.ooguy.com/` to the IP of the `edgeserver` service:
+To retrieve the external IP for the edge server, set up a DNS record to point `https://todolist.ooguy.com/` to the IP of the `edgeserver` service:
    ```bash
    kubectl get svc edgeserver
    ```
@@ -117,7 +117,7 @@ For production, use the `realm-prod.json` file:
 ### 6. **Update Keycloak Client Secret**
 Follow these steps to configure the client secret in Kubernetes:
 
-1. Access the Keycloak Admin Console at `http://todolistauth.giize.com/` and log in with admin credentials.
+1. Access the Keycloak Admin Console at `https://todolistauth.giize.com/` and log in with admin credentials.
 2. Go to **Clients** > `userAgentClient` > **Credentials** and regenerate the client secret.
 3. Base64 encode the client secret:
    ```bash
@@ -133,6 +133,7 @@ Follow these steps to configure the client secret in Kubernetes:
 5. Apply the updated secrets for production:
    ```bash
    kubectl apply -f kubernetes/environments/prod/secrets/useragent-secret.yaml
+   kubectl apply -f kubernetes/environments/prod/secrets/taskmanager-secret.yaml
    kubectl apply -f kubernetes/environments/prod/secrets/edgeserver-secret.yaml
    ```
 
