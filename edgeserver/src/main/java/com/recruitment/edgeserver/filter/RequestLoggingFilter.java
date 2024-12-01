@@ -2,8 +2,6 @@ package com.recruitment.edgeserver.filter;
 
 import com.recruitment.edgeserver.entity.RequestLogEntity;
 import com.recruitment.edgeserver.repository.RequestLogRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

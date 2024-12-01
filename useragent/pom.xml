@@ -124,10 +124,15 @@
                     <container>
                         <ports>
                             <port>8092</port>
+                            <!--                            For debug-->
+                            <port>5005</port>
                         </ports>
+                        <jvmFlags>
+                            <jvmFlag>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005</jvmFlag>
+                        </jvmFlags>
                     </container>
                     <to>
-                        <image>ravv1/${project.artifactId}:v1</image>
+                        <image>ravv1/${project.artifactId}:v3</image>
                     </to>
                 </configuration>
             </plugin>
