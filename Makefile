@@ -6,8 +6,10 @@ CHART_PATH=./helm/release/todo-list
 ENV ?= local
 VALUES_FILE=$(CHART_PATH)/values-$(ENV).yaml
 
+KAFKA_RELEASE=kafka
 KEYCLOAK_RELEASE=keycloak
 POSTGRES_RELEASE=postgresql
+KAFKA_CHART=helm/kafka
 KEYCLOAK_CHART=helm/keycloak
 POSTGRES_CHART=helm/postgresql
 
@@ -26,6 +28,11 @@ dependencies:
 postgres:
 	@echo "Deploying PostgreSQL..."
 	$(HELM) upgrade --install $(POSTGRES_RELEASE) $(POSTGRES_CHART) --namespace $(NAMESPACE) -f $(POSTGRES_CHART)/values-$(ENV).yaml --wait
+
+# Install Kafka
+kafka:
+	@echo "Deploying Kafka..."
+	$(HELM) upgrade --install $(KAFKA_RELEASE) $(KAFKA_CHART) --namespace $(NAMESPACE) -f $(KAFKA_CHART)/values.yaml --wait
 
 # Install Keycloak
 keycloak:

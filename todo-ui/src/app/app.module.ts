@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -21,6 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
 import { TaskComponent } from "./components/tasks/task.component";
+import { TaskDetailsComponent } from './components/task-details/task-details.component'; // Import TaskDetailsComponent
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { environment } from "../environments/environment";
@@ -29,8 +30,9 @@ import { ShowTeamsComponent } from './components/show-teams/show-teams.component
 import { AddTeamComponent } from './components/add-team/add-team.component';
 import { TeamMembersComponent } from './components/team-members/team-members.component';
 import { MatSelectModule } from '@angular/material/select';
-import {MatCardModule} from "@angular/material/card";
-import { AddTaskDialogComponent } from './add-task-dialog/add-task-dialog.component';
+import { MatCardModule } from "@angular/material/card";
+import { AddTaskDialogComponent } from './components/add-task-dialog/add-task-dialog.component';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => {
@@ -75,7 +77,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
   };
 }
 
-
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
@@ -84,6 +85,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     HomeComponent,
     DashboardComponent,
     TaskComponent,
+    TaskDetailsComponent, // Declare TaskDetailsComponent
     SearchComponent,
     TeamsComponent,
     ShowTeamsComponent,
@@ -113,6 +115,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MatButtonModule,
     ReactiveFormsModule,
     MatCardModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     {
