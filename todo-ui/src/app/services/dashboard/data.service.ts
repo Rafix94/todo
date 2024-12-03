@@ -36,10 +36,6 @@ export class DataService {
     return this.http.post(url, task);
   }
 
-  updateTask(id: number, task: any): Observable<any> {
-    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
-    return this.http.put(url, task);
-  }
 
   deleteTask(id: number): Observable<any> {
     const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
