@@ -4,6 +4,8 @@ import com.todolist.taskmanager.dto.CreateTaskDto;
 import com.todolist.taskmanager.dto.ErrorDto;
 import com.todolist.taskmanager.dto.UpdateTaskDto;
 import com.todolist.taskmanager.dto.TaskDto;
+import com.todolist.taskmanager.model.File;
+import com.todolist.taskmanager.service.FileService;
 import com.todolist.taskmanager.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -96,5 +99,24 @@ public class TaskController {
     public ResponseEntity<TaskDto> assignTask(@PathVariable long taskId) {
         TaskDto updatedTask = taskService.assignTask(taskId);
         return ResponseEntity.ok(updatedTask);
+    }
+
+    @GetMapping("/{taskId}/details")
+    @PreAuthorize("@teamSecurityService.taskBelongsToUsersTeam(#taskId)")
+    public ResponseEntity<TaskDto> getTaskDetails(@PathVariable long taskId) {
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        return ResponseEntity.ok(taskDto);
+    }
+
+    @PostMapping("/{taskId}/comments")
+    @PreAuthorize("@teamSecurityService.taskBelongsToUsersTeam(#taskId)")
+    public ResponseEntity<TaskDto> uploadFile(
+            @RequestParam(value = "file", required = false) MultipartFile multipartFile,
+            @RequestParam(value = "comment", required = false) String commentValue,
+            @PathVariable("taskId") Long taskId) {
+
+        TaskDto taskDto = taskService.addCommentToTask(taskId, multipartFile, commentValue);
+
+        return ResponseEntity.ok(taskDto);
     }
 }

@@ -4,9 +4,12 @@ import com.todolist.taskmanager.dto.CreateTaskDto;
 import com.todolist.taskmanager.dto.UpdateTaskDto;
 import com.todolist.taskmanager.exception.NotFoundException;
 import com.todolist.taskmanager.mapper.TaskMapper;
+import com.todolist.taskmanager.model.Comment;
+import com.todolist.taskmanager.model.File;
 import com.todolist.taskmanager.model.Task;
 import com.todolist.taskmanager.repository.TaskRepository;
 import com.todolist.taskmanager.dto.TaskDto;
+import jakarta.mail.Multipart;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,7 +18,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.S3Client;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -24,6 +30,8 @@ import java.util.UUID;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final KeycloakUserService keycloakUserService;
+    private final FileService fileService;
+    private final CommentService commentService;
 
     public Page<TaskDto> getTasksByTeam(UUID teamId, Pageable pageable) {
         Page<Task> tasks = taskRepository.findByTeamId(teamId, pageable);
@@ -40,6 +48,17 @@ public class TaskService {
     public TaskDto getTaskById(long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
+
+        return getTaskDto(task);
+    }
+
+    public TaskDto addCommentToTask(long taskId, MultipartFile multipartFile, String commentValue) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
+
+        Comment comment = commentService.createComment(commentValue, task);
+
+        fileService.createFile(multipartFile, comment);
 
         return getTaskDto(task);
     }

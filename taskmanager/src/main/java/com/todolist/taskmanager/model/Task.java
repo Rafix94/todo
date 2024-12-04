@@ -1,11 +1,6 @@
 package com.todolist.taskmanager.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -43,9 +39,11 @@ public class Task extends BaseEntity {
     @Column
     private UUID teamId;
 
+    @OneToMany(mappedBy = "task")
+    List<Comment> comments;
+
     @PrePersist
     protected void onCreate() {
         createdBy = UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
     }
-
 }
