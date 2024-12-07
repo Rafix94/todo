@@ -36,7 +36,7 @@ keycloak:
   client-secret: AOOhIo0SbWirfHcTrw82f0z0k6YVKOIK
 
 spaces:
-  endpoint: https://taskmanager-attachments.ams3.digitaloceanspaces.com
-  access-key: DO00DTHRBWN4H8GDTG64
-  secret-key: r1BZN7TnjyF+j8TczlbEAGODGXs6rjlw3o4NAiJdcbQ
-  bucket: taskmanager-attachments
+  endpoint:
+  access-key:
+  secret-key:
+  bucket-name:

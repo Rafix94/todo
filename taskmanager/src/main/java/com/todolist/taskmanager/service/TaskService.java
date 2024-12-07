@@ -5,11 +5,9 @@ import com.todolist.taskmanager.dto.UpdateTaskDto;
 import com.todolist.taskmanager.exception.NotFoundException;
 import com.todolist.taskmanager.mapper.TaskMapper;
 import com.todolist.taskmanager.model.Comment;
-import com.todolist.taskmanager.model.File;
 import com.todolist.taskmanager.model.Task;
 import com.todolist.taskmanager.repository.TaskRepository;
 import com.todolist.taskmanager.dto.TaskDto;
-import jakarta.mail.Multipart;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.S3Client;
 
-import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -32,6 +28,7 @@ public class TaskService {
     private final KeycloakUserService keycloakUserService;
     private final FileService fileService;
     private final CommentService commentService;
+    private final TaskMapper taskMapper;
 
     public Page<TaskDto> getTasksByTeam(UUID teamId, Pageable pageable) {
         Page<Task> tasks = taskRepository.findByTeamId(teamId, pageable);
@@ -40,7 +37,7 @@ public class TaskService {
     }
 
     public TaskDto createTask(CreateTaskDto createTaskDto) {
-        Task task = taskRepository.save(TaskMapper.mapToTask(createTaskDto));
+        Task task = taskRepository.save(taskMapper.mapToTask(createTaskDto));
 
         return getTaskDto(task);
     }
@@ -75,7 +72,7 @@ public class TaskService {
                 .orElse("Unassigned")
                 : "Unassigned";
 
-        return TaskMapper.mapToTaskDto(task, creatorEmail, assigneeEmail);
+        return taskMapper.mapToTaskDto(task, creatorEmail, assigneeEmail);
     }
 
     public void deleteTaskById(long taskId) {

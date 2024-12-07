@@ -1,6 +1,7 @@
 package com.todolist.taskmanager.controller;
 
-public record FileDTO (
+public record FileDto(
+        Long id,
         String name,
         Long size,
         String url

@@ -30,7 +30,7 @@ public class FileService {
 
         File file = File.builder()
                 .size(multipartFile.getSize())
-                .name(multipartFile.getName())
+                .name(multipartFile.getOriginalFilename())
                 .contentType(multipartFile.getContentType())
                 .s3Key(s3Key)
                 .comment(comment)

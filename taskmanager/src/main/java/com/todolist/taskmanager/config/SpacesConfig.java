@@ -1,39 +1,40 @@
 package com.todolist.taskmanager.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.S3Configuration;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.net.URI;
 
 @Configuration
+@AllArgsConstructor
 public class SpacesConfig {
 
-    @Value("${spaces.endpoint}")
-    private String endpoint;
-
-    @Value("${spaces.access-key}")
-    private String accessKey;
-
-    @Value("${spaces.secret-key}")
-    private String secretKey;
+    private final SpacesConfigurationProperties spacesConfigurationProperties;
 
     @Bean
     public S3Client s3Client() {
-        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKey, secretKey);
+        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(spacesConfigurationProperties.getAccessKey(), spacesConfigurationProperties.getSecretKey());
 
         return S3Client.builder()
-                .endpointOverride(URI.create(endpoint))
+                .endpointOverride(URI.create(spacesConfigurationProperties.getEndpoint()))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
-                .serviceConfiguration(S3Configuration.builder()
-                        .pathStyleAccessEnabled(true)
-                        .build())
-                .region(Region.US_EAST_1)
+                .region(Region.EU_CENTRAL_1)
+                .build();
+    }
+
+    @Bean
+    public S3Presigner s3Presigner() {
+        AwsBasicCredentials awsCreds = AwsBasicCredentials.create(spacesConfigurationProperties.getAccessKey(), spacesConfigurationProperties.getSecretKey());
+        return S3Presigner.builder()
+                .region(Region.EU_CENTRAL_1)
+                .endpointOverride(URI.create(spacesConfigurationProperties.getEndpoint()))
+                .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .build();
     }
 }

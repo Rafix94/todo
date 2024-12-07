@@ -15,6 +15,8 @@ export class TaskDetailsComponent implements OnInit {
   files: any[] = [];
   commentForm: FormGroup;
   isLoading = true;
+  isSubmittingComment = false;
+  isAnalyzingFile: { [key: number]: boolean } = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -35,9 +37,9 @@ export class TaskDetailsComponent implements OnInit {
   loadTaskDetails(): void {
     this.taskDetailsService.getTaskDetails(this.taskId).subscribe({
       next: (response) => {
-        this.task = response.task;
-        this.comments = response.comments;
-        this.files = response.files;
+        this.task = response;
+        this.comments = response.commentDtos || [];
+        this.files = this.extractFilesFromComments(response.commentDtos || []);
         this.isLoading = false;
       },
       error: (err) => {
@@ -47,15 +49,25 @@ export class TaskDetailsComponent implements OnInit {
     });
   }
 
-  onFileSelect(event: any): void {
-    const file = event.target.files[0];
-    this.commentForm.patchValue({ file: file });
-    this.commentForm.get('file')?.updateValueAndValidity();
+  extractFilesFromComments(comments: any[]): any[] {
+    return comments
+      .filter((comment) => comment.fileDto)
+      .map((comment) => comment.fileDto);
+  }
+
+  onFileSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input?.files?.[0];
+    if (file) {
+      this.commentForm.patchValue({ file });
+      this.commentForm.get('file')?.updateValueAndValidity();
+    }
   }
 
   submitComment(): void {
+    this.isSubmittingComment = true;
     const formData = new FormData();
-    formData.append('comment', this.commentForm.value.comment);
+    formData.append('comment', this.commentForm.value.comment || '');
     if (this.commentForm.value.file) {
       formData.append('file', this.commentForm.value.file);
     }
@@ -63,10 +75,29 @@ export class TaskDetailsComponent implements OnInit {
     this.taskDetailsService.addComment(this.taskId, formData).subscribe({
       next: () => {
         this.loadTaskDetails();
-        this.commentForm.reset();
+        this.commentForm.reset({ comment: '', file: null });
+        this.isSubmittingComment = false;
       },
       error: (err) => {
         console.error('Error submitting comment:', err);
+        this.isSubmittingComment = false;
+      }
+    });
+  }
+
+  analyzeFile(fileId: number): void {
+    this.isAnalyzingFile[fileId] = true;
+    this.taskDetailsService.analyzeFile(fileId).subscribe({
+      next: (response) => {
+        const fileIndex = this.files.findIndex((file) => file.id === fileId);
+        if (fileIndex >= 0) {
+          this.files[fileIndex].analyzedFileUrl = response.analyzedFileUrl;
+        }
+        this.isAnalyzingFile[fileId] = false;
+      },
+      error: (err) => {
+        console.error(`Error analyzing file (ID: ${fileId}):`, err);
+        this.isAnalyzingFile[fileId] = false;
       }
     });
   }

@@ -7,27 +7,58 @@
   </div>
 
   <h3>Comments</h3>
-  <table class="comments-table">
-    <thead>
-    <tr>
-      <th>Author</th>
-      <th>Comment</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let comment of comments">
-      <td>{{ comment.author }}</td>
-      <td>{{ comment.text }}</td>
-    </tr>
-    </tbody>
-  </table>
-
-  <h3>Uploaded Files</h3>
-  <ul class="files-list">
-    <li *ngFor="let file of files">
-      <a [href]="file.url" target="_blank">{{ file.name }}</a>
-    </li>
-  </ul>
+  <div class="table-wrapper">
+    <table class="comments-table">
+      <thead>
+      <tr>
+        <th>Author</th>
+        <th>Comment</th>
+        <th>File</th>
+        <th>Antivirus Scanning</th>
+        <th>AI Analysis</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let comment of comments">
+        <td>{{ task.creatorEmail }}</td>
+        <td>{{ comment.comment }}</td>
+        <td>
+          <a *ngIf="comment.fileDto" [href]="comment.fileDto.url" target="_blank">
+            {{ comment.fileDto.name }}
+          </a>
+        </td>
+        <td>
+          <div class="progress-dots">
+            <span *ngIf="comment.fileDto.antivirusStatus === 'in_progress'">...</span>
+            <span *ngIf="comment.fileDto.antivirusStatus === 'completed'">✅</span>
+          </div>
+        </td>
+        <td>
+          <div class="progress-dots">
+            <span *ngIf="comment.fileDto.aiAnalysisStatus === 'in_progress'">...</span>
+            <span *ngIf="comment.fileDto.aiAnalysisStatus === 'completed'">✅</span>
+          </div>
+        </td>
+        <td>
+          <button
+            mat-button
+            color="primary"
+            *ngIf="!comment.fileDto.analyzedFileUrl"
+            (click)="analyzeFile(comment.fileDto.id)"
+            [disabled]="isAnalyzingFile[comment.fileDto.id]"
+          >
+            <ng-container *ngIf="!isAnalyzingFile[comment.fileDto.id]">Analyze</ng-container>
+            <mat-spinner *ngIf="isAnalyzingFile[comment.fileDto.id]" diameter="20"></mat-spinner>
+          </button>
+          <a *ngIf="comment.fileDto.analyzedFileUrl" [href]="comment.fileDto.analyzedFileUrl" target="_blank">
+            Download Analyzed File
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 
   <form [formGroup]="commentForm" class="comment-form">
     <mat-form-field appearance="fill" class="full-width">
@@ -36,7 +67,15 @@
     </mat-form-field>
 
     <input type="file" (change)="onFileSelect($event)" />
-    <button mat-raised-button color="primary" (click)="submitComment()">Submit</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="submitComment()"
+      [disabled]="isSubmittingComment"
+    >
+      <ng-container *ngIf="!isSubmittingComment">Submit</ng-container>
+      <mat-spinner *ngIf="isSubmittingComment" diameter="20"></mat-spinner>
+    </button>
   </form>
 </div>
 
