@@ -1,0 +1,21 @@
+dependencies:
+- name: todo-app-template
+  repository: file://../../todo-app-template
+  version: 0.1.0
+- name: useragent
+  repository: file://../../todo-app-services/useragent
+  version: 0.1.0
+- name: configServer
+  repository: file://../../todo-app-services/configServer
+  version: 0.1.0
+- name: ui
+  repository: file://../../todo-app-services/ui
+  version: 0.1.0
+- name: edgeserver
+  repository: file://../../todo-app-services/edgeserver
+  version: 0.1.0
+- name: taskmanager
+  repository: file://../../todo-app-services/taskmanager
+  version: 0.1.0
+digest: sha256:2690570aba6e1636fd6a67eb6b05f406afb41402358876c1381c7a12d05929ec
+generated: "2024-11-09T17:07:10.593749+01:00"
