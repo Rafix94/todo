@@ -135,6 +135,7 @@ Follow these steps to configure the client secret in Kubernetes:
    kubectl apply -f kubernetes/environments/prod/secrets/useragent-secret.yaml
    kubectl apply -f kubernetes/environments/prod/secrets/taskmanager-secret.yaml
    kubectl apply -f kubernetes/environments/prod/secrets/edgeserver-secret.yaml
+   kubectl apply -f kubernetes/environments/prod/secrets/fileprocesor-secret.yaml
    ```
 
 ### 7. **Deploy the Application**

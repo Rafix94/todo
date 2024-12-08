@@ -144,6 +144,7 @@ After setting up Keycloak and creating the clients for both the User Agent (`use
    kubectl apply -f kubernetes/environments/local/secrets/useragent-secret.yaml
    kubectl apply -f kubernetes/environments/local/secrets/taskmanager-secret.yaml
    kubectl apply -f kubernetes/environments/local/secrets/edgeserver-secret.yaml
+   kubectl apply -f kubernetes/environments/local/secrets/fileprocesor-secret.yaml
    ```
 
 ### 7. **Install the Application**:

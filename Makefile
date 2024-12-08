@@ -10,6 +10,7 @@ KAFKA_RELEASE=kafka
 KEYCLOAK_RELEASE=keycloak
 POSTGRES_RELEASE=postgresql
 KAFKA_CHART=helm/kafka
+CLAMAV_CHART=helm/clamav
 KEYCLOAK_CHART=helm/keycloak
 POSTGRES_CHART=helm/postgresql
 
@@ -33,6 +34,11 @@ postgres:
 kafka:
 	@echo "Deploying Kafka..."
 	$(HELM) upgrade --install $(KAFKA_RELEASE) $(KAFKA_CHART) --namespace $(NAMESPACE) -f $(KAFKA_CHART)/values.yaml --wait
+
+# Install ClamAV
+kafka:
+	@echo "Deploying ClamAV..."
+	$(HELM) upgrade --install $(KAFKA_RELEASE) $(CLAMAV_CHART) --namespace $(NAMESPACE) -f $(KAFKA_CHART)/values.yaml --wait
 
 # Install Keycloak
 keycloak:

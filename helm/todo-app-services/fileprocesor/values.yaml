@@ -1,0 +1,26 @@
+deployment:
+  name: fileprocesor
+  label: fileprocesor
+  replicaCount: 1
+  configEnabled: false
+  containerPort: 8094
+  discoveryEnabled: true
+  dbEnabled: false
+  keycloakClientEnabled: false
+  secretName: fileprocesor-secret
+  image:
+    repository: ravv1/fileprocesor
+    tag: v1
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      cpu: "1"
+      memory: "512Mi"
+service:
+  name: fileprocesor
+  protocol: http
+  type: ClusterIP
+  port: 8095
+  targetPort: 8095
