@@ -100,7 +100,20 @@ kubectl get configmap keycloak-env-vars -o jsonpath='{.data.KEYCLOAK_ADMIN}'
 kubectl get secret keycloak -o jsonpath='{.data.admin-password}' | base64 --decode
 ```
 
-### 5. **Import Keycloak Realm Configuration**:
+### 6. Kafka Installation
+To install Kafka, execute the following command:
+```bash
+make kafka
+```
+
+### 7. ClamAV Installation
+To install ClamAV, execute the following command:
+```bash
+make clamav
+```
+
+
+### 8. **Import Keycloak Realm Configuration**:
 You will need to import the Keycloak realm configuration to set up the correct authentication and authorization settings for the application.
 
 1. The `realm-local.json` file is stored in the project at `keycloak/realm/realm.json`. You can find it in the following location within the repository:
@@ -111,19 +124,19 @@ keycloak/realm-local.json
 
 2. Once Keycloak is running and you have logged in with the admin credentials, go to the Keycloak Admin Console, navigate to **Realm Settings**, and import the `realm-local.json` file.
 
-### 6. **Update Keycloak Client Secret**:
+### 9. **Update Keycloak Client Secret**:
 After setting up Keycloak and creating the clients for both the User Agent (`userAgentClient`) and the Task Manager (`taskManagerClient`), follow these steps to update the Kubernetes secrets.
 
 1. **Open Keycloak Admin Console**: Navigate to the Keycloak Admin Console at `http://localhost:80` and log in using your admin credentials.
 
 2. **Select the User Agent Client**:
-   - **User Agent Client**:
-      - In the left sidebar, go to **Clients** and select `userAgentClient`.
-      - Go to the **Credentials** tab and regenerate the client secret.
-      - Copy the generated client secret.
-   - **Task Manager Client**
-      - Similarly, go to **Clients** and select `taskManagerClient`.
-      - Go to the **Credentials** tab, regenerate the client secret, and copy it.
+    - **User Agent Client**:
+        - In the left sidebar, go to **Clients** and select `userAgentClient`.
+        - Go to the **Credentials** tab and regenerate the client secret.
+        - Copy the generated client secret.
+    - **Task Manager Client**
+        - Similarly, go to **Clients** and select `taskManagerClient`.
+        - Go to the **Credentials** tab, regenerate the client secret, and copy it.
 3. **Base64 Encode Each Client Secret**:
 
    Use the following commands in your terminal to base64 encode each client secret:
@@ -134,10 +147,32 @@ After setting up Keycloak and creating the clients for both the User Agent (`use
 
 4. **Update Secret Value**:
    Update the encoded client secrets in the corresponding YAML files:
-   - **For `userAgentClient`**: Open `useragent-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
-   - **For `taskManagerClient`**: Open `taskmanager-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
+    - **For `userAgentClient`**: Open `useragent-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
+    - **For `taskManagerClient`**: Open `taskmanager-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
 
-7. **Apply the Changes to Your Kubernetes Cluster:**
+
+### 10. S3 Space Creation
+To enable S3 storage:
+1. Create a space in your S3 storage.
+2. Note down the following details:
+    - **Bucket Name**
+    - **Endpoint**
+    - **Access Key**
+3. Update the S3 section in the following configuration file:
+   [useragent-local.yaml](https://github.com/Rafix94/todo-config/blob/main/useragent-local.yaml).
+
+4. Base64 encode your S3 secret key:
+   ```bash
+   echo -n '<your-secret-key>' | base64
+   ```
+
+4. **Update Secret Value**:
+   Update the encoded client secrets in the corresponding YAML files:
+    - **For `fileProcesor`**: Open `fileprocessor-secret.yaml` and update `data.spaces_secret_key` with the encoded secret.
+    - **For `taskManager`**: Open `taskmanager-secret.yaml` and update `data.spaces_secret_key` with the encoded secret.
+
+
+### 11. Apply the Changes to Your Kubernetes Cluster:
 
    After updating the YAML files, apply the changes with the following commands:
    ```bash
@@ -147,14 +182,14 @@ After setting up Keycloak and creating the clients for both the User Agent (`use
    kubectl apply -f kubernetes/environments/local/secrets/fileprocesor-secret.yaml
    ```
 
-### 7. **Install the Application**:
+### 12. **Install the Application**:
 Install the ToDoListApp with the following command:
 
 ```bash
 make app
 ```
 
-### 8. **Explore ToDoListApp**:
+### 13. **Explore ToDoListApp**:
 Access the ToDoListApp through the graphical user interface (GUI) available at [http://localhost:4200/home](http://localhost:4200/home).
 
 ---
@@ -177,3 +212,12 @@ from pathlib import Path
 4. **UserAgent**: This microservice manages users and teams, with teams also being handled by Keycloak.
 
 5. **Task Manager**: This microservice provides CRUD (Create, Read, Update, Delete) operations for tasks.
+
+
+
+### 8. Apply Secrets
+After completing the configurations, apply the secrets using the following command:
+```bash
+kubectl apply -f <your-secret-files>
+```
+

@@ -37,6 +37,5 @@ keycloak:
 
 spaces:
   endpoint: https://ams3.digitaloceanspaces.com
-  access-key: DO006Z78WB49GXUAFDGZ
-  secret-key: secretValue
-  bucket-name: taskmanager-attachments
+  accessKey: DO006Z78WB49GXUAFDGZ
+  bucketName: taskmanager-attachments

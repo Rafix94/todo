@@ -2,11 +2,12 @@ deployment:
   name: fileprocesor
   label: fileprocesor
   replicaCount: 1
-  configEnabled: false
+  configEnabled: true
   containerPort: 8094
   discoveryEnabled: true
   dbEnabled: false
   keycloakClientEnabled: false
+  spacesEnabled: true
   secretName: fileprocesor-secret
   image:
     repository: ravv1/fileprocesor

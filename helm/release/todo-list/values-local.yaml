@@ -3,6 +3,11 @@ global:
   activeProfile: local
   configServerURL: "optional:configserver:http://configserver:8090/"
   discoverServerURL: "http://spring-cloud-kubernetes-discoveryserver:80"
+  spaces:
+    endpoint: https://ams3.digitaloceanspaces.com
+    accessKey: DO003CP39TMHVUWC4GYV
+    bucketName: taskmanager-attachments
+
 ui:
   deployment:
     image:
