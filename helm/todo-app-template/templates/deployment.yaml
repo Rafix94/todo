@@ -59,23 +59,26 @@ spec:
                   name: {{ .Values.deployment.secretName }}
                   key: keycloak_client_secret
             {{- end }}
-            {{- if .Values.deployment.discoveryServerEnabled }}
-            readinessProbe:
-              httpGet:
-                path: /actuator/health/readiness
-                port: {{ .Values.deployment.containerPort }}
-            livenessProbe:
-              httpGet:
-                path: /actuator/health/liveness
-                port: {{ .Values.deployment.containerPort }}
+            {{- if .Values.deployment.spacesEnabled }}
+            - name: SPACES_SECRET-KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.secretName }}
+                  key: spaces_secret_key
             {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: {{ .Values.deployment.containerPort }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: {{ .Values.deployment.containerPort }}
           resources:
-            {{- if .Values.deployment.resources }}
             requests:
               cpu: {{ .Values.deployment.resources.requests.cpu | quote }}
               memory: {{ .Values.deployment.resources.requests.memory | quote }}
             limits:
               cpu: {{ .Values.deployment.resources.limits.cpu | quote }}
               memory: {{ .Values.deployment.resources.limits.memory | quote }}
-            {{- end }}
   {{- end }}

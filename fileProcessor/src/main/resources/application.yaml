@@ -1,31 +1,5 @@
 spring:
   application:
-    name:
-      fileProcessor
-
-  kafka:
-    streams:
-      application-id: file-processor-${random.uuid}
-    bootstrap-servers:
-      - localhost:9092
-    properties:
-      default:
-        key:
-          sarde: org.apache.kafka.common.serialization.Serdes$StringSerde
-        value:
-          sarde: org.apache.kafka.common.serialization.Serdes$StringSerde
-      commit:
-        interval:
-          ms: 3000
-      processing:
-        quarantee: exactly_once_v2
-
-clamAV:
-  url: clamav
-  port: 3310
-
-spaces:
-  endpoint: https://ams3.digitaloceanspaces.com
-  access-key: DO006Z78WB49GXUAFDGZ
-  secret-key: 8CbWX9dA/ALepU3hT6hKZ7zFfOaMgZLnWvIjsDsjU5Q
-  bucket-name: taskmanager-attachments
+    name: "fileprocesor"
+  config:
+    import: "optional:configserver:http://configserver:8090/"

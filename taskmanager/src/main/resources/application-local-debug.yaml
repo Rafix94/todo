@@ -33,10 +33,10 @@ keycloak:
   realm: toDoListApp
   client-id: taskManagerClient
   user-role: USER
-  client-secret: AOOhIo0SbWirfHcTrw82f0z0k6YVKOIK
+  client-secret: secretValue
 
 spaces:
-  endpoint:
-  access-key:
-  secret-key:
-  bucket-name:
+  endpoint: https://ams3.digitaloceanspaces.com
+  access-key: DO006Z78WB49GXUAFDGZ
+  secret-key: secretValue
+  bucket-name: taskmanager-attachments
