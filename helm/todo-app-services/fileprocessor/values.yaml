@@ -1,16 +1,17 @@
 deployment:
-  name: fileprocesor
-  label: fileprocesor
+  name: fileprocessor
+  label: fileprocessor
   replicaCount: 1
   configEnabled: true
   containerPort: 8094
   discoveryEnabled: true
   dbEnabled: false
   keycloakClientEnabled: false
+  kafkaClientEnabled: true
   spacesEnabled: true
-  secretName: fileprocesor-secret
+  secretName: fileprocessor-secret
   image:
-    repository: ravv1/fileprocesor
+    repository: ravv1/fileprocessor
     tag: v1
   resources:
     requests:
@@ -20,7 +21,7 @@ deployment:
       cpu: "1"
       memory: "512Mi"
 service:
-  name: fileprocesor
+  name: fileprocessor
   protocol: http
   type: ClusterIP
   port: 8095

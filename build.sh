@@ -20,8 +20,8 @@ cd configserver || exit
 mvn clean compile jib:dockerBuild
 cd ..
 
-# Build filemanager
-cd fileProcessor || exit
+# Build fileprocessor
+cd fileprocessor || exit
 mvn clean compile jib:dockerBuild
 cd ..
 

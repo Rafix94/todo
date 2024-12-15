@@ -1,5 +1,5 @@
 spring:
   application:
-    name: "fileprocesor"
+    name: "fileprocessor"
   config:
     import: "optional:configserver:http://configserver:8090/"

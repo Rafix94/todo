@@ -106,10 +106,48 @@ To install Kafka, execute the following command:
 make kafka
 ```
 
+#### Creating Kafka Internal Topics
+
+To create internal topics such as `__consumer_offsets` with SASL authentication, follow the steps below.
+
+#### Step 1: Retrieve Kafka Client Password
+
+Run the following command to retrieve the `client-passwords` from the Kubernetes secret:
+
+```bash
+KAFKA_PASSWORD=$(kubectl get secret kafka-user-passwords -o jsonpath='{.data.client-passwords}' | base64 --decode | cut -d, -f1)
+```
+
+
+#### Step 2: Create the Topic
+
+Run the following command to create the `__consumer_offsets` topic:
+
+```bash
+kafka-topics \
+    --bootstrap-server localhost:9094 \
+    --create \
+    --topic __consumer_offsets \
+    --partitions 50 \
+    --replication-factor 1 \
+    --config cleanup.policy=compact \
+    --config segment.bytes=104857600 \
+    --config min.cleanable.dirty.ratio=0.01 \
+    --config retention.ms=604800000 \
+    --command-config <(echo "                                                                     
+security.protocol=SASL_PLAINTEXT      
+sasl.mechanism=SCRAM-SHA-256
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username='user1' password='$KAFKA_PASSWORD';
+")
+```
+
+
+
 ### 7. ClamAV Installation
 To install ClamAV, execute the following command:
 ```bash
-make clamav
+docker pull --platform=linux/amd64 clamav/clamav:1.4.1-15
+make clamAV
 ```
 
 
@@ -158,19 +196,20 @@ To enable S3 storage:
     - **Bucket Name**
     - **Endpoint**
     - **Access Key**
-3. Update the S3 section in the following configuration file:
-   [useragent-local.yaml](https://github.com/Rafix94/todo-config/blob/main/useragent-local.yaml).
-
-4. Base64 encode your S3 secret key:
+3. Base64 encode your S3 secret key:
    ```bash
    echo -n '<your-secret-key>' | base64
    ```
 
 4. **Update Secret Value**:
    Update the encoded client secrets in the corresponding YAML files:
-    - **For `fileProcesor`**: Open `fileprocessor-secret.yaml` and update `data.spaces_secret_key` with the encoded secret.
+    - **For `fileProcessor`**: Open `fileprocessor-secret.yaml` and update `data.spaces_secret_key` with the encoded secret.
     - **For `taskManager`**: Open `taskmanager-secret.yaml` and update `data.spaces_secret_key` with the encoded secret.
-
+5. **Update Access Key**
+   - Open  `helm/release/todo-list/values-local.yaml` and update:
+     - `global.spaces.enpoint`
+     - `global.spaces.bucketName`
+     - `global.spaces.accessKey`
 
 ### 11. Apply the Changes to Your Kubernetes Cluster:
 
@@ -179,7 +218,7 @@ To enable S3 storage:
    kubectl apply -f kubernetes/environments/local/secrets/useragent-secret.yaml
    kubectl apply -f kubernetes/environments/local/secrets/taskmanager-secret.yaml
    kubectl apply -f kubernetes/environments/local/secrets/edgeserver-secret.yaml
-   kubectl apply -f kubernetes/environments/local/secrets/fileprocesor-secret.yaml
+   kubectl apply -f kubernetes/environments/local/secrets/fileprocessor-secret.yaml
    ```
 
 ### 12. **Install the Application**:

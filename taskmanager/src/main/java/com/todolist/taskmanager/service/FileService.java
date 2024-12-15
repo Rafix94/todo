@@ -44,7 +44,7 @@ public class FileService {
 
         FileMetadata fileMetadata = new FileMetadata(savedFile.getId(), savedFile.getS3Key(), null);
 
-        kafkaTemplate.send(String.valueOf(file.getId()), fileMetadata);
+        kafkaTemplate.send("file-scanning-requests", String.valueOf(file.getId()), fileMetadata);
 
         return savedFile;
     }
