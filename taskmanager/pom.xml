@@ -105,6 +105,14 @@
             <artifactId>s3</artifactId>
             <version>2.20.20</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -132,7 +140,6 @@
                     <container>
                         <ports>
                             <port>8094</port>
-<!--                            For debug-->
                             <port>5005</port>
                         </ports>
                         <jvmFlags>
@@ -140,7 +147,7 @@
                         </jvmFlags>
                     </container>
                     <to>
-                        <image>ravv1/${project.artifactId}:v2</image>
+                        <image>ravv1/${project.artifactId}:v1</image>
                     </to>
                 </configuration>
             </plugin>

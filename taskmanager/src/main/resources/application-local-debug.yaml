@@ -15,6 +15,32 @@ spring:
     hibernate:
       ddl-auto: validate
       dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    streams:
+      application-id: file-processor
+    bootstrap-servers: localhost:9094
+    properties:
+      security.protocol: SASL_PLAINTEXT
+      sasl.mechanism: SCRAM-SHA-256
+      sasl.jaas.config: >
+        org.apache.kafka.common.security.scram.ScramLoginModule required
+        username="user1"
+        password="secretValue";
+      default:
+        key:
+          serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        value:
+          serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      commit:
+        interval:
+          ms: 3000
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 server:
   port: 8094
 
@@ -38,4 +64,5 @@ keycloak:
 spaces:
   endpoint: https://ams3.digitaloceanspaces.com
   accessKey: DO006Z78WB49GXUAFDGZ
+  secretKey: secretValue
   bucketName: taskmanager-attachments

@@ -7,6 +7,7 @@ ENV ?= local
 VALUES_FILE=$(CHART_PATH)/values-$(ENV).yaml
 
 KAFKA_RELEASE=kafka
+CLAMAV_RELEASE=clamav
 KEYCLOAK_RELEASE=keycloak
 POSTGRES_RELEASE=postgresql
 KAFKA_CHART=helm/kafka
@@ -36,9 +37,9 @@ kafka:
 	$(HELM) upgrade --install $(KAFKA_RELEASE) $(KAFKA_CHART) --namespace $(NAMESPACE) -f $(KAFKA_CHART)/values.yaml --wait
 
 # Install ClamAV
-kafka:
+clamAV:
 	@echo "Deploying ClamAV..."
-	$(HELM) upgrade --install $(KAFKA_RELEASE) $(CLAMAV_CHART) --namespace $(NAMESPACE) -f $(KAFKA_CHART)/values.yaml --wait
+	$(HELM) upgrade --install $(CLAMAV_RELEASE) $(CLAMAV_CHART) --namespace $(NAMESPACE) -f $(CLAMAV_CHART)/values.yaml --wait
 
 # Install Keycloak
 keycloak:

@@ -2,26 +2,34 @@ spring:
   application:
     name:
       fileprocesor
-
   kafka:
     streams:
-      application-id: file-processor-${random.uuid}
-    bootstrap-servers:
-      - localhost:9092
+      application-id: file-processor
+    bootstrap-servers: localhost:9094
     properties:
+      security.protocol: SASL_PLAINTEXT
+      sasl.mechanism: SCRAM-SHA-256
+      sasl.jaas.config: >
+        org.apache.kafka.common.security.scram.ScramLoginModule required
+        username="user1"
+        password="secretValue";
       default:
         key:
-          sarde: org.apache.kafka.common.serialization.Serdes$StringSerde
+          serde: org.apache.kafka.common.serialization.Serdes$StringSerde
         value:
-          sarde: org.apache.kafka.common.serialization.Serdes$StringSerde
+          serde: org.apache.kafka.common.serialization.Serdes$StringSerde
       commit:
         interval:
           ms: 3000
-      processing:
-        quarantee: exactly_once_v2
-
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 clamAV:
-  url: clamav
+  url: localhost
   port: 3310
 
 spaces:

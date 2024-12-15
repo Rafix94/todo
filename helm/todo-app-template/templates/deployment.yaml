@@ -83,6 +83,15 @@ spec:
                   name: {{ .Values.deployment.secretName }}
                   key: keycloak_client_secret
             {{- end }}
+            {{- if .Values.deployment.kafkaClientEnabled }}
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-user-passwords
+                  key: client-passwords
+            - name: KAFKA_USERNAME
+              value: user1
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
