@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Task } from "../../model/task.model";
 import { TeamsService } from 'src/app/services/teams.service';
 import { MatDialog } from "@angular/material/dialog";
-import { AddTaskDialogComponent } from "../../add-task-dialog/add-task-dialog.component";
+import { AddTaskDialogComponent } from "../add-task-dialog/add-task-dialog.component";
 
 @Component({
   selector: 'app-task',
@@ -130,5 +130,9 @@ export class TaskComponent implements OnInit {
     this.dataService.assignTask(task.id).subscribe(() => {
       this.getData(); // Refresh the task list after assignment
     });
+  }
+
+  openTaskDetails(taskId: string): void {
+    this.router.navigate(['/tasks', taskId]);
   }
 }

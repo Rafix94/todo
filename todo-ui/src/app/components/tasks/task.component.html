@@ -51,7 +51,7 @@
 
     <!-- Table Header and Rows -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openTaskDetails(row.id)"></tr>
   </table>
 
   <!-- Pagination -->

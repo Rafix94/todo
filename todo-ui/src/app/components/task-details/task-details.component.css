@@ -1,0 +1,161 @@
+.content-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.task-header {
+  margin-bottom: 20px;
+}
+
+.task-header h2 {
+  color: #3f51b5;
+  margin-bottom: 10px;
+}
+
+.task-header p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.comments-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.comments-table th,
+.comments-table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.comments-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.comments-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.files-list {
+  list-style: none;
+  padding: 0;
+}
+
+.files-list li {
+  margin: 5px 0;
+}
+
+.files-list a {
+  color: #3f51b5;
+  text-decoration: none;
+}
+
+.files-list a:hover {
+  text-decoration: underline;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.comment-form mat-form-field {
+  width: 100%;
+}
+
+.comment-form button {
+  align-self: flex-end;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.mat-spinner {
+  width: 50px;
+  height: 50px;
+}
+
+.table-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+
+.comments-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.comments-table th,
+.comments-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.comments-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.comments-table td {
+  vertical-align: middle;
+}
+
+button[mat-button] {
+  margin-right: 8px;
+}
+.antivirus-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.status-icon {
+  font-size: 24px;
+  vertical-align: middle;
+}
+
+.status-icon.clock {
+  color: #ffa726;
+}
+
+.status-icon.arrow {
+  color: #42a5f5;
+  animation: spin 1s linear infinite;
+}
+
+.status-icon.clean {
+  color: #66bb6a;
+}
+
+.status-icon.failed {
+  color: #ffca28;
+}
+
+.status-icon.infected {
+  color: #ef5350;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

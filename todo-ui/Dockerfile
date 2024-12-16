@@ -4,11 +4,14 @@ FROM node:16 AS build
 # Set working directory inside the container
 WORKDIR /app
 
+# Set the npm registry
+RUN npm config set registry https://registry.npmjs.org/
+
 # Copy package.json and package-lock.json for dependency installation
 COPY package*.json ./
 
 # Install Angular dependencies
-RUN npm install
+RUN npm cache clean --force && npm install --legacy-peer-deps
 
 # Copy the Angular app source code
 COPY . .

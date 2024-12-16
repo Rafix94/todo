@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: "add-file-table"
+      author: "rafal.grzes"
+      changes:
+        - createTable:
+            tableName: "file"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: "name"
+                  type: "text"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "size"
+                  type: "bigint"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "s3key"
+                  type: "text"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "content_type"
+                  type: "text"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "comment_id"
+                  type: "bigint"
+              - column:
+                  name: "created_at"
+                  type: "datetime"
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: "updated_at"
+                  type: "datetime"

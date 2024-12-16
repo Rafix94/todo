@@ -7,4 +7,7 @@ data:
   SPRING_PROFILES_ACTIVE: {{ .Values.global.activeProfile }}
   SPRING_CONFIG_IMPORT: {{ .Values.global.configServerURL }}
   SPRING_CLOUD_KUBERNETES_DISCOVERY_DISCOVERY_SERVER_URL: {{ .Values.global.discoverServerURL }}
+  SPACES_ENDPOINT: {{ .Values.global.spaces.endpoint }}
+  SPACES_ACCESS_KEY: {{ .Values.global.spaces.accessKey }}
+  SPACES_BUCKET_NAME: {{ .Values.global.spaces.bucketName }}
 {{- end -}}

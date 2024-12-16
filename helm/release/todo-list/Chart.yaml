@@ -42,3 +42,6 @@ dependencies:
   - name: taskmanager
     version: 0.1.0
     repository: file://../../todo-app-services/taskmanager
+  - name: fileprocessor
+    version: 0.1.0
+    repository: file://../../todo-app-services/fileprocessor

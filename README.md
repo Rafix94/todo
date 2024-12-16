@@ -100,7 +100,56 @@ kubectl get configmap keycloak-env-vars -o jsonpath='{.data.KEYCLOAK_ADMIN}'
 kubectl get secret keycloak -o jsonpath='{.data.admin-password}' | base64 --decode
 ```
 
-### 5. **Import Keycloak Realm Configuration**:
+### 6. Kafka Installation
+To install Kafka, execute the following command:
+```bash
+make kafka
+```
+
+#### Creating Kafka Internal Topics
+
+To create internal topics such as `__consumer_offsets` with SASL authentication, follow the steps below.
+
+#### Step 1: Retrieve Kafka Client Password
+
+Run the following command to retrieve the `client-passwords` from the Kubernetes secret:
+
+```bash
+KAFKA_PASSWORD=$(kubectl get secret kafka-user-passwords -o jsonpath='{.data.client-passwords}' | base64 --decode | cut -d, -f1)
+```
+
+
+#### Step 2: Create the Topic
+
+Run the following command to create the `__consumer_offsets` topic:
+
+```bash
+kafka-topics \
+    --bootstrap-server localhost:9094 \
+    --create \
+    --topic __consumer_offsets \
+    --partitions 50 \
+    --replication-factor 1 \
+    --config cleanup.policy=compact \
+    --config segment.bytes=104857600 \
+    --config min.cleanable.dirty.ratio=0.01 \
+    --config retention.ms=604800000 \
+    --command-config <(echo "                                                                     
+security.protocol=SASL_PLAINTEXT      
+sasl.mechanism=SCRAM-SHA-256
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username='user1' password='$KAFKA_PASSWORD';
+")
+```
+
+
+
+### 7. ClamAV Installation
+To install ClamAV, execute the following command:
+```bash
+make clamAV
+```
+
+### 8. **Import Keycloak Realm Configuration**:
 You will need to import the Keycloak realm configuration to set up the correct authentication and authorization settings for the application.
 
 1. The `realm-local.json` file is stored in the project at `keycloak/realm/realm.json`. You can find it in the following location within the repository:
@@ -111,19 +160,19 @@ keycloak/realm-local.json
 
 2. Once Keycloak is running and you have logged in with the admin credentials, go to the Keycloak Admin Console, navigate to **Realm Settings**, and import the `realm-local.json` file.
 
-### 6. **Update Keycloak Client Secret**:
+### 9. **Update Keycloak Client Secret**:
 After setting up Keycloak and creating the clients for both the User Agent (`userAgentClient`) and the Task Manager (`taskManagerClient`), follow these steps to update the Kubernetes secrets.
 
 1. **Open Keycloak Admin Console**: Navigate to the Keycloak Admin Console at `http://localhost:80` and log in using your admin credentials.
 
 2. **Select the User Agent Client**:
-   - **User Agent Client**:
-      - In the left sidebar, go to **Clients** and select `userAgentClient`.
-      - Go to the **Credentials** tab and regenerate the client secret.
-      - Copy the generated client secret.
-   - **Task Manager Client**
-      - Similarly, go to **Clients** and select `taskManagerClient`.
-      - Go to the **Credentials** tab, regenerate the client secret, and copy it.
+    - **User Agent Client**:
+        - In the left sidebar, go to **Clients** and select `userAgentClient`.
+        - Go to the **Credentials** tab and regenerate the client secret.
+        - Copy the generated client secret.
+    - **Task Manager Client**
+        - Similarly, go to **Clients** and select `taskManagerClient`.
+        - Go to the **Credentials** tab, regenerate the client secret, and copy it.
 3. **Base64 Encode Each Client Secret**:
 
    Use the following commands in your terminal to base64 encode each client secret:
@@ -134,26 +183,50 @@ After setting up Keycloak and creating the clients for both the User Agent (`use
 
 4. **Update Secret Value**:
    Update the encoded client secrets in the corresponding YAML files:
-   - **For `userAgentClient`**: Open `useragent-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
-   - **For `taskManagerClient`**: Open `taskmanager-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
+    - **For `userAgentClient`**: Open `useragent-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
+    - **For `taskManagerClient`**: Open `taskmanager-secret.yaml` and update `data.keycloak_client_secret` with the encoded secret.
 
-7. **Apply the Changes to Your Kubernetes Cluster:**
+
+### 10. S3 Space Creation
+To enable S3 storage:
+1. Create a space in your S3 storage.
+2. Note down the following details:
+    - **Bucket Name**
+    - **Endpoint**
+    - **Access Key**
+3. Base64 encode your S3 secret key:
+   ```bash
+   echo -n '<your-secret-key>' | base64
+   ```
+
+4. **Update Secret Value**:
+   Update the encoded client secrets in the corresponding YAML files:
+    - **For `fileProcessor`**: Open `fileprocessor-secret.yaml` and update `data.spaces_secret_key` with the encoded secret.
+    - **For `taskManager`**: Open `taskmanager-secret.yaml` and update `data.spaces_secret_key` with the encoded secret.
+5. **Update Access Key**
+   - Open  `helm/release/todo-list/values-local.yaml` and update:
+     - `global.spaces.enpoint`
+     - `global.spaces.bucketName`
+     - `global.spaces.accessKey`
+
+### 11. Apply the Changes to Your Kubernetes Cluster:
 
    After updating the YAML files, apply the changes with the following commands:
    ```bash
    kubectl apply -f kubernetes/environments/local/secrets/useragent-secret.yaml
    kubectl apply -f kubernetes/environments/local/secrets/taskmanager-secret.yaml
    kubectl apply -f kubernetes/environments/local/secrets/edgeserver-secret.yaml
+   kubectl apply -f kubernetes/environments/local/secrets/fileprocessor-secret.yaml
    ```
 
-### 7. **Install the Application**:
+### 12. **Install the Application**:
 Install the ToDoListApp with the following command:
 
 ```bash
 make app
 ```
 
-### 8. **Explore ToDoListApp**:
+### 13. **Explore ToDoListApp**:
 Access the ToDoListApp through the graphical user interface (GUI) available at [http://localhost:4200/home](http://localhost:4200/home).
 
 ---
@@ -176,3 +249,12 @@ from pathlib import Path
 4. **UserAgent**: This microservice manages users and teams, with teams also being handled by Keycloak.
 
 5. **Task Manager**: This microservice provides CRUD (Create, Read, Update, Delete) operations for tasks.
+
+
+
+### 8. Apply Secrets
+After completing the configurations, apply the secrets using the following command:
+```bash
+kubectl apply -f <your-secret-files>
+```
+

@@ -4,6 +4,7 @@ import com.todolist.taskmanager.dto.CreateTaskDto;
 import com.todolist.taskmanager.dto.UpdateTaskDto;
 import com.todolist.taskmanager.exception.NotFoundException;
 import com.todolist.taskmanager.mapper.TaskMapper;
+import com.todolist.taskmanager.model.Comment;
 import com.todolist.taskmanager.model.Task;
 import com.todolist.taskmanager.repository.TaskRepository;
 import com.todolist.taskmanager.dto.TaskDto;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -24,6 +26,9 @@ import java.util.UUID;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final KeycloakUserService keycloakUserService;
+    private final FileService fileService;
+    private final CommentService commentService;
+    private final TaskMapper taskMapper;
 
     public Page<TaskDto> getTasksByTeam(UUID teamId, Pageable pageable) {
         Page<Task> tasks = taskRepository.findByTeamId(teamId, pageable);
@@ -32,7 +37,7 @@ public class TaskService {
     }
 
     public TaskDto createTask(CreateTaskDto createTaskDto) {
-        Task task = taskRepository.save(TaskMapper.mapToTask(createTaskDto));
+        Task task = taskRepository.save(taskMapper.mapToTask(createTaskDto));
 
         return getTaskDto(task);
     }
@@ -40,6 +45,17 @@ public class TaskService {
     public TaskDto getTaskById(long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
+
+        return getTaskDto(task);
+    }
+
+    public TaskDto addCommentToTask(long taskId, MultipartFile multipartFile, String commentValue) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
+
+        Comment comment = commentService.createComment(commentValue, task);
+
+        fileService.createFile(multipartFile, comment);
 
         return getTaskDto(task);
     }
@@ -56,7 +72,7 @@ public class TaskService {
                 .orElse("Unassigned")
                 : "Unassigned";
 
-        return TaskMapper.mapToTaskDto(task, creatorEmail, assigneeEmail);
+        return taskMapper.mapToTaskDto(task, creatorEmail, assigneeEmail);
     }
 
     public void deleteTaskById(long taskId) {

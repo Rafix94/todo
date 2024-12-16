@@ -2,6 +2,7 @@ package com.todolist.taskmanager.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.List;
 import java.util.UUID;
 
 @Schema(name = "TaskDto", description = "Object representing a task")
@@ -28,5 +29,7 @@ public record TaskDto(
         String assigneeEmail,
 
         @Schema(description = "The UUID of the team associated with this task", example = "c56a4180-65aa-42ec-a945-5fd21dec0538", required = true)
-        UUID teamId
+        UUID teamId,
+
+        List<CommentDto> commentDtos
 ) {}

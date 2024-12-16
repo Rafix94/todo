@@ -132,7 +132,7 @@
                         </jvmFlags>
                     </container>
                     <to>
-                        <image>ravv1/${project.artifactId}:v3</image>
+                        <image>ravv1/${project.artifactId}:v1</image>
                     </to>
                 </configuration>
             </plugin>

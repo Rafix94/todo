@@ -31,20 +31,11 @@ export class DataService {
     return this.http.get(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL, { params });
   }
 
-  getTaskDetails(id: number): Observable<any> {
-    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
-    return this.http.get(url);
-  }
-
   createTask(task: any): Observable<any> {
     const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL;
     return this.http.post(url, task);
   }
 
-  updateTask(id: number, task: any): Observable<any> {
-    const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
-    return this.http.put(url, task);
-  }
 
   deleteTask(id: number): Observable<any> {
     const url = environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + id;
