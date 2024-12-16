@@ -15,8 +15,8 @@
         <th>Comment</th>
         <th>File</th>
         <th>Antivirus Scanning</th>
-        <th>AI Analysis</th>
-        <th>Actions</th>
+        <!--        <th>AI Analysis</th>-->
+        <!--        <th>Actions</th>-->
       </tr>
       </thead>
       <tbody>
@@ -24,37 +24,56 @@
         <td>{{ task.creatorEmail }}</td>
         <td>{{ comment.comment }}</td>
         <td>
-          <a *ngIf="comment.fileDto" [href]="comment.fileDto.url" target="_blank">
-            {{ comment.fileDto.name }}
-          </a>
+          <ng-container *ngIf="comment.fileDto">
+            <a *ngIf="comment.fileDto.scanningStatus === 'CLEAN'" [href]="comment.fileDto.url" target="_blank">
+              {{ comment.fileDto.name }}
+            </a>
+            <span *ngIf="comment.fileDto.scanningStatus === 'INFECTED'" class="infected-file-text">
+              Infected File
+            </span>
+            <span *ngIf="comment.fileDto.scanningStatus === 'SCAN_FAILED'" class="failed-scan-text">
+              Scanning Failed
+            </span>
+            <span *ngIf="comment.fileDto.scanningStatus === 'AWAITING_SCANNING'" class="failed-scan-text">
+              Scanning scheduled
+            </span>
+          </ng-container>
         </td>
         <td>
-          <div class="progress-dots">
-            <span *ngIf="comment.fileDto.antivirusStatus === 'in_progress'">...</span>
-            <span *ngIf="comment.fileDto.antivirusStatus === 'completed'">✅</span>
+          <div class="antivirus-status">
+            <mat-icon *ngIf="comment.fileDto.scanningStatus === 'AWAITING_SCANNING'" class="status-icon clock">
+              schedule
+            </mat-icon>
+            <mat-icon *ngIf="comment.fileDto.scanningStatus === 'CLEAN'" class="status-icon clean">check_circle
+            </mat-icon>
+            <mat-icon *ngIf="comment.fileDto.scanningStatus === 'SCAN_FAILED'" class="status-icon failed">error
+            </mat-icon>
+            <mat-icon *ngIf="comment.fileDto.scanningStatus === 'INFECTED'" class="status-icon infected">
+              report_problem
+            </mat-icon>
           </div>
         </td>
-        <td>
-          <div class="progress-dots">
-            <span *ngIf="comment.fileDto.aiAnalysisStatus === 'in_progress'">...</span>
-            <span *ngIf="comment.fileDto.aiAnalysisStatus === 'completed'">✅</span>
-          </div>
-        </td>
-        <td>
-          <button
-            mat-button
-            color="primary"
-            *ngIf="!comment.fileDto.analyzedFileUrl"
-            (click)="analyzeFile(comment.fileDto.id)"
-            [disabled]="isAnalyzingFile[comment.fileDto.id]"
-          >
-            <ng-container *ngIf="!isAnalyzingFile[comment.fileDto.id]">Analyze</ng-container>
-            <mat-spinner *ngIf="isAnalyzingFile[comment.fileDto.id]" diameter="20"></mat-spinner>
-          </button>
-          <a *ngIf="comment.fileDto.analyzedFileUrl" [href]="comment.fileDto.analyzedFileUrl" target="_blank">
-            Download Analyzed File
-          </a>
-        </td>
+        <!--        <td>-->
+        <!--          <div class="progress-dots">-->
+        <!--            <span *ngIf="comment.fileDto.aiAnalysisStatus === 'in_progress'">...</span>-->
+        <!--            <span *ngIf="comment.fileDto.aiAnalysisStatus === 'completed'">✅</span>-->
+        <!--          </div>-->
+        <!--        </td>-->
+        <!--        <td>-->
+        <!--          <button-->
+        <!--            mat-button-->
+        <!--            color="primary"-->
+        <!--            *ngIf="!comment.fileDto.analyzedFileUrl"-->
+        <!--            (click)="analyzeFile(comment.fileDto.id)"-->
+        <!--            [disabled]="isAnalyzingFile[comment.fileDto.id]"-->
+        <!--          >-->
+        <!--            <ng-container *ngIf="!isAnalyzingFile[comment.fileDto.id]">Analyze</ng-container>-->
+        <!--            <mat-spinner *ngIf="isAnalyzingFile[comment.fileDto.id]" diameter="20"></mat-spinner>-->
+        <!--          </button>-->
+        <!--          <a *ngIf="comment.fileDto.analyzedFileUrl" [href]="comment.fileDto.analyzedFileUrl" target="_blank">-->
+        <!--            Download Analyzed File-->
+        <!--          </a>-->
+        <!--        </td>-->
       </tr>
       </tbody>
     </table>
@@ -66,7 +85,7 @@
       <textarea matInput formControlName="comment" rows="3"></textarea>
     </mat-form-field>
 
-    <input type="file" (change)="onFileSelect($event)" />
+    <input type="file" (change)="onFileSelect($event)"/>
     <button
       mat-raised-button
       color="primary"

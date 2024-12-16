@@ -1,4 +1,4 @@
-package com.todolist.taskmanager.model;
+package com.todolist;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +7,5 @@ import lombok.Setter;
 @Getter
 public class ScanDetails {
     private ScanningStatus scanningStatus;
-    private ScanningResult scanningResult;
     private String virus;
 }

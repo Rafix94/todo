@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Build common
+cd common || exit
+mvn clean install
+cd ..
+
 # Build useragent
 cd useragent || exit
 mvn clean compile jib:dockerBuild

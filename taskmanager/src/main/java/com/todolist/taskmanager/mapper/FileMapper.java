@@ -1,5 +1,6 @@
 package com.todolist.taskmanager.mapper;
 
+import com.todolist.ScanningStatus;
 import com.todolist.taskmanager.controller.FileDto;
 
 import com.todolist.taskmanager.model.File;
@@ -19,9 +20,9 @@ public class FileMapper {
                     file.getId(),
                     file.getName(),
                     file.getSize(),
-                    spacesService.generatePresignedUrl(
-                            file.getS3Key()
-                    )
+                    file.getScanningStatus() == ScanningStatus.CLEAN ?
+                            spacesService.generatePresignedUrl(file.getS3Key()) : null,
+                    file.getScanningStatus()
             );
         }
         return null;

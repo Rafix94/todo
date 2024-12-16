@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: "add-scanning-status"
+      author: "rafalgrzes"
+      changes:
+        - addColumn:
+            tableName: "file"
+            columns:
+              - column:
+                  name: "scanning_status"
+                  type: VARCHAR(255)

@@ -39,7 +39,7 @@ kafka:
 # Install ClamAV
 clamAV:
 	@echo "Deploying ClamAV..."
-	$(HELM) upgrade --install $(CLAMAV_RELEASE) $(CLAMAV_CHART) --namespace $(NAMESPACE) -f $(CLAMAV_CHART)/values.yaml --wait
+	kubectl apply -f kubernetes/environments/local/clamav/clamav.yaml
 
 # Install Keycloak
 keycloak:

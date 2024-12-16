@@ -1,4 +1,4 @@
-package com.todolist.taskmanager.model;
+package com.todolist;
 
 public record FileMetadata(
         Long fileId,

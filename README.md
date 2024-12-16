@@ -146,10 +146,8 @@ sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule require
 ### 7. ClamAV Installation
 To install ClamAV, execute the following command:
 ```bash
-docker pull --platform=linux/amd64 clamav/clamav:1.4.1-15
 make clamAV
 ```
-
 
 ### 8. **Import Keycloak Realm Configuration**:
 You will need to import the Keycloak realm configuration to set up the correct authentication and authorization settings for the application.

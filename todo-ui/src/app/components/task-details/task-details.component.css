@@ -119,3 +119,43 @@
 button[mat-button] {
   margin-right: 8px;
 }
+.antivirus-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.status-icon {
+  font-size: 24px;
+  vertical-align: middle;
+}
+
+.status-icon.clock {
+  color: #ffa726;
+}
+
+.status-icon.arrow {
+  color: #42a5f5;
+  animation: spin 1s linear infinite;
+}
+
+.status-icon.clean {
+  color: #66bb6a;
+}
+
+.status-icon.failed {
+  color: #ffca28;
+}
+
+.status-icon.infected {
+  color: #ef5350;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

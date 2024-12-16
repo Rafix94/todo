@@ -1,5 +1,6 @@
 package com.todolist.taskmanager.model;
 
+import com.todolist.ScanningStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,10 @@ public class File extends BaseEntity {
 
     @Column(nullable = false)
     private String contentType;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ScanningStatus scanningStatus;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "comment_id", referencedColumnName = "id")

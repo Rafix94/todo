@@ -5,7 +5,7 @@ global:
   discoverServerURL: "http://spring-cloud-kubernetes-discoveryserver:80"
   spaces:
     endpoint: https://ams3.digitaloceanspaces.com
-    accessKey: DO003CP39TMHVUWC4GYV
+    accessKey: DO801VCU62RWLNDWJZKB
     bucketName: taskmanager-attachments
 
 ui:

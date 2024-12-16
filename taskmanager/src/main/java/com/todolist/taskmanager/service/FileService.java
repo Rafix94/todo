@@ -1,7 +1,8 @@
 package com.todolist.taskmanager.service;
 
+import com.todolist.FileMetadata;
+import com.todolist.ScanningStatus;
 import com.todolist.taskmanager.model.Comment;
-import com.todolist.taskmanager.model.FileMetadata;
 import com.todolist.taskmanager.repository.FileRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -37,6 +38,7 @@ public class FileService {
                 .contentType(multipartFile.getContentType())
                 .s3Key(s3Key)
                 .comment(comment)
+                .scanningStatus(ScanningStatus.AWAITING_SCANNING)
                 .build();
 
         File savedFile = fileRepository.save(file);
@@ -49,4 +51,11 @@ public class FileService {
         return savedFile;
     }
 
+    public void updateScanningStatus(Long fileId, ScanningStatus scanningStatus) {
+        fileRepository.findById(fileId).ifPresent(file -> {
+            file.setScanningStatus(scanningStatus);
+            fileRepository.save(file);
+        });
+
+    }
 }

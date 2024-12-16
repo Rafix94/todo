@@ -1,5 +1,0 @@
-podLabels:
-  test: test
-
-hpa:
-  enabled: false
