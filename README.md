@@ -3,7 +3,7 @@
 
 ToDoListApp is a task management application that allows users to organize their tasks efficiently. The application is hosted on a Google Cloud cluster and can be accessed at [https://todolist.ooguy.com/](https://todolist.ooguy.com/).
 
-Please note that both the frontend and Keycloak use self-signed certificates. You may need to allow insecure connections in your browser settings, as these connections might be treated as insecure.
+**Note**: Both the frontend and Keycloak use self-signed certificates. You may need to allow insecure connections in your browser settings, as these connections might be treated as insecure.
 
 # Setup Instructions
 
@@ -100,7 +100,7 @@ kubectl get configmap keycloak-env-vars -o jsonpath='{.data.KEYCLOAK_ADMIN}'
 kubectl get secret keycloak -o jsonpath='{.data.admin-password}' | base64 --decode
 ```
 
-### 6. Kafka Installation
+### 5. Kafka Installation
 To install Kafka, execute the following command:
 ```bash
 make kafka
@@ -110,7 +110,7 @@ make kafka
 
 To create internal topics such as `__consumer_offsets` with SASL authentication, follow the steps below.
 
-#### Step 1: Retrieve Kafka Client Password
+- Retrieve Kafka Client Password
 
 Run the following command to retrieve the `client-passwords` from the Kubernetes secret:
 
@@ -119,7 +119,7 @@ KAFKA_PASSWORD=$(kubectl get secret kafka-user-passwords -o jsonpath='{.data.cli
 ```
 
 
-#### Step 2: Create the Topic
+- Create the Topic
 
 Run the following command to create the `__consumer_offsets` topic:
 
@@ -143,22 +143,21 @@ sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule require
 
 
 
-### 7. ClamAV Installation
+### 6. ClamAV Installation
 To install ClamAV, execute the following command:
 ```bash
 make clamAV
 ```
 
-### 8. **Import Keycloak Realm Configuration**:
+### 7. **Import Keycloak Realm Configuration**:
 You will need to import the Keycloak realm configuration to set up the correct authentication and authorization settings for the application.
-
-1. The `realm-local.json` file is stored in the project at `keycloak/realm/realm.json`. You can find it in the following location within the repository:
+- The `realm-local.json` file is stored in the project at `keycloak/realm/realm.json`. You can find it in the following location within the repository:
 
 ```
 keycloak/realm-local.json
 ```
 
-2. Once Keycloak is running and you have logged in with the admin credentials, go to the Keycloak Admin Console, navigate to **Realm Settings**, and import the `realm-local.json` file.
+- Once Keycloak is running and you have logged in with the admin credentials, go to the Keycloak Admin Console, navigate to **Realm Settings**, and import the `realm-local.json` file.
 
 ### 9. **Update Keycloak Client Secret**:
 After setting up Keycloak and creating the clients for both the User Agent (`userAgentClient`) and the Task Manager (`taskManagerClient`), follow these steps to update the Kubernetes secrets.
@@ -249,12 +248,4 @@ from pathlib import Path
 4. **UserAgent**: This microservice manages users and teams, with teams also being handled by Keycloak.
 
 5. **Task Manager**: This microservice provides CRUD (Create, Read, Update, Delete) operations for tasks.
-
-
-
-### 8. Apply Secrets
-After completing the configurations, apply the secrets using the following command:
-```bash
-kubectl apply -f <your-secret-files>
-```
 
