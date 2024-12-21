@@ -1,7 +1,7 @@
 <app-header></app-header>
 <div class="site-section">
   <div class="top-bar">
-    <!-- Team Selection -->
+    <!-- Team Selection Dropdown -->
     <mat-form-field appearance="fill">
       <mat-label>Select Team</mat-label>
       <mat-select [(value)]="selectedTeam" (selectionChange)="onTeamChange($event)">
@@ -15,25 +15,22 @@
 
   <!-- Task Table -->
   <table mat-table [dataSource]="data" matSort class="mat-elevation-z8">
-    <!-- Title Column -->
+    <!-- Columns definition -->
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
       <td mat-cell *matCellDef="let task"> {{ task.title }} </td>
     </ng-container>
 
-    <!-- Description Column -->
     <ng-container matColumnDef="description">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
       <td mat-cell *matCellDef="let task"> {{ task.description }} </td>
     </ng-container>
 
-    <!-- Created By Column -->
     <ng-container matColumnDef="createdBy">
       <th mat-header-cell *matHeaderCellDef> Created By </th>
       <td mat-cell *matCellDef="let task"> {{ task.creatorEmail || 'Unknown' }} </td>
     </ng-container>
 
-    <!-- Assigned To Column -->
     <ng-container matColumnDef="assignedTo">
       <th mat-header-cell *matHeaderCellDef> Assigned To </th>
       <td mat-cell *matCellDef="let task"> {{ task.assigneeEmail || 'Unassigned' }} </td>
@@ -52,7 +49,6 @@
       </td>
     </ng-container>
 
-    <!-- Table Header and Rows -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row
         *matRowDef="let row; columns: displayedColumns;"

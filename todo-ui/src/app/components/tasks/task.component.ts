@@ -16,7 +16,7 @@ import { AddTaskDialogComponent } from "../add-task-dialog/add-task-dialog.compo
 export class TaskComponent implements OnInit {
   data: any[] = [];
   teams: any[] = [];
-  selectedTeam: string | null = null;
+  selectedTeam: string = '';
   currentPage = 0;
   pageSize = 10;
   totalPages = 0;
@@ -26,6 +26,8 @@ export class TaskComponent implements OnInit {
   sortField: string = 'title';
   sortDir: string = 'asc';
   searchQuery: string = '';
+  sessionActive = false;
+  currentSession: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -97,6 +99,7 @@ export class TaskComponent implements OnInit {
     this.selectedTeam = event.value;
     this.currentPage = 0;
     this.getData();
+    this.checkSessionStatus(); // Check session status for the selected team
   }
 
   deleteRow(task: Task): void {
@@ -134,5 +137,33 @@ export class TaskComponent implements OnInit {
 
   openTaskDetails(taskId: string): void {
     this.router.navigate(['/tasks', taskId]);
+  }
+
+  checkSessionStatus() {
+    this.dataService.checkSessionStatus(this.selectedTeam).subscribe((response) => {
+      this.sessionActive = response.active;
+      this.currentSession = response.sessionId || '';
+    });
+  }
+
+  toggleSession() {
+    if (!this.sessionActive) {
+      this.createSession();
+    } else {
+      this.joinSession();
+    }
+  }
+
+  createSession() {
+    this.dataService.createSession(this.selectedTeam).subscribe((response) => {
+      this.currentSession = response.sessionId;
+      this.sessionActive = true;
+      this.dataService.emitCreateSession(this.selectedTeam);
+      this.router.navigate(['/refinement', { sessionId: this.currentSession, role: 'admin' }]);
+    });
+  }
+
+  joinSession() {
+    this.router.navigate(['/refinement', { sessionId: this.currentSession, role: 'participant' }]);
   }
 }

@@ -1,0 +1,28 @@
+deployment:
+  name: refinement-service
+  label: refinement-service
+  replicaCount: 1
+  configEnabled: true
+  containerPort: 8096
+  discoveryEnabled: true
+  dbEnabled: true
+  keycloakClientEnabled: true
+  secretName: refinement-service-secret
+  kafkaClientEnabled: true
+  spacesEnabled: false
+  image:
+    repository: ravv1/refinement-service
+    tag: v1
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "256Mi"
+    limits:
+      cpu: "1"
+      memory: "1024Mi"
+service:
+  name: refinement-service
+  protocol: http
+  type: ClusterIP
+  port: 8096
+  targetPort: 8096

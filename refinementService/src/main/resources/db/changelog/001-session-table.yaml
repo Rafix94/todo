@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: "001-create-task-table"
+      author: "rafal.grzes"
+      changes:
+        - createTable:
+            tableName: "session"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: "team_id"
+                  type: "uuid"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "active"
+                  type: "boolean"
+                  constraints:
+                    nullable: false
+
