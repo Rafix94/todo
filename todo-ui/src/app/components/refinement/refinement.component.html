@@ -1,1 +1,45 @@
-<p>refinement works!</p>
+<app-header></app-header>
+<div class="site-section">
+  <div class="top-bar">
+    <!-- Task Dropdown for Admin -->
+    <mat-form-field appearance="fill" *ngIf="isAdmin && !votingActive">
+      <mat-label>Select Task</mat-label>
+      <mat-select [(value)]="selectedTask" (selectionChange)="onTaskChange()">
+        <mat-option *ngFor="let task of tasks" [value]="task.id">{{ task.title }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Start/End Voting Buttons for Admin -->
+    <button mat-raised-button color="primary" *ngIf="isAdmin && !votingActive" (click)="startVoting()">Start Voting</button>
+    <button mat-raised-button color="warn" *ngIf="isAdmin && votingActive" (click)="endVoting()">End Voting</button>
+  </div>
+
+  <!-- Selected Task Information -->
+  <div class="selected-task">
+    <h2>Selected Task:</h2>
+    <p><strong>Title:</strong> {{ selectedTaskTitle || 'No task selected' }}</p>
+    <p><strong>Description:</strong> {{ selectedTaskDescription || 'No description available' }}</p>
+  </div>
+
+  <!-- Participants List -->
+  <h3>Participants</h3>
+  <ul class="participant-list">
+    <li *ngFor="let participant of participants">
+      {{ participant.name }}
+      <span *ngIf="participant.voted" class="voted">✔</span>
+      <span *ngIf="!participant.voted" class="not-voted">✘</span>
+    </li>
+  </ul>
+
+  <!-- Voting Buttons -->
+  <div class="voting-buttons">
+    <button
+      *ngFor="let value of votingValues"
+      mat-raised-button
+      [class.disabled]="!votingActive"
+      [disabled]="!votingActive || userVoted"
+      (click)="submitVote(value)">
+      {{ value }}
+    </button>
+  </div>
+</div>

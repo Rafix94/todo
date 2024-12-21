@@ -17,7 +17,7 @@ public class SessionService {
     @Transactional
     public Session createOrGetSession(UUID teamId) {
         return sessionRepository.findByTeamId(teamId)
-                .orElseGet(() -> sessionRepository.save(Session.builder().teamId(teamId).build()));
+                .orElseGet(() -> sessionRepository.save(Session.builder().teamId(teamId).active(true).build()));
     }
 
     public Optional<Session> getSession(UUID teamId) {

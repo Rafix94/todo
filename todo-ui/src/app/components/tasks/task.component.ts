@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
-import { DataService } from "../../services/dashboard/data.service";
+import { MatSort } from '@angular/material/sort';
+import { DataService } from "../../services/data.service";
 import { Router } from '@angular/router';
 import { Task } from "../../model/task.model";
 import { TeamsService } from 'src/app/services/teams.service';
@@ -44,17 +44,13 @@ export class TaskComponent implements OnInit {
     this.loadTeams();
   }
 
-  ngAfterViewInit(): void {
-    this.sort.sortChange.subscribe((sortState: Sort) => this.announceSortChange(sortState));
-    this.paginator.page.subscribe((pageEvent: PageEvent) => this.onPageChange(pageEvent));
-  }
-
   loadTeams(): void {
     this.teamService.getAllTeams('MEMBER').subscribe((teams: any[]) => {
       this.teams = teams;
       if (this.teams.length > 0) {
         this.selectedTeam = this.teams[0].id;
         this.getData();
+        this.checkSessionStatus();
       }
     });
   }
@@ -80,26 +76,15 @@ export class TaskComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
     this.getData();
+    this.checkSessionStatus();
   }
 
-  announceSortChange(sortState: Sort): void {
-    this.sortDir = sortState.direction || 'asc';
-    this.sortField = sortState.active || 'title';
-    this.getData();
-  }
-
-  applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    this.searchQuery = filterValue;
-    this.currentPage = 0;
-    this.getData();
-  }
 
   onTeamChange(event: any): void {
     this.selectedTeam = event.value;
     this.currentPage = 0;
     this.getData();
-    this.checkSessionStatus(); // Check session status for the selected team
+    this.checkSessionStatus();
   }
 
   deleteRow(task: Task): void {
@@ -129,9 +114,8 @@ export class TaskComponent implements OnInit {
   }
 
   assignTask(task: Task): void {
-    const assignedTo = this.user.id; // Assign to the current user’s ID
     this.dataService.assignTask(task.id).subscribe(() => {
-      this.getData(); // Refresh the task list after assignment
+      this.getData();
     });
   }
 
@@ -157,13 +141,11 @@ export class TaskComponent implements OnInit {
   createSession() {
     this.dataService.createSession(this.selectedTeam).subscribe((response) => {
       this.currentSession = response.sessionId;
-      this.sessionActive = true;
-      this.dataService.emitCreateSession(this.selectedTeam);
-      this.router.navigate(['/refinement', { sessionId: this.currentSession, role: 'admin' }]);
+      this.router.navigate(['/refinement', this.selectedTeam, 'admin']);
     });
   }
 
   joinSession() {
-    this.router.navigate(['/refinement', { sessionId: this.currentSession, role: 'participant' }]);
+    this.router.navigate(['/refinement', this.selectedTeam, 'participant']);
   }
 }

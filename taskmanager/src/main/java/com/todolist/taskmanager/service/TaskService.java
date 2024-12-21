@@ -31,6 +31,9 @@ public class TaskService {
     private final TaskMapper taskMapper;
 
     public Page<TaskDto> getTasksByTeam(UUID teamId, Pageable pageable) {
+        if (pageable == null) {
+            pageable = Pageable.unpaged();
+        }
         Page<Task> tasks = taskRepository.findByTeamId(teamId, pageable);
 
         return tasks.map(this::getTaskDto);
