@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -31,12 +32,24 @@ public class TaskService {
     private final TaskMapper taskMapper;
 
     public Page<TaskDto> getTasksByTeam(UUID teamId, Pageable pageable) {
-        if (pageable == null) {
-            pageable = Pageable.unpaged();
-        }
         Page<Task> tasks = taskRepository.findByTeamId(teamId, pageable);
 
         return tasks.map(this::getTaskDto);
+    }
+
+    public List<TaskDto> getAllTasksByTeam(UUID teamId) {
+        List<Task> tasks = taskRepository.findAllByTeamId(teamId);
+        return tasks.stream().map(task -> new TaskDto(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        )).toList();
     }
 
     public TaskDto createTask(CreateTaskDto createTaskDto) {

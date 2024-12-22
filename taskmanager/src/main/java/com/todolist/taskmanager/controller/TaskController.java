@@ -23,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Task Management API", description = "CRUD operations for managing tasks by team")
@@ -43,6 +44,19 @@ public class TaskController {
     @PreAuthorize("@teamSecurityService.userBelongsToTeam(#teamId)")
     public ResponseEntity<Page<TaskDto>> getTasksByTeam(@RequestParam UUID teamId, Pageable pageable) {
         Page<TaskDto> tasks = taskService.getTasksByTeam(teamId, pageable);
+        return ResponseEntity.ok(tasks);
+    }
+
+    @Operation(summary = "Get all tasks for a specific team", description = "Retrieve a paginated list of tasks for a team the user belongs to, specified by teamId.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully"),
+            @ApiResponse(responseCode = "403", description = "User not authorized to access this team's tasks"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    })
+    @GetMapping("/all")
+    @PreAuthorize("@teamSecurityService.userBelongsToTeam(#teamId)")
+    public ResponseEntity<List<TaskDto>> getAllTasksByTeam(@RequestParam UUID teamId, Pageable pageable) {
+        List<TaskDto> tasks = taskService.getAllTasksByTeam(teamId);
         return ResponseEntity.ok(tasks);
     }
 

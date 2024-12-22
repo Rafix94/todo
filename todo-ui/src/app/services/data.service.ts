@@ -42,7 +42,7 @@ export class DataService {
 
   getAllTasks(selectedTeam: string): Observable<any> {
     const params = new HttpParams().set('teamId', selectedTeam);
-    return this.http.get(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL, { params });
+    return this.http.get(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + '/all', { params });
   }
 
   createTask(task: any): Observable<any> {
