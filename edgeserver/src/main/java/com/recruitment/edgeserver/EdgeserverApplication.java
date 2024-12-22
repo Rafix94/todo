@@ -88,7 +88,7 @@ public class EdgeserverApplication {
                         )
                         .uri("http://useragent:8092"))
                 .route("refinement-service_route", predicateSpec -> predicateSpec
-                        .path("/todolist/refinement-service/ws")
+                        .path("/todolist/refinement-service/ws/**")
                         .filters(filterSpec -> filterSpec
                                 .rewritePath("/todolist/refinement-service/(?<segment>.*)", "/${segment}")
                         )

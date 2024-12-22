@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RefinementService } from '../../services/refinement.service';
-import {DataService} from "../../services/data.service";
-import {ActivatedRoute} from "@angular/router";
+import { DataService } from '../../services/data.service';
+import { ActivatedRoute } from '@angular/router';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-refinement',
@@ -19,10 +20,17 @@ export class RefinementComponent implements OnInit, OnDestroy {
   tasks: { id: string; title: string; description: string }[] = [];
   votingValues: number[] = [1, 2, 3, 5, 8, 13, 21];
   private teamId: string = '';
+  private userId: string = '';
 
-  constructor(private refinementService: RefinementService, private dataService: DataService, private route: ActivatedRoute,) {}
+  constructor(
+    private refinementService: RefinementService,
+    private dataService: DataService,
+    private route: ActivatedRoute,
+    private keycloakService: KeycloakService
+  ) {}
+  async ngOnInit(): Promise<void> {
+    this.userId = await this.getUserId();
 
-  ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.teamId = params['teamId'];
       const role = params['role'];
@@ -34,19 +42,23 @@ export class RefinementComponent implements OnInit, OnDestroy {
         });
       }
 
-      // Connect to WebSocket
       this.refinementService.connect(this.teamId);
-
-      // Handle session updates via WebSocket
-      this.refinementService.onSessionUpdate((data) => {
-        this.updateSessionState(data);
+      this.refinementService.connected$.subscribe((connected) => {
+        if (connected) {
+          console.log('Subscribing to participant updates');
+          this.refinementService.subscribeToParticipants((data) => {
+            this.updateParticipantList(data);
+          });
+        }
       });
+
+      this.refinementService.emitJoinSession(this.teamId, this.userId);
+
     });
   }
 
-
   ngOnDestroy(): void {
-    this.refinementService.disconnect();
+    this.refinementService.disconnectSocket();
   }
 
   onTaskChange(): void {
@@ -55,45 +67,42 @@ export class RefinementComponent implements OnInit, OnDestroy {
       this.selectedTaskTitle = selected.title;
       this.selectedTaskDescription = selected.description;
 
-      this.refinementService.emitTaskUpdate(this.teamId, this.selectedTask);
+      this.refinementService.send('/app/session/task/update', {
+        teamId: this.teamId,
+        currentTaskId: this.selectedTask,
+      });
     }
   }
 
   startVoting(): void {
     this.votingActive = true;
     this.userVoted = false;
-    if (this.teamId) {
-      this.refinementService.emitStartVoting(this.teamId);
-    }
+
+    this.refinementService.send('/app/session/voting/start', { teamId: this.teamId });
   }
 
   endVoting(): void {
     this.votingActive = false;
     this.userVoted = false;
-    if (this.teamId) {
-      this.refinementService.emitEndVoting(this.teamId);
-    }
+
+    this.refinementService.send('/app/session/voting/end', { teamId: this.teamId });
   }
 
   submitVote(value: number): void {
     this.userVoted = true;
-    if (this.teamId) {
-      this.refinementService.emitVote(this.teamId, value);
-    }
+
+    this.refinementService.send('/app/session/voting/vote', { teamId: this.teamId, vote: value });
   }
 
-  updateSessionState(data: { participants: any[]; votingActive: boolean; currentTaskId?: string }): void {
-    this.participants = data.participants;
-    this.votingActive = data.votingActive;
+  private updateParticipantList(data: { participants: { mail: string }[] }): void {
+    this.participants = data.participants.map((p) => ({
+      name: p.mail || 'Unknown',
+      voted: false,
+    }));
+  }
 
-    if (data.currentTaskId) {
-      // Update selected task based on WebSocket update
-      this.selectedTask = data.currentTaskId;
-      const task = this.tasks.find((t) => t.id === this.selectedTask);
-      if (task) {
-        this.selectedTaskTitle = task.title;
-        this.selectedTaskDescription = task.description;
-      }
-    }
+  async getUserId(): Promise<string> {
+    const userProfile = await this.keycloakService.loadUserProfile();
+    return userProfile.id || '';
   }
 }

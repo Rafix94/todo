@@ -1,64 +1,31 @@
 package com.todolist.refinementservice.controller;
-
-import com.todolist.refinementservice.dto.SessionMessageDTO;
+import com.todolist.refinementservice.dto.JoinSessionDTO;
+import com.todolist.refinementservice.dto.ParticipantDTO;
+import com.todolist.refinementservice.dto.SessionParticipantsDTO;
+import com.todolist.refinementservice.model.Session;
+import com.todolist.refinementservice.service.SessionService;
+import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-
 @Controller
+@AllArgsConstructor
 public class WebSocketController {
 
-    private final Map<String, String> activeSessions = new ConcurrentHashMap<>();
-    private final Map<String, String> currentTasks = new ConcurrentHashMap<>();
-
-    @MessageMapping("/session/create")
-    @SendTo("/topic/session-updates")
-    public SessionMessageDTO createSession(SessionMessageDTO message) {
-        activeSessions.put(message.teamId(), message.sessionId());
-        return new SessionMessageDTO(
-                message.teamId(),
-                message.sessionId(),
-                "CREATED",
-                null
-        );
-    }
+    private final SessionService sessionService;
 
     @MessageMapping("/session/join")
-    @SendTo("/topic/session-updates")
-    public SessionMessageDTO joinSession(SessionMessageDTO message) {
-        String sessionId = activeSessions.get(message.teamId());
-        return new SessionMessageDTO(
-                message.teamId(),
-                sessionId,
-                "JOINED",
-                currentTasks.getOrDefault(message.teamId(), null)
+    @SendTo("/topic/session/participants")
+    public SessionParticipantsDTO joinSession(@Payload JoinSessionDTO joinSessionDTO) {
+        Session session = sessionService.joinSession(joinSessionDTO.teamId(), joinSessionDTO.userId());
+
+        return new SessionParticipantsDTO(
+                session.getParticipants().stream()
+                        .map(participant -> new ParticipantDTO(participant.getUserId(), "tmp@example.com")) // Replace with actual email logic
+                        .toList()
         );
     }
 
-    @MessageMapping("/session/task/update")
-    @SendTo("/topic/session-updates")
-    public SessionMessageDTO updateTask(SessionMessageDTO message) {
-        currentTasks.put(message.teamId(), message.currentTask());
-        return new SessionMessageDTO(
-                message.teamId(),
-                activeSessions.get(message.teamId()),
-                "TASK_UPDATED",
-                message.currentTask()
-        );
-    }
-
-    @MessageMapping("/session/end")
-    @SendTo("/topic/session-updates")
-    public SessionMessageDTO endSession(SessionMessageDTO message) {
-        return new SessionMessageDTO(
-                message.teamId(),
-                message.sessionId(),
-                "ENDED",
-                null
-        );
-    }
 }
