@@ -56,3 +56,34 @@
   margin: 10px 0 0;
   font-size: 1.1em;
 }
+
+.participants-section {
+  margin-top: 20px;
+}
+
+.participant-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.participant-card {
+  width: 300px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.participant-card .voted {
+  color: green;
+  font-weight: bold;
+}
+
+.participant-card .not-voted {
+  color: red;
+  font-weight: bold;
+}
+
+.voting-buttons {
+  margin-top: 20px;
+}

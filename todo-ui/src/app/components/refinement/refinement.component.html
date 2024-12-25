@@ -21,15 +21,26 @@
     <p><strong>Description:</strong> {{ selectedTaskDescription || 'No description available' }}</p>
   </div>
 
-  <!-- Participants List -->
-  <h3>Participants</h3>
-  <ul class="participant-list">
-    <li *ngFor="let participant of participants">
-      {{ participant.name }}
-      <span *ngIf="participant.voted" class="voted">✔</span>
-      <span *ngIf="!participant.voted" class="not-voted">✘</span>
-    </li>
-  </ul>
+  <div class="participants-section">
+    <h3>Participants</h3>
+    <div class="participant-cards">
+      <mat-card *ngFor="let participant of participants" class="participant-card">
+        <div class="participant-content">
+          <div class="participant-info">
+            <h4>{{ participant.firstName }} {{ participant.lastName }}</h4>
+            <p>{{ participant.mail }}</p>
+          </div>
+          <div class="participant-vote-status">
+            <p>
+              Voted:
+              <span *ngIf="participant.voted" class="voted">✔ Yes</span>
+              <span *ngIf="!participant.voted" class="not-voted">✘ No</span>
+            </p>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
 
   <!-- Voting Buttons -->
   <div class="voting-buttons">

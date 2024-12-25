@@ -19,4 +19,7 @@ public class Participant {
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", nullable = false)
     Session session;
+
+    @Column
+    Integer score;
 }

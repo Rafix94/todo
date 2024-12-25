@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
 import { RefinementService } from '../../services/refinement.service';
 import { DataService } from '../../services/data.service';
 import { ActivatedRoute } from '@angular/router';
@@ -16,7 +16,7 @@ export class RefinementComponent implements OnInit, OnDestroy {
   selectedTask: string | null = null;
   selectedTaskTitle: string | null = null;
   selectedTaskDescription: string | null = null;
-  participants: { name: string; voted: boolean }[] = [];
+  participants: { mail: string; firstName: string; lastName: string; voted: boolean }[] = [];
   tasks: { id: string; title: string; description: string }[] = [];
   votingValues: number[] = [1, 2, 3, 5, 8, 13, 21];
   private teamId: string = '';
@@ -42,22 +42,35 @@ export class RefinementComponent implements OnInit, OnDestroy {
         });
       }
 
-      this.refinementService.connect(this.teamId);
+      this.refinementService.connect();
       this.refinementService.connected$.subscribe((connected) => {
         if (connected) {
-          console.log('Subscribing to participant updates');
+          console.log('Subscribing to updates');
+
+          // Subscribe to participant updates
           this.refinementService.subscribeToParticipants((data) => {
             this.updateParticipantList(data);
+          });
+
+          // Subscribe to voting status updates
+          this.refinementService.subscribeToVotingStatus((data) => {
+            this.handleVotingStatusUpdate(data);
+          });
+
+          // Subscribe to task updates
+          this.refinementService.subscribeToTaskUpdates((data) => {
+            this.handleTaskUpdate(data);
           });
         }
       });
 
+      // Join the session
       this.refinementService.emitJoinSession(this.teamId, this.userId);
-
     });
   }
 
   ngOnDestroy(): void {
+    this.refinementService.emitLeaveSession(this.teamId, this.userId);
     this.refinementService.disconnectSocket();
   }
 
@@ -67,10 +80,7 @@ export class RefinementComponent implements OnInit, OnDestroy {
       this.selectedTaskTitle = selected.title;
       this.selectedTaskDescription = selected.description;
 
-      this.refinementService.send('/app/session/task/update', {
-        teamId: this.teamId,
-        currentTaskId: this.selectedTask,
-      });
+      this.refinementService.emitTaskUpdate(this.teamId, selected.title, selected.description);
     }
   }
 
@@ -78,25 +88,27 @@ export class RefinementComponent implements OnInit, OnDestroy {
     this.votingActive = true;
     this.userVoted = false;
 
-    this.refinementService.send('/app/session/voting/start', { teamId: this.teamId });
+    this.refinementService.emitStartVoting(this.teamId);
   }
 
   endVoting(): void {
     this.votingActive = false;
     this.userVoted = false;
 
-    this.refinementService.send('/app/session/voting/end', { teamId: this.teamId });
+    this.refinementService.emitStopVoting(this.teamId);
   }
 
   submitVote(value: number): void {
     this.userVoted = true;
 
-    this.refinementService.send('/app/session/voting/vote', { teamId: this.teamId, vote: value });
+    this.refinementService.emitVote(this.teamId, this.userId, value);
   }
 
-  private updateParticipantList(data: { participants: { mail: string }[] }): void {
+  private updateParticipantList(data: { participants: { mail: string, firstName: string, lastName: string }[] }): void {
     this.participants = data.participants.map((p) => ({
-      name: p.mail || 'Unknown',
+      mail: p.mail || 'Unknown',
+      firstName: p.firstName || 'Unknown',
+      lastName: p.lastName || 'Unknown',
       voted: false,
     }));
   }
@@ -105,4 +117,24 @@ export class RefinementComponent implements OnInit, OnDestroy {
     const userProfile = await this.keycloakService.loadUserProfile();
     return userProfile.id || '';
   }
+
+  private handleVotingStatusUpdate(data: { sessionId: number; teamId: string; active: boolean }): void {
+    console.log('Voting Status Update:', data);
+    this.votingActive = data.active;
+  }
+
+  private handleTaskUpdate(data: { taskTitle: string; taskDescription: string }): void {
+    console.log('Task Update Received:', data);
+    this.selectedTaskTitle = data.taskTitle;
+    this.selectedTaskDescription = data.taskDescription;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  handleBeforeUnload(event: BeforeUnloadEvent): void {
+    this.refinementService.emitLeaveSession(this.teamId, this.userId);
+
+    event.preventDefault();
+    event.returnValue = '';
+  }
+
 }

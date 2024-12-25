@@ -1,8 +1,5 @@
 package com.todolist.refinementservice.controller;
-import com.todolist.refinementservice.dto.JoinSessionDTO;
-import com.todolist.refinementservice.dto.ParticipantDTO;
-import com.todolist.refinementservice.dto.SessionParticipantsDTO;
-import com.todolist.refinementservice.model.Session;
+import com.todolist.refinementservice.dto.*;
 import com.todolist.refinementservice.service.SessionService;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -19,13 +16,30 @@ public class WebSocketController {
     @MessageMapping("/session/join")
     @SendTo("/topic/session/participants")
     public SessionParticipantsDTO joinSession(@Payload JoinSessionDTO joinSessionDTO) {
-        Session session = sessionService.joinSession(joinSessionDTO.teamId(), joinSessionDTO.userId());
-
-        return new SessionParticipantsDTO(
-                session.getParticipants().stream()
-                        .map(participant -> new ParticipantDTO(participant.getUserId(), "tmp@example.com")) // Replace with actual email logic
-                        .toList()
-        );
+        return sessionService.joinSession(joinSessionDTO.teamId(), joinSessionDTO.userId());
     }
 
+    @MessageMapping("/session/leave")
+    @SendTo("/topic/session/participants")
+    public SessionParticipantsDTO leaveSession(@Payload JoinSessionDTO joinSessionDTO) {
+        return sessionService.leaveSession(joinSessionDTO.teamId(), joinSessionDTO.userId());
+    }
+
+    @MessageMapping("/session/voting/start")
+    @SendTo("/topic/voting/status")
+    public VotingStatusDTO startVoting(@Payload VotingStatusDTO votingStatusDTO) {
+        return sessionService.startVoting(votingStatusDTO.teamId());
+    }
+
+    @MessageMapping("/session/voting/stop")
+    @SendTo("/topic/voting/status")
+    public VotingStatusDTO stopVoting(@Payload VotingStatusDTO votingStatusDTO) {
+        return sessionService.stopVoting(votingStatusDTO.teamId());
+    }
+
+    @MessageMapping("/session/task/update")
+    @SendTo("/topic/task/update")
+    public SelectedTaskDTO updateTask(@Payload SelectedTaskDTO selectedTaskDTO) {
+        return sessionService.changeTask(selectedTaskDTO);
+    }
 }

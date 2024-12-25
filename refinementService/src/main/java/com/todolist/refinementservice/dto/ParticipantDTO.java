@@ -4,6 +4,8 @@ import java.util.UUID;
 
 public record ParticipantDTO (
         UUID userId,
-        String mail
+        String mail,
+        String firstName,
+        String lastName
 )
 {}

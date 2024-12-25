@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Client, IMessage } from '@stomp/stompjs';
+import {Injectable} from '@angular/core';
+import {Client, IMessage} from '@stomp/stompjs';
 import {environment} from "../../environments/environment";
 import {AppConstants} from "../constants/app.constants";
 import {BehaviorSubject} from "rxjs";
+import {KeycloakService} from "keycloak-angular";
 
 @Injectable({
   providedIn: 'root',
@@ -13,19 +14,20 @@ export class RefinementService {
   private connectedSubject = new BehaviorSubject<boolean>(false);
   public connected$ = this.connectedSubject.asObservable();
 
-  constructor() {}
+  constructor(private keycloakService: KeycloakService) {
+  }
 
-  connect(teamId: string): void {
+  async connect(): Promise<void> {
     if (this.connected) {
       return;
     }
+    const token = await this.keycloakService.getToken();
 
     const wsUrl = `${environment.wsurl}${AppConstants.REFINEMENT_SERVICE_API_URL}/ws`;
     this.stompClient = new Client({
       brokerURL: wsUrl,
       connectHeaders: {
-        Authorization: 'Bearer YOUR_ACCESS_TOKEN',
-        teamId,
+        Authorization: `Bearer ${token}`
       },
       debug: (msg: string) => console.log(`STOMP Debug: ${msg}`),
       reconnectDelay: 5000,
@@ -70,14 +72,38 @@ export class RefinementService {
   }
 
   emitJoinSession(teamId: string, userId: string): void {
+    this.emitMessage({teamId, userId}, '/app/session/join');
+  }
+
+  emitLeaveSession(teamId: string, userId: string): void {
+    this.emitMessage({teamId, userId}, '/app/session/leave');
+  }
+
+  emitStartVoting(teamId: string): void {
+    this.emitMessage({teamId}, '/app/session/voting/start');
+  }
+
+  emitTaskUpdate(teamId: string, taskTitle: string, taskDescription: string): void {
+    this.emitMessage({teamId, taskTitle, taskDescription}, '/app/session/task/update');
+  }
+
+  emitStopVoting(teamId: string): void {
+    this.emitMessage({teamId}, '/app/session/voting/stop');
+  }
+
+  emitVote(teamId: string, userId: string, vote: number): void {
+    this.emitMessage({teamId, userId, vote}, '/app/session/voting/vote');
+  }
+
+  private emitMessage(body: any, destination: string) {
     if (this.stompClient?.connected) {
-      this.send('/app/session/join', { teamId, userId });
+      this.send(destination, body);
     } else {
       console.error('WebSocket is not connected. Attempting to reconnect...');
-      this.connect(teamId);
+      this.connect();
       setTimeout(() => {
         if (this.stompClient?.connected) {
-          this.send('/app/session/join', { teamId, userId });
+          this.send(destination, body);
         } else {
           console.error('Failed to reconnect WebSocket.');
         }
@@ -96,4 +122,29 @@ export class RefinementService {
       console.error('WebSocket is not connected. Unable to subscribe to participants.');
     }
   }
+
+  subscribeToVotingStatus(callback: (data: any) => void): void {
+    if (this.stompClient) {
+      this.stompClient.subscribe('/topic/voting/status', (message: IMessage) => {
+        const body = JSON.parse(message.body);
+        console.log('Voting Status Update:', body);
+        callback(body);
+      });
+    } else {
+      console.error('WebSocket is not connected. Unable to subscribe to voting status.');
+    }
+  }
+
+  subscribeToTaskUpdates(callback: (data: { taskTitle: string; taskDescription: string }) => void): void {
+    if (this.stompClient) {
+      this.stompClient.subscribe('/topic/task/update', (message: IMessage) => {
+        const body = JSON.parse(message.body);
+        console.log('Task Update:', body);
+        callback(body);
+      });
+    } else {
+      console.error('WebSocket is not connected. Unable to subscribe to task updates.');
+    }
+  }
+
 }

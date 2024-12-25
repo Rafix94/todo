@@ -2,9 +2,8 @@ package com.todolist.refinementservice.dto;
 
 import java.util.UUID;
 
-public record SessionResponseDTO (
-        Long sessionId,
+public record VoteSubmissionDTO(
         UUID teamId,
-        boolean active
-)
-{}
+        UUID userId,
+        int vote
+) {}

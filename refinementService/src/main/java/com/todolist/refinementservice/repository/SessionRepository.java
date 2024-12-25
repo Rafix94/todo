@@ -1,4 +1,4 @@
-package com.todolist.refinementservice;
+package com.todolist.refinementservice.repository;
 
 import com.todolist.refinementservice.model.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
