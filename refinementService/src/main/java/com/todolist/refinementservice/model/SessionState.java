@@ -1,17 +1,16 @@
 package com.todolist.refinementservice.model;
 
-import lombok.*;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class SessionState {
-    private final Map<UUID, UserVoteState> participantsVotes = new HashMap<>();
-    private UUID adminId = null;
-    private VotingState votingState = VotingState.IDLE;
-    private Task selectedTask;
+public record SessionState (
+        Map<UUID, UserVoteState> participantsVotes,
+        UUID adminId,
+        VotingState votingState,
+        Task selectedTask
+) {
+    public static SessionState newSession() {
+        return new SessionState(new HashMap<>(), null, VotingState.IDLE, null);
+    }
 }

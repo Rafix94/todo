@@ -91,6 +91,10 @@ export class RefinementService {
     this.emitMessage({teamId}, '/app/session/voting/stop');
   }
 
+  emitResetVoting(teamId: string): void {
+    this.emitMessage({teamId}, '/app/session/voting/reset');
+  }
+
   emitVote(teamId: string, userId: string, vote: number): void {
     this.emitMessage({teamId, userId, vote}, '/app/session/voting/vote');
   }
@@ -119,19 +123,5 @@ export class RefinementService {
       });
     }
   }
-
-  //
-  // subscribeToVotingStatus(callback: (data: any) => void): void {
-  //   if (this.stompClient) {
-  //     this.stompClient.subscribe('/topic/voting/status', (message: IMessage) => {
-  //       const body = JSON.parse(message.body);
-  //       console.log('Voting Status Update:', body);
-  //       callback(body);
-  //     });
-  //   } else {
-  //     console.error('WebSocket is not connected. Unable to subscribe to voting status.');
-  //   }
-  // }
-  //
 
 }

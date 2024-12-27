@@ -1,20 +1,18 @@
 <app-header></app-header>
 <div class="site-section">
   <div class="top-bar">
-    <!-- Task Dropdown for Admin -->
-    <mat-form-field appearance="fill" *ngIf="isAdmin && !votingActive">
+    <mat-form-field appearance="fill" *ngIf="isAdmin && votingState === 'IDLE'">
       <mat-label>Select Task</mat-label>
       <mat-select [(value)]="selectedTask" (selectionChange)="onTaskChange()">
         <mat-option *ngFor="let task of tasks" [value]="task.id">{{ task.title }}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <!-- Start/End Voting Buttons for Admin -->
-    <button mat-raised-button color="primary" *ngIf="isAdmin && !votingActive" (click)="startVoting()">Start Voting</button>
-    <button mat-raised-button color="warn" *ngIf="isAdmin && votingActive" (click)="endVoting()">End Voting</button>
+    <button mat-raised-button color="primary" *ngIf="isAdmin && votingState === 'IDLE'" (click)="startVoting()">Start Voting</button>
+    <button mat-raised-button color="warn" *ngIf="isAdmin && votingState === 'ACTIVE'" (click)="endVoting()">End Voting</button>
+    <button mat-raised-button color="accent" *ngIf="isAdmin && votingState === 'REVEALED'" (click)="resetVoting()">Reset Voting</button>
   </div>
 
-  <!-- Selected Task Information -->
   <div class="selected-task">
     <h2>Selected Task:</h2>
     <p><strong>Title:</strong> {{ selectedTaskTitle || 'No task selected' }}</p>
@@ -36,20 +34,23 @@
               <span *ngIf="!participant.voted" class="not-voted">✘ No</span>
             </p>
           </div>
+          <div *ngIf="votingState === 'REVEALED' && participant.score !== null" class="participant-score">
+            <p>Score: {{ participant.score }}</p>
+          </div>
         </div>
       </mat-card>
     </div>
   </div>
 
-  <!-- Voting Buttons -->
   <div class="voting-buttons">
     <button
       *ngFor="let value of votingValues"
       mat-raised-button
-      [class.disabled]="!votingActive"
-      [disabled]="!votingActive || userVoted"
+      [disabled]="votingState !== 'ACTIVE' || userVoted"
       (click)="submitVote(value)">
       {{ value }}
     </button>
   </div>
+
+  <mat-spinner *ngIf="loading" class="loading-spinner"></mat-spinner>
 </div>

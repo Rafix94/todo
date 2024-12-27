@@ -1,9 +1,8 @@
 package com.todolist.refinementservice.service;
 
 import com.todolist.refinementservice.config.TopicConfig;
-import com.todolist.refinementservice.dto.PresenceAction;
-import com.todolist.refinementservice.dto.SelectedTaskDTO;
-import com.todolist.refinementservice.dto.UserPresenceActionDTO;
+import com.todolist.refinementservice.dto.*;
+import com.todolist.refinementservice.model.VotingState;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -32,4 +31,28 @@ public class SessionService {
         kafkaTemplate.send(TopicConfig.TASK_SELECTION_TOPIC, String.valueOf(selectedTaskDTO.teamId()), selectedTaskDTO);
     }
 
+    public void submitVote(VoteSubmissionDTO voteSubmissionDTO) {
+        kafkaTemplate.send(TopicConfig.VOTES_TOPIC, String.valueOf(voteSubmissionDTO.teamId()), voteSubmissionDTO);
+    }
+
+    public void startVoting(TeamIdDTO teamIdDTO) {
+        kafkaTemplate.send(
+                TopicConfig.VOTING_STATUS_TOPIC,
+                String.valueOf(teamIdDTO.teamId()),
+                new VotingStatusChangeDTO(teamIdDTO.teamId(), VotingState.ACTIVE));
+    }
+
+    public void stopVoting(TeamIdDTO teamIdDTO) {
+        kafkaTemplate.send(
+                TopicConfig.VOTING_STATUS_TOPIC,
+                String.valueOf(teamIdDTO.teamId()),
+                new VotingStatusChangeDTO(teamIdDTO.teamId(), VotingState.REVEALED));
+    }
+
+    public void resetVoting(TeamIdDTO teamIdDTO) {
+        kafkaTemplate.send(
+                TopicConfig.VOTING_STATUS_TOPIC,
+                String.valueOf(teamIdDTO.teamId()),
+                new VotingStatusChangeDTO(teamIdDTO.teamId(), VotingState.IDLE));
+    }
 }

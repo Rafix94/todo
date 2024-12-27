@@ -21,7 +21,7 @@ public class SessionStateMapper {
     KeycloakUserService keycloakUserService;
 
     public SessionStateDTO sessionStateToSessionStateDTO(SessionState sessionState) {
-        Map<UserDataDTO, UserVoteStateDTO> participantsVotes = sessionState.getParticipantsVotes().entrySet().stream()
+        Map<UserDataDTO, UserVoteStateDTO> participantsVotes = sessionState.participantsVotes().entrySet().stream()
                 .collect(Collectors.toMap(
                         (entry) -> {
                             Optional<UserRepresentation> user = keycloakUserService.getUserById(String.valueOf(entry.getKey()));
@@ -37,16 +37,16 @@ public class SessionStateMapper {
                         (entry) ->
                         {
                             UserVoteState userVoteState = entry.getValue();
-                            return switch (sessionState.getVotingState()) {
-                                case ACTIVE -> new UserVoteStateDTO(userVoteState.isVoted(), null);
+                            return switch (sessionState.votingState()) {
+                                case ACTIVE -> new UserVoteStateDTO(userVoteState != null ? userVoteState.voted() : null, null);
                                 case IDLE -> new UserVoteStateDTO(null, null);
                                 case REVEALED ->
-                                        new UserVoteStateDTO(userVoteState.isVoted(), userVoteState.getScore());
+                                        new UserVoteStateDTO(userVoteState != null ? userVoteState.voted() : null, userVoteState != null ? userVoteState.score() : null);
                             };
                         }
                 ));
 
-        return new SessionStateDTO(participantsVotes, sessionState.getAdminId(), sessionState.getVotingState(), sessionState.getSelectedTask());
+        return new SessionStateDTO(participantsVotes, sessionState.adminId(), sessionState.votingState(), sessionState.selectedTask());
     }
 
 }
