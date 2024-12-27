@@ -16,7 +16,13 @@ export class RefinementComponent implements OnInit, OnDestroy {
   selectedTask: string | null = null;
   selectedTaskTitle: string | null = null;
   selectedTaskDescription: string | null = null;
-  participants: { mail: string; firstName: string; lastName: string; voted: boolean }[] = [];
+  participants: ({ firstName: string; lastName: string; score: number | null; voted: boolean; userId: string } | {
+    firstName: string;
+    lastName: string;
+    score: null;
+    voted: boolean;
+    userId: string
+  })[] = [];
   tasks: { id: string; title: string; description: string }[] = [];
   votingValues: number[] = [1, 2, 3, 5, 8, 13, 21];
   private teamId: string = '';
@@ -36,30 +42,13 @@ export class RefinementComponent implements OnInit, OnDestroy {
       const role = params['role'];
       this.isAdmin = role === 'admin';
 
-      if (this.isAdmin) {
-        this.dataService.getAllTasks(this.teamId).subscribe((tasks) => {
-          this.tasks = tasks;
-        });
-      }
-
       this.refinementService.connect();
       this.refinementService.connected$.subscribe((connected) => {
         if (connected) {
           console.log('Subscribing to updates');
 
-          // Subscribe to participant updates
-          this.refinementService.subscribeToParticipants((data) => {
-            this.updateParticipantList(data);
-          });
-
-          // Subscribe to voting status updates
-          this.refinementService.subscribeToVotingStatus((data) => {
-            this.handleVotingStatusUpdate(data);
-          });
-
-          // Subscribe to task updates
-          this.refinementService.subscribeToTaskUpdates((data) => {
-            this.handleTaskUpdate(data);
+          this.refinementService.subscribeToSessionStateUpdates(this.teamId, (state) => {
+            this.updateSessionState(state);
           });
         }
       });
@@ -103,30 +92,55 @@ export class RefinementComponent implements OnInit, OnDestroy {
 
     this.refinementService.emitVote(this.teamId, this.userId, value);
   }
+  private updateSessionState(state: {
+    participantsVotes: Record<string, { voted: boolean | null; score: number | null }>;
+    adminId: string;
+    votingState: string;
+    task: { title: string; description: string };
+  }): void {
+    console.log('Session State Updated:', state);
 
-  private updateParticipantList(data: { participants: { mail: string, firstName: string, lastName: string }[] }): void {
-    this.participants = data.participants.map((p) => ({
-      mail: p.mail || 'Unknown',
-      firstName: p.firstName || 'Unknown',
-      lastName: p.lastName || 'Unknown',
-      voted: false,
-    }));
+    this.participants = Object.entries(state.participantsVotes).map(([key, value]) => {
+      const userRegex = /UserDataDTO\[id=(.+), firstName=(.+), lastName=(.+)\]/;
+      const match = userRegex.exec(key);
+
+      if (match) {
+        const [, userId, firstName, lastName] = match;
+        return {
+          userId,
+          firstName,
+          lastName,
+          voted: value.voted ?? false,
+          score: value.score ?? null,
+        };
+      }
+
+      return {
+        userId: 'Unknown',
+        firstName: 'Unknown',
+        lastName: 'Unknown',
+        voted: false,
+        score: null,
+      };
+    });
+
+    this.isAdmin = this.userId === state.adminId;
+
+    if (this.isAdmin) {
+      this.dataService.getAllTasks(this.teamId).subscribe((tasks) => {
+        this.tasks = tasks;
+      });
+    }
+
+    this.selectedTaskTitle = state.task.title || 'No task selected';
+    this.selectedTaskDescription = state.task.description || 'No description available';
+
+    this.votingActive = state.votingState === 'ACTIVE';
   }
 
   async getUserId(): Promise<string> {
     const userProfile = await this.keycloakService.loadUserProfile();
     return userProfile.id || '';
-  }
-
-  private handleVotingStatusUpdate(data: { sessionId: number; teamId: string; active: boolean }): void {
-    console.log('Voting Status Update:', data);
-    this.votingActive = data.active;
-  }
-
-  private handleTaskUpdate(data: { taskTitle: string; taskDescription: string }): void {
-    console.log('Task Update Received:', data);
-    this.selectedTaskTitle = data.taskTitle;
-    this.selectedTaskDescription = data.taskDescription;
   }
 
   @HostListener('window:beforeunload', ['$event'])

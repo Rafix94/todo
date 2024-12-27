@@ -111,40 +111,27 @@ export class RefinementService {
     }
   }
 
-  subscribeToParticipants(callback: (data: any) => void): void {
+  subscribeToSessionStateUpdates(teamId: string, callback: (state: any) => void): void {
     if (this.stompClient) {
-      this.stompClient.subscribe('/topic/session/participants', (message: IMessage) => {
-        const body = JSON.parse(message.body);
-        console.log('Participant Update:', body);
-        callback(body);
+      this.stompClient.subscribe(`/topic/session/${teamId}`, (message: IMessage) => {
+        const state = JSON.parse(message.body);
+        callback(state);
       });
-    } else {
-      console.error('WebSocket is not connected. Unable to subscribe to participants.');
     }
   }
 
-  subscribeToVotingStatus(callback: (data: any) => void): void {
-    if (this.stompClient) {
-      this.stompClient.subscribe('/topic/voting/status', (message: IMessage) => {
-        const body = JSON.parse(message.body);
-        console.log('Voting Status Update:', body);
-        callback(body);
-      });
-    } else {
-      console.error('WebSocket is not connected. Unable to subscribe to voting status.');
-    }
-  }
-
-  subscribeToTaskUpdates(callback: (data: { taskTitle: string; taskDescription: string }) => void): void {
-    if (this.stompClient) {
-      this.stompClient.subscribe('/topic/task/update', (message: IMessage) => {
-        const body = JSON.parse(message.body);
-        console.log('Task Update:', body);
-        callback(body);
-      });
-    } else {
-      console.error('WebSocket is not connected. Unable to subscribe to task updates.');
-    }
-  }
+  //
+  // subscribeToVotingStatus(callback: (data: any) => void): void {
+  //   if (this.stompClient) {
+  //     this.stompClient.subscribe('/topic/voting/status', (message: IMessage) => {
+  //       const body = JSON.parse(message.body);
+  //       console.log('Voting Status Update:', body);
+  //       callback(body);
+  //     });
+  //   } else {
+  //     console.error('WebSocket is not connected. Unable to subscribe to voting status.');
+  //   }
+  // }
+  //
 
 }

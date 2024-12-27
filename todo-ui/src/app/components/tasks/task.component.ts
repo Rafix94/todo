@@ -26,8 +26,6 @@ export class TaskComponent implements OnInit {
   sortField: string = 'title';
   sortDir: string = 'asc';
   searchQuery: string = '';
-  sessionActive = false;
-  currentSession: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -50,7 +48,6 @@ export class TaskComponent implements OnInit {
       if (this.teams.length > 0) {
         this.selectedTeam = this.teams[0].id;
         this.getData();
-        this.checkSessionStatus();
       }
     });
   }
@@ -76,7 +73,6 @@ export class TaskComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
     this.getData();
-    this.checkSessionStatus();
   }
 
 
@@ -84,7 +80,6 @@ export class TaskComponent implements OnInit {
     this.selectedTeam = event.value;
     this.currentPage = 0;
     this.getData();
-    this.checkSessionStatus();
   }
 
   deleteRow(task: Task): void {
@@ -123,26 +118,8 @@ export class TaskComponent implements OnInit {
     this.router.navigate(['/tasks', taskId]);
   }
 
-  checkSessionStatus() {
-    this.dataService.checkSessionStatus(this.selectedTeam).subscribe((response) => {
-      this.sessionActive = response.active;
-      this.currentSession = response.sessionId || '';
-    });
-  }
-
   toggleSession() {
-    if (!this.sessionActive) {
-      this.createSession();
-    } else {
-      this.joinSession();
-    }
-  }
-
-  createSession() {
-    this.dataService.createSession(this.selectedTeam).subscribe((response) => {
-      this.currentSession = response.sessionId;
-      this.router.navigate(['/refinement', this.selectedTeam, 'admin']);
-    });
+    this.joinSession();
   }
 
   joinSession() {
