@@ -133,6 +133,15 @@ export class RefinementService {
     }
   }
 
+  subscribeToTaskUpdates(teamId: string, callback: (state: any) => void): void {
+    if (this.stompClient) {
+      this.stompClient.subscribe(`/topic/session/${teamId}/task`, (message: IMessage) => {
+        const state = JSON.parse(message.body);
+        callback(state);
+      });
+    }
+  }
+
   subscribeToParticipantsStateUpdates(teamId: string, callback: (state: any) => void): void {
     if (this.stompClient) {
       this.stompClient.subscribe(`/topic/session/${teamId}/participants`, (message: IMessage) => {

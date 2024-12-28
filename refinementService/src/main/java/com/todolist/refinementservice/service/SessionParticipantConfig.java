@@ -1,6 +1,7 @@
 package com.todolist.refinementservice.service;
 
 import com.todolist.refinementservice.config.TopicConfig;
+import com.todolist.refinementservice.dto.SelectedTaskDTO;
 import com.todolist.refinementservice.dto.UserPresenceActionDTO;
 import com.todolist.refinementservice.dto.VoteSubmissionDTO;
 import com.todolist.refinementservice.dto.VotingStatusChangeDTO;
@@ -111,8 +112,9 @@ public class SessionParticipantConfig {
 
             KTable<UUID, Map<UUID, UserVoteState>> participantStateTable = userPresenceTable
                     .outerJoin(voteTable,
-                            (userPresenceState, voteState) ->
-                                    userPresenceState.entrySet().stream()
+                            (userPresenceState, voteState) -> {
+                                if (userPresenceState != null) {
+                                    return userPresenceState.entrySet().stream()
                                             .collect(Collectors.toMap(
                                                     Map.Entry::getKey,
                                                     entry -> {
@@ -124,7 +126,10 @@ public class SessionParticipantConfig {
                                                         }
                                                         return new UserVoteState(false, null);
                                                     }
-                                            )),
+                                            ));
+                                }
+                                return voteState;
+                            },
                             Materialized.<UUID, Map<UUID, UserVoteState>, KeyValueStore<Bytes, byte[]>>as("participant-state-store")
                                     .withKeySerde(Serdes.UUID())
                                     .withValueSerde(MapSerde.userVoteStateMapSerde())
@@ -193,4 +198,29 @@ public class SessionParticipantConfig {
             return userPresenceActionStream;
         }
     }
+
+    @Bean
+    public KStream<UUID, SelectedTaskDTO> taskSelectionStream(StreamsBuilder streamsBuilder) {
+        try (JsonSerde<SelectedTaskDTO> selectedTaskDTOJsonSerde = new JsonSerde<>(SelectedTaskDTO.class)) {
+
+            KStream<UUID, SelectedTaskDTO> taskSelectionStream = streamsBuilder.stream(
+                    TopicConfig.TASK_SELECTION_TOPIC,
+                    Consumed.with(Serdes.String(), selectedTaskDTOJsonSerde)
+
+            ).selectKey((key, value) -> UUID.fromString(key));
+
+            KTable<UUID, SelectedTaskDTO> taskSelectionKTable = taskSelectionStream.toTable(
+                    Materialized.<UUID, SelectedTaskDTO, KeyValueStore<Bytes, byte[]>>as("task-selection-store")
+                            .withKeySerde(Serdes.UUID())
+                            .withValueSerde(selectedTaskDTOJsonSerde)
+            );
+            taskSelectionKTable.toStream().foreach((teamId, selectedTaskDTO) -> messagingTemplate.convertAndSend(
+                    "/topic/session/" + teamId + "/task",
+                    selectedTaskDTO)
+            );
+            return taskSelectionStream;
+        }
+
+    }
+
 }

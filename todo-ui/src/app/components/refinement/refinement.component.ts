@@ -52,6 +52,9 @@ export class RefinementComponent implements OnInit, OnDestroy {
           this.refinementService.subscribeToAdminUpdates(this.teamId, (state) => {
             this.updateAdminState(state);
           });
+          this.refinementService.subscribeToTaskUpdates(this.teamId, (state) => {
+            this.updateTaskState(state);
+          });
         }
       });
 
@@ -100,6 +103,14 @@ export class RefinementComponent implements OnInit, OnDestroy {
     console.log('Session State Updated:', state);
 
     this.votingState = state.votingState;
+  }
+
+  private updateTaskState(state: {
+    taskTitle: string,
+    taskDescription: string
+  }): void {
+    this.selectedTaskTitle = state.taskTitle;
+    this.selectedTaskDescription= state.taskDescription;
   }
 
   private updateAdminState(adminId: string): void {
