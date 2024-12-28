@@ -117,7 +117,25 @@ export class RefinementService {
 
   subscribeToSessionStateUpdates(teamId: string, callback: (state: any) => void): void {
     if (this.stompClient) {
-      this.stompClient.subscribe(`/topic/session/${teamId}`, (message: IMessage) => {
+      this.stompClient.subscribe(`/topic/session/${teamId}/state`, (message: IMessage) => {
+        const state = JSON.parse(message.body);
+        callback(state);
+      });
+    }
+  }
+
+  subscribeToAdminUpdates(teamId: string, callback: (state: any) => void): void {
+    if (this.stompClient) {
+      this.stompClient.subscribe(`/topic/session/${teamId}/admin`, (message: IMessage) => {
+        const adminId = message.body;
+        callback(adminId);
+      });
+    }
+  }
+
+  subscribeToParticipantsStateUpdates(teamId: string, callback: (state: any) => void): void {
+    if (this.stompClient) {
+      this.stompClient.subscribe(`/topic/session/${teamId}/participants`, (message: IMessage) => {
         const state = JSON.parse(message.body);
         callback(state);
       });

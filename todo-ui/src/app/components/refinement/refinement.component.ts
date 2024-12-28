@@ -35,8 +35,6 @@ export class RefinementComponent implements OnInit, OnDestroy {
 
     this.route.params.subscribe((params) => {
       this.teamId = params['teamId'];
-      const role = params['role'];
-      this.isAdmin = role === 'admin';
 
       this.refinementService.connect();
       this.refinementService.connected$.subscribe((connected) => {
@@ -44,6 +42,15 @@ export class RefinementComponent implements OnInit, OnDestroy {
           console.log('Subscribing to updates');
           this.refinementService.subscribeToSessionStateUpdates(this.teamId, (state) => {
             this.updateSessionState(state);
+          });
+          this.refinementService.subscribeToParticipantsStateUpdates(this.teamId, (state) => {
+            this.updateParticipantState(state);
+          });
+          this.refinementService.subscribeToSessionStateUpdates(this.teamId, (state) => {
+            this.updateSessionState(state);
+          });
+          this.refinementService.subscribeToAdminUpdates(this.teamId, (state) => {
+            this.updateAdminState(state);
           });
         }
       });
@@ -88,25 +95,46 @@ export class RefinementComponent implements OnInit, OnDestroy {
   }
 
   private updateSessionState(state: {
-    participantsVotes: Record<string, { voted: boolean | null; score: number | null }>;
-    adminId: string;
     votingState: 'ACTIVE' | 'IDLE' | 'REVEALED';
-    task: { title: string; description: string };
   }): void {
+    console.log('Session State Updated:', state);
+
+    this.votingState = state.votingState;
+  }
+
+  private updateAdminState(adminId: string): void {
+    console.log('Admin State Updated:', adminId);
+
+    this.isAdmin = this.userId === adminId;
+
+    if (this.isAdmin) {
+      this.dataService.getAllTasks(this.teamId).subscribe((tasks) => {
+        this.tasks = tasks;
+      });
+    }
+  }
+
+  private updateParticipantState(state: Record<string, { voted: boolean | null; score: number | null }>): void {
     console.log('Session State Updated:', state);
 
     this.loading = false;
 
-    this.participants = Object.entries(state.participantsVotes).map(([key, value]) => {
-      const userRegex = /UserDataDTO\[id=(.+), firstName=(.+), lastName=(.+)\]/;
+    if (!state || Object.keys(state).length === 0) {
+      console.warn('State is empty or undefined');
+      this.participants = [];
+      return;
+    }
+
+    this.participants = Object.entries(state).map(([key, value]) => {
+      const userRegex = /UserDataDTO\[id=([^,]+), firstName=([^,]+), lastName=([^,\]]+)\]/;
       const match = userRegex.exec(key);
 
       if (match) {
         const [, userId, firstName, lastName] = match;
         return {
           userId,
-          firstName,
-          lastName,
+          firstName: firstName.trim() || 'Unknown',
+          lastName: lastName.trim() || 'Unknown',
           voted: !!value.voted,
           score: value.score,
         };
@@ -116,22 +144,10 @@ export class RefinementComponent implements OnInit, OnDestroy {
         userId: 'Unknown',
         firstName: 'Unknown',
         lastName: 'Unknown',
-        voted: false,
-        score: null,
+        voted: !!value.voted,
+        score: value.score,
       };
     });
-
-    this.isAdmin = this.userId === state.adminId;
-
-    if (this.isAdmin) {
-      this.dataService.getAllTasks(this.teamId).subscribe((tasks) => {
-        this.tasks = tasks;
-      });
-    }
-
-    this.votingState = state.votingState;
-    this.selectedTaskTitle = state.task.title || 'No task selected';
-    this.selectedTaskDescription = state.task.description || 'No description available';
 
     const loggedInUser = this.participants.find((p) => p.userId === this.userId);
     this.userVoted = loggedInUser?.voted || false;

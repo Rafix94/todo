@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +48,23 @@ public class SessionStateMapper {
                 ));
 
         return new SessionStateDTO(participantsVotes, sessionState.adminId(), sessionState.votingState(), sessionState.selectedTask());
+    }
+
+    public Map<UserDataDTO, UserVoteStateDTO> getParticipants(Map<UUID, UserVoteState> participants) {
+        return participants.entrySet().stream().collect(Collectors.toMap(
+                entry -> {
+                    Optional<UserRepresentation> user = keycloakUserService.getUserById(String.valueOf(entry.getKey()));
+                    String firstName = "Undefined";
+                    String lastName = "Undefined";
+                    if (user.isPresent()) {
+                        UserRepresentation userRepresentation = user.get();
+                        firstName = userRepresentation.getFirstName() != null ? userRepresentation.getFirstName() : firstName;
+                        lastName = userRepresentation.getLastName() != null ? userRepresentation.getLastName() : lastName;
+                    }
+                    return new UserDataDTO(entry.getKey(), firstName, lastName);
+                },
+                entry -> new UserVoteStateDTO(entry.getValue().voted(), entry.getValue().score())
+        ));
     }
 
 }
