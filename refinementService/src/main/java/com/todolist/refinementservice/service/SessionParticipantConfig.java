@@ -93,15 +93,16 @@ public class SessionParticipantConfig {
                     .aggregate(
                             HashMap::new,
                             (teamId, voteSubmissionDTO, userVoteStateMap) -> {
-                                if (voteSubmissionDTO != null) {
-                                    var updatedUserVoteStateMap = new HashMap<>(userVoteStateMap);
+                                var updatedUserVoteStateMap = new HashMap<>(userVoteStateMap);
+                                if (voteSubmissionDTO.userId() == null) {
+                                    updatedUserVoteStateMap.replaceAll((key, value) -> new UserVoteState(false, null));
+                                } else {
                                     updatedUserVoteStateMap.put(
                                             voteSubmissionDTO.userId(),
                                             new UserVoteState(true, voteSubmissionDTO.vote())
                                     );
-                                    return updatedUserVoteStateMap;
                                 }
-                                return userVoteStateMap;
+                                return updatedUserVoteStateMap;
                             },
                             Materialized.<UUID, Map<UUID, UserVoteState>, KeyValueStore<Bytes, byte[]>>as("vote-store")
                                     .withKeySerde(Serdes.UUID())

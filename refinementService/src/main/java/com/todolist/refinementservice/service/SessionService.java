@@ -51,6 +51,11 @@ public class SessionService {
 
     public void resetVoting(TeamIdDTO teamIdDTO) {
         kafkaTemplate.send(
+                TopicConfig.VOTES_TOPIC,
+                String.valueOf(teamIdDTO.teamId()),
+                new VoteSubmissionDTO(teamIdDTO.teamId(), null, null));
+
+        kafkaTemplate.send(
                 TopicConfig.VOTING_STATUS_TOPIC,
                 String.valueOf(teamIdDTO.teamId()),
                 new VotingStatusChangeDTO(teamIdDTO.teamId(), VotingState.IDLE));
