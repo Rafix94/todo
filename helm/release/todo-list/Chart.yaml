@@ -45,3 +45,6 @@ dependencies:
   - name: fileprocessor
     version: 0.1.0
     repository: file://../../todo-app-services/fileprocessor
+  - name: refinement-service
+    version: 0.1.0
+    repository: file://../../todo-app-services/refinement-service

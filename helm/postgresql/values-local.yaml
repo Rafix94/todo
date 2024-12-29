@@ -355,6 +355,7 @@ primary:
           SELECT 'CREATE DATABASE useragent;' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'useragent') \gexec
           SELECT 'CREATE DATABASE edgeserver;' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'edgeserver') \gexec
           SELECT 'CREATE DATABASE taskmanager;' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'taskmanager') \gexec
+          SELECT 'CREATE DATABASE refinementservice;' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'refinementservice') \gexec
         EOSQL
         psql -v ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
           DO \$\$
@@ -378,6 +379,12 @@ primary:
             ELSE
               RAISE NOTICE 'User taskmanager already exists.';
             END IF;
+            IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'refinementservice') THEN
+              EXECUTE 'CREATE USER refinementservice WITH PASSWORD ''refinementservice_password''';
+              RAISE NOTICE 'User refinementservice created.';
+            ELSE
+              RAISE NOTICE 'User refinementservice already exists.';
+            END IF;
           END
           \$\$;
         EOSQL
@@ -386,6 +393,7 @@ primary:
           GRANT ALL PRIVILEGES ON DATABASE useragent TO useragent;
           GRANT ALL PRIVILEGES ON DATABASE edgeserver TO edgeserver;
           GRANT ALL PRIVILEGES ON DATABASE taskmanager TO taskmanager;
+          GRANT ALL PRIVILEGES ON DATABASE refinementservice TO refinementservice;
         EOSQL
         
         psql -v ON_ERROR_STOP=1 --username "postgres" -d useragent <<-EOSQL
@@ -397,9 +405,15 @@ primary:
           CREATE SCHEMA IF NOT EXISTS public; -- Ensure the public schema exists
           GRANT ALL PRIVILEGES ON SCHEMA public TO edgeserver;
         EOSQL
+        
         psql -v ON_ERROR_STOP=1 --username "postgres" -d taskmanager <<-EOSQL
           CREATE SCHEMA IF NOT EXISTS public; -- Ensure the public schema exists
           GRANT ALL PRIVILEGES ON SCHEMA public TO taskmanager;
+        EOSQL
+        
+        psql -v ON_ERROR_STOP=1 --username "postgres" -d refinementservice <<-EOSQL
+          CREATE SCHEMA IF NOT EXISTS public; -- Ensure the public schema exists
+          GRANT ALL PRIVILEGES ON SCHEMA public TO refinementservice;
         EOSQL
 
     ## @param primary.initdb.scriptsConfigMap ConfigMap with scripts to be run at first boot

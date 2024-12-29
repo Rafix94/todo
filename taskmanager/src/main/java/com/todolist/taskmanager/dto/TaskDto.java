@@ -31,5 +31,8 @@ public record TaskDto(
         @Schema(description = "The UUID of the team associated with this task", example = "c56a4180-65aa-42ec-a945-5fd21dec0538", required = true)
         UUID teamId,
 
+        @Schema(description = "Weight of the task", example = "4")
+        Integer weight,
+
         List<CommentDto> commentDtos
 ) {}

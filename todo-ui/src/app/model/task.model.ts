@@ -4,18 +4,21 @@ export class Task {
   public description: string;
   public teamId: string;
   public assignedTo: string | null;
+  public weight?: number;
 
   constructor(
     id?: number,
     title?: string,
     description?: string,
     teamId?: string,
-    assignedTo?: string
+    assignedTo?: string,
+    weight?: number
   ) {
     this.id = id || 0;
     this.title = title || "";
     this.description = description || "";
-    this.teamId = teamId || "";  // Default to an empty string if not provided
-    this.assignedTo = assignedTo || null;  // Set to null if undefined
+    this.teamId = teamId || "";
+    this.assignedTo = assignedTo || null;
+    this.weight = weight;
   }
 }

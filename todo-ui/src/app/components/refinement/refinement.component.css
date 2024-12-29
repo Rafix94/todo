@@ -1,0 +1,121 @@
+.site-section {
+  padding: 20px;
+}
+
+.top-bar {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.participant-list {
+  list-style: none;
+  padding: 0;
+}
+
+.participant-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.voted {
+  color: green;
+}
+
+.not-voted {
+  color: red;
+}
+
+.voting-buttons button {
+  margin: 5px;
+}
+
+.voting-buttons button.disabled {
+  background-color: #e0e0e0 !important; /* Greyed-out background */
+  color: #9e9e9e !important; /* Greyed-out text */
+  cursor: not-allowed;
+}
+
+.selected-task {
+  margin: 20px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.selected-task h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.selected-task p {
+  margin: 10px 0 0;
+  font-size: 1.1em;
+}
+
+.participants-section {
+  margin-top: 20px;
+}
+
+.participant-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.participant-card {
+  width: 300px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.participant-card .voted {
+  color: green;
+  font-weight: bold;
+}
+
+.participant-card .not-voted {
+  color: red;
+  font-weight: bold;
+}
+
+.voting-buttons {
+  margin-top: 20px;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+  height: 100vh;
+  width: 100%;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+}
+
+button[disabled] {
+  background-color: #e0e0e0; /* Grey background */
+  color: #9e9e9e; /* Grey text */
+  cursor: not-allowed;
+}

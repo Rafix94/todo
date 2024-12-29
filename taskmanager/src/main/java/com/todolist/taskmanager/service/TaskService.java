@@ -2,6 +2,7 @@ package com.todolist.taskmanager.service;
 
 import com.todolist.taskmanager.dto.CreateTaskDto;
 import com.todolist.taskmanager.dto.UpdateTaskDto;
+import com.todolist.taskmanager.dto.WeightDto;
 import com.todolist.taskmanager.exception.NotFoundException;
 import com.todolist.taskmanager.mapper.TaskMapper;
 import com.todolist.taskmanager.model.Comment;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,6 +36,22 @@ public class TaskService {
         Page<Task> tasks = taskRepository.findByTeamId(teamId, pageable);
 
         return tasks.map(this::getTaskDto);
+    }
+
+    public List<TaskDto> getAllTasksByTeam(UUID teamId) {
+        List<Task> tasks = taskRepository.findAllByTeamId(teamId);
+        return tasks.stream().map(task -> new TaskDto(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        )).toList();
     }
 
     public TaskDto createTask(CreateTaskDto createTaskDto) {
@@ -101,6 +119,15 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
         task.setAssignedTo(uuid);
+
+        task = taskRepository.save(task);
+        return getTaskDto(task);
+    }
+
+    public TaskDto updateWeight(long taskId, WeightDto weightDto) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
+        task.setWeight(weightDto.weight());
 
         task = taskRepository.save(task);
         return getTaskDto(task);

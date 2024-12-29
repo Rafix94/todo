@@ -1,9 +1,6 @@
 package com.todolist.taskmanager.controller;
 
-import com.todolist.taskmanager.dto.CreateTaskDto;
-import com.todolist.taskmanager.dto.ErrorDto;
-import com.todolist.taskmanager.dto.UpdateTaskDto;
-import com.todolist.taskmanager.dto.TaskDto;
+import com.todolist.taskmanager.dto.*;
 import com.todolist.taskmanager.model.File;
 import com.todolist.taskmanager.service.FileService;
 import com.todolist.taskmanager.service.TaskService;
@@ -23,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Task Management API", description = "CRUD operations for managing tasks by team")
@@ -43,6 +41,19 @@ public class TaskController {
     @PreAuthorize("@teamSecurityService.userBelongsToTeam(#teamId)")
     public ResponseEntity<Page<TaskDto>> getTasksByTeam(@RequestParam UUID teamId, Pageable pageable) {
         Page<TaskDto> tasks = taskService.getTasksByTeam(teamId, pageable);
+        return ResponseEntity.ok(tasks);
+    }
+
+    @Operation(summary = "Get all tasks for a specific team", description = "Retrieve a paginated list of tasks for a team the user belongs to, specified by teamId.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully"),
+            @ApiResponse(responseCode = "403", description = "User not authorized to access this team's tasks"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    })
+    @GetMapping("/all")
+    @PreAuthorize("@teamSecurityService.userBelongsToTeam(#teamId)")
+    public ResponseEntity<List<TaskDto>> getAllTasksByTeam(@RequestParam UUID teamId, Pageable pageable) {
+        List<TaskDto> tasks = taskService.getAllTasksByTeam(teamId);
         return ResponseEntity.ok(tasks);
     }
 
@@ -98,6 +109,22 @@ public class TaskController {
     @PreAuthorize("@teamSecurityService.taskBelongsToUsersTeam(#taskId)")
     public ResponseEntity<TaskDto> assignTask(@PathVariable long taskId) {
         TaskDto updatedTask = taskService.assignTask(taskId);
+        return ResponseEntity.ok(updatedTask);
+    }
+
+
+    @Operation(summary = "Update task weight", description = "Update the weight of a specific task if the authenticated user has permission within the associated team.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Task weight successfully updated"),
+            @ApiResponse(responseCode = "403", description = "User not authorized to update this task"),
+            @ApiResponse(responseCode = "404", description = "Task not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    })
+    @PutMapping("/{taskId}/weight")
+    @PreAuthorize("@teamSecurityService.taskBelongsToUsersTeam(#taskId)")
+    public ResponseEntity<TaskDto> updateWeight(@PathVariable long taskId, @RequestBody WeightDto weightDto) {
+        TaskDto updatedTask = taskService.updateWeight(taskId, weightDto);
         return ResponseEntity.ok(updatedTask);
     }
 

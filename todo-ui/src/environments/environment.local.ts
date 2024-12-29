@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   name: 'local',
   rooturl : 'http://localhost:8093/todolist',
+  wsurl : 'http://localhost:8093/todolist',
   keycloak : 'http://localhost:80'
 };
 

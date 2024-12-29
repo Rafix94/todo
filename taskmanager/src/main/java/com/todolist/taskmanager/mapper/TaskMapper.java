@@ -35,6 +35,7 @@ public class TaskMapper {
                     creatorEmail,
                     assigneeEmail,
                     task.getTeamId(),
+                    task.getWeight(),
                     commentDtoStream
                     );
         }

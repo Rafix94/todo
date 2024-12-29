@@ -1,0 +1,66 @@
+<app-header></app-header>
+<div class="site-section">
+  <div class="top-bar">
+    <mat-form-field appearance="fill" *ngIf="isAdmin && votingState === 'IDLE'">
+      <mat-label>Select Task</mat-label>
+      <mat-select [(value)]="selectedTask" (selectionChange)="onTaskChange()">
+        <mat-option *ngFor="let task of tasks" [value]="task.id">{{ task.title }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" *ngIf="isAdmin && votingState === 'IDLE'" (click)="startVoting()">Start Voting</button>
+    <button mat-raised-button color="warn" *ngIf="isAdmin && votingState === 'ACTIVE'" (click)="endVoting()">End Voting</button>
+    <button mat-raised-button color="accent" *ngIf="isAdmin && votingState === 'REVEALED'" (click)="resetVoting()">Reset Voting</button>
+    <button
+      mat-raised-button
+      color="accent"
+      *ngIf="isAdmin && votingState === 'REVEALED'"
+      (click)="updateTaskWeight()"
+      [disabled]="taskUpdated">
+      Update Task Weight to {{averageScore}}
+    </button>
+  </div>
+
+  <div class="selected-task">
+    <h2>Selected Task:</h2>
+    <p><strong>Title:</strong> {{ selectedTaskTitle || 'No task selected' }}</p>
+    <p><strong>Description:</strong> {{ selectedTaskDescription || 'No description available' }}</p>
+  </div>
+
+  <div class="participants-section">
+    <h3>Participants</h3>
+    <div class="participant-cards">
+      <mat-card *ngFor="let participant of participants" class="participant-card">
+        <div class="participant-content">
+          <div class="participant-info">
+            <h4>{{ participant.firstName }} {{ participant.lastName }}</h4>
+          </div>
+          <div class="participant-vote-status">
+            <p>
+              Voted:
+              <span *ngIf="participant.voted" class="voted">✔ Yes</span>
+              <span *ngIf="!participant.voted" class="not-voted">✘ No</span>
+            </p>
+          </div>
+          <div *ngIf="votingState === 'REVEALED' && participant.score !== null" class="participant-score">
+            <p>Score: {{ participant.score }}</p>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="voting-buttons">
+    <button
+      *ngFor="let value of votingValues"
+      mat-raised-button
+      [disabled]="votingState !== 'ACTIVE' || userVoted"
+      (click)="submitVote(value)">
+      {{ value }}
+    </button>
+  </div>
+
+  <div class="spinner-container">
+    <mat-spinner *ngIf="loading" class="loading-spinner"></mat-spinner>
+  </div>
+</div>

@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   rooturl : 'https://todolist.ooguy.com/todolist',
+  wsurl : 'ws://todolist.ooguy.com/todolist',
   keycloak : 'https://todolistauth.giize.com/'
 };
 

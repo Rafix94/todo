@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: "add-task-weight"
+      author: "rafalgrzes"
+      changes:
+        - addColumn:
+            tableName: "task"
+            columns:
+              - column:
+                  name: "weight"
+                  type: int

@@ -33,6 +33,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from "@angular/material/card";
 import { AddTaskDialogComponent } from './components/add-task-dialog/add-task-dialog.component';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { RefinementComponent } from './components/refinement/refinement.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => {
@@ -92,6 +93,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     AddTeamComponent,
     TeamMembersComponent,
     AddTaskDialogComponent,
+    RefinementComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppConstants } from "../../constants/app.constants";
-import { environment } from '../../../environments/environment';
+import { AppConstants } from "../constants/app.constants";
+import { environment } from '../../environments/environment';
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -13,10 +13,19 @@ export class DataService {
     console.log('DataService initialized');
   }
 
-  getTasks(page: number, pageSize: number, selectedTeam: string, sortField: string, sortDirection: string, searchQuery: string): Observable<any> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', pageSize.toString());
+  getTasks(
+    page: number | null,
+    pageSize: number | null,
+    selectedTeam: string,
+    sortField: string | null,
+    sortDirection: string | null,
+    searchQuery: string | null
+  ): Observable<any> {
+    let params = new HttpParams();
+
+    if (page !== null && pageSize !== null) {
+      params = params.set('page', page.toString()).set('size', pageSize.toString());
+    }
 
     if (sortField && sortDirection) {
       params = params.set('sort', `${sortField},${sortDirection}`);
@@ -29,6 +38,11 @@ export class DataService {
     }
 
     return this.http.get(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL, { params });
+  }
+
+  getAllTasks(selectedTeam: string): Observable<any> {
+    const params = new HttpParams().set('teamId', selectedTeam);
+    return this.http.get(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + '/all', { params });
   }
 
   createTask(task: any): Observable<any> {
@@ -44,7 +58,11 @@ export class DataService {
 
 
   assignTask(taskId: number): Observable<Task> {
-    // Calls the API endpoint with the taskId in the URL path
     return this.http.put<Task>(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + taskId + "/" + "assign", {});
   }
+
+  updateTaskWeight(taskId: number, weight: number): Observable<Task> {
+    return this.http.put<Task>(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + taskId + "/" + "weight", {weight});
+  }
+
 }

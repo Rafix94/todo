@@ -216,6 +216,7 @@ To enable S3 storage:
    kubectl apply -f kubernetes/environments/local/secrets/taskmanager-secret.yaml
    kubectl apply -f kubernetes/environments/local/secrets/edgeserver-secret.yaml
    kubectl apply -f kubernetes/environments/local/secrets/fileprocessor-secret.yaml
+   kubectl apply -f kubernetes/environments/local/secrets/refinement-service-secret.yaml
    ```
 
 ### 12. **Install the Application**:
