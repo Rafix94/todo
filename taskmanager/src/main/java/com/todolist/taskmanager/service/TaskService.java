@@ -2,6 +2,7 @@ package com.todolist.taskmanager.service;
 
 import com.todolist.taskmanager.dto.CreateTaskDto;
 import com.todolist.taskmanager.dto.UpdateTaskDto;
+import com.todolist.taskmanager.dto.WeightDto;
 import com.todolist.taskmanager.exception.NotFoundException;
 import com.todolist.taskmanager.mapper.TaskMapper;
 import com.todolist.taskmanager.model.Comment;
@@ -43,6 +44,7 @@ public class TaskService {
                 task.getId(),
                 task.getTitle(),
                 task.getDescription(),
+                null,
                 null,
                 null,
                 null,
@@ -117,6 +119,15 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
         task.setAssignedTo(uuid);
+
+        task = taskRepository.save(task);
+        return getTaskDto(task);
+    }
+
+    public TaskDto updateWeight(long taskId, WeightDto weightDto) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NotFoundException("Task", "id", String.valueOf(taskId)));
+        task.setWeight(weightDto.weight());
 
         task = taskRepository.save(task);
         return getTaskDto(task);

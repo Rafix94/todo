@@ -11,7 +11,14 @@
     <button mat-raised-button color="primary" *ngIf="isAdmin && votingState === 'IDLE'" (click)="startVoting()">Start Voting</button>
     <button mat-raised-button color="warn" *ngIf="isAdmin && votingState === 'ACTIVE'" (click)="endVoting()">End Voting</button>
     <button mat-raised-button color="accent" *ngIf="isAdmin && votingState === 'REVEALED'" (click)="resetVoting()">Reset Voting</button>
-    <button mat-raised-button color="accent" *ngIf="isAdmin && votingState === 'REVEALED'" (click)="updateTaskWeight()">Update Task Weight to {{averageScore}}</button>
+    <button
+      mat-raised-button
+      color="accent"
+      *ngIf="isAdmin && votingState === 'REVEALED'"
+      (click)="updateTaskWeight()"
+      [disabled]="taskUpdated">
+      Update Task Weight to {{averageScore}}
+    </button>
   </div>
 
   <div class="selected-task">

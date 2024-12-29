@@ -23,6 +23,7 @@ export class RefinementComponent implements OnInit, OnDestroy {
   averageScore: number | null = null; // Store average score
   private teamId: string = '';
   private userId: string = '';
+  taskUpdated: boolean = false;
 
   constructor(
     private refinementService: RefinementService,
@@ -86,6 +87,7 @@ export class RefinementComponent implements OnInit, OnDestroy {
 
   resetVoting(): void {
     this.loading = true;
+    this.taskUpdated = false;
     this.refinementService.emitResetVoting(this.teamId);
   }
 
@@ -93,7 +95,7 @@ export class RefinementComponent implements OnInit, OnDestroy {
     if (this.averageScore !== null && this.selectedTask) {
       this.dataService.updateTaskWeight(this.selectedTask, this.averageScore).subscribe(() => {
         console.log('Task weight updated successfully.');
-        this.averageScore = null;
+        this.taskUpdated = true;
       });
     }
   }

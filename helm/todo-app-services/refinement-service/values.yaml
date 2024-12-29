@@ -5,7 +5,7 @@ deployment:
   configEnabled: true
   containerPort: 8096
   discoveryEnabled: true
-  dbEnabled: true
+  dbEnabled: false
   keycloakClientEnabled: true
   secretName: refinement-service-secret
   kafkaClientEnabled: true

@@ -22,7 +22,7 @@ export class TaskComponent implements OnInit {
   totalPages = 0;
   totalElements = 0;
   user: any;
-  displayedColumns: string[] = ['title', 'description', 'assignedTo', 'createdBy', 'actions'];
+  displayedColumns: string[] = ['title', 'description', 'assignedTo', 'createdBy', 'weight', 'actions'];
   sortField: string = 'title';
   sortDir: string = 'asc';
   searchQuery: string = '';

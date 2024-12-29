@@ -39,6 +39,10 @@ public class Task extends BaseEntity {
     @Column
     private UUID teamId;
 
+    @Column
+    @Setter
+    private Integer weight;
+
     @OneToMany(mappedBy = "task")
     List<Comment> comments;
 

@@ -1,9 +1,6 @@
 package com.todolist.taskmanager.controller;
 
-import com.todolist.taskmanager.dto.CreateTaskDto;
-import com.todolist.taskmanager.dto.ErrorDto;
-import com.todolist.taskmanager.dto.UpdateTaskDto;
-import com.todolist.taskmanager.dto.TaskDto;
+import com.todolist.taskmanager.dto.*;
 import com.todolist.taskmanager.model.File;
 import com.todolist.taskmanager.service.FileService;
 import com.todolist.taskmanager.service.TaskService;
@@ -112,6 +109,13 @@ public class TaskController {
     @PreAuthorize("@teamSecurityService.taskBelongsToUsersTeam(#taskId)")
     public ResponseEntity<TaskDto> assignTask(@PathVariable long taskId) {
         TaskDto updatedTask = taskService.assignTask(taskId);
+        return ResponseEntity.ok(updatedTask);
+    }
+
+    @PutMapping("/{taskId}/weight")
+    @PreAuthorize("@teamSecurityService.taskBelongsToUsersTeam(#taskId)")
+    public ResponseEntity<TaskDto> updateWeight(@PathVariable long taskId, @RequestBody WeightDto weightDto) {
+        TaskDto updatedTask = taskService.updateWeight(taskId, weightDto);
         return ResponseEntity.ok(updatedTask);
     }
 
