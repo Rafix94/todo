@@ -11,6 +11,7 @@
     <button mat-raised-button color="primary" *ngIf="isAdmin && votingState === 'IDLE'" (click)="startVoting()">Start Voting</button>
     <button mat-raised-button color="warn" *ngIf="isAdmin && votingState === 'ACTIVE'" (click)="endVoting()">End Voting</button>
     <button mat-raised-button color="accent" *ngIf="isAdmin && votingState === 'REVEALED'" (click)="resetVoting()">Reset Voting</button>
+    <button mat-raised-button color="accent" *ngIf="isAdmin && votingState === 'REVEALED'" (click)="updateTaskWeight()">Update Task Weight to {{averageScore}}</button>
   </div>
 
   <div class="selected-task">
@@ -52,5 +53,7 @@
     </button>
   </div>
 
-  <mat-spinner *ngIf="loading" class="loading-spinner"></mat-spinner>
+  <div class="spinner-container">
+    <mat-spinner *ngIf="loading" class="loading-spinner"></mat-spinner>
+  </div>
 </div>

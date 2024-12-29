@@ -61,13 +61,8 @@ export class DataService {
     return this.http.put<Task>(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + taskId + "/" + "assign", {});
   }
 
-  checkSessionStatus(teamId: string): Observable<any> {
-    const url = environment.rooturl + AppConstants.REFINEMENT_SERVICE_API_URL + "/session/" + teamId;
-    return this.http.get(url);
+  updateTaskWeight(taskId: number, weight: number): Observable<Task> {
+    return this.http.put<Task>(environment.rooturl + AppConstants.TASK_MANAGER_API_URL + AppConstants.TASKS_API_URL + "/" + taskId + "/" + "weight", {weight});
   }
 
-  createSession(teamId: string): Observable<any> {
-    const url = environment.rooturl + AppConstants.REFINEMENT_SERVICE_API_URL + "/session/" + teamId;
-    return this.http.post(url, null);
-  }
 }

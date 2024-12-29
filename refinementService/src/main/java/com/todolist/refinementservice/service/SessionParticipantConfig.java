@@ -1,13 +1,9 @@
 package com.todolist.refinementservice.service;
 
 import com.todolist.refinementservice.config.TopicConfig;
-import com.todolist.refinementservice.dto.SelectedTaskDTO;
-import com.todolist.refinementservice.dto.UserPresenceActionDTO;
-import com.todolist.refinementservice.dto.VoteSubmissionDTO;
-import com.todolist.refinementservice.dto.VotingStatusChangeDTO;
+import com.todolist.refinementservice.dto.*;
 import com.todolist.refinementservice.mapper.SessionStateMapper;
-import com.todolist.refinementservice.model.UserVoteState;
-import com.todolist.refinementservice.model.VotingState;
+import com.todolist.refinementservice.dto.UserVoteStateDTO;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -45,7 +41,7 @@ public class SessionParticipantConfig {
                     Consumed.with(Serdes.String(), voteSubmissionDTOJsonSerde)
             ).selectKey((key, value) -> UUID.fromString(key));
 
-            KTable<UUID, Map<UUID, UserVoteState>> userPresenceTable = userPresenceActionStream
+            KTable<UUID, Map<UUID, UserVoteStateDTO>> userPresenceTable = userPresenceActionStream
                     .groupByKey(Grouped.with(Serdes.UUID(), userPresenceActionDTOJsonSerde))
                     .aggregate(
                             HashMap::new,
@@ -53,11 +49,9 @@ public class SessionParticipantConfig {
                                 var updatedUserPresenceStateMap = new HashMap<>(userVoteStateMap);
 
                                 switch (userPresenceActionDTO.presenceAction()) {
-                                    case JOIN -> {
-                                        updatedUserPresenceStateMap.put(
-                                                userPresenceActionDTO.userId(),
-                                                new UserVoteState(false, null));
-                                    }
+                                    case JOIN -> updatedUserPresenceStateMap.put(
+                                            userPresenceActionDTO.userId(),
+                                            new UserVoteStateDTO(false, null));
                                     case LEAVE -> {
                                         updatedUserPresenceStateMap.remove(userPresenceActionDTO.userId());
                                         if (updatedUserPresenceStateMap.isEmpty()) {
@@ -67,7 +61,7 @@ public class SessionParticipantConfig {
                                 }
                                 return updatedUserPresenceStateMap;
                             },
-                            Materialized.<UUID, Map<UUID, UserVoteState>, KeyValueStore<Bytes, byte[]>>as("user-presence-store")
+                            Materialized.<UUID, Map<UUID, UserVoteStateDTO>, KeyValueStore<Bytes, byte[]>>as("user-presence-store")
                                     .withKeySerde(Serdes.UUID())
                                     .withValueSerde(MapSerde.userVoteStateMapSerde())
                     );
@@ -89,28 +83,28 @@ public class SessionParticipantConfig {
                 }
             });
 
-            KTable<UUID, Map<UUID, UserVoteState>> voteTable = voteStream
+            KTable<UUID, Map<UUID, UserVoteStateDTO>> voteTable = voteStream
                     .groupByKey(Grouped.with(Serdes.UUID(), voteSubmissionDTOJsonSerde))
                     .aggregate(
                             HashMap::new,
                             (teamId, voteSubmissionDTO, userVoteStateMap) -> {
                                 var updatedUserVoteStateMap = new HashMap<>(userVoteStateMap);
                                 if (voteSubmissionDTO.userId() == null) {
-                                    updatedUserVoteStateMap.replaceAll((key, value) -> new UserVoteState(false, null));
+                                    updatedUserVoteStateMap.replaceAll((key, value) -> new UserVoteStateDTO(false, null));
                                 } else {
                                     updatedUserVoteStateMap.put(
                                             voteSubmissionDTO.userId(),
-                                            new UserVoteState(true, voteSubmissionDTO.vote())
+                                            new UserVoteStateDTO(true, voteSubmissionDTO.vote())
                                     );
                                 }
                                 return updatedUserVoteStateMap;
                             },
-                            Materialized.<UUID, Map<UUID, UserVoteState>, KeyValueStore<Bytes, byte[]>>as("vote-store")
+                            Materialized.<UUID, Map<UUID, UserVoteStateDTO>, KeyValueStore<Bytes, byte[]>>as("vote-store")
                                     .withKeySerde(Serdes.UUID())
                                     .withValueSerde(MapSerde.userVoteStateMapSerde())
                     );
 
-            KTable<UUID, Map<UUID, UserVoteState>> participantStateTable = userPresenceTable
+            KTable<UUID, Map<UUID, UserVoteStateDTO>> participantStateTable = userPresenceTable
                     .outerJoin(voteTable,
                             (userPresenceState, voteState) -> {
                                 if (userPresenceState != null) {
@@ -119,18 +113,18 @@ public class SessionParticipantConfig {
                                                     Map.Entry::getKey,
                                                     entry -> {
                                                         if (voteState != null) {
-                                                            UserVoteState userVoteState = voteState.get(entry.getKey());
+                                                            UserVoteStateDTO userVoteState = voteState.get(entry.getKey());
                                                             if (userVoteState != null) {
-                                                                return new UserVoteState(userVoteState.voted(), userVoteState.score());
+                                                                return new UserVoteStateDTO(userVoteState.voted(), userVoteState.score());
                                                             }
                                                         }
-                                                        return new UserVoteState(false, null);
+                                                        return new UserVoteStateDTO(false, null);
                                                     }
                                             ));
                                 }
                                 return voteState;
                             },
-                            Materialized.<UUID, Map<UUID, UserVoteState>, KeyValueStore<Bytes, byte[]>>as("participant-state-store")
+                            Materialized.<UUID, Map<UUID, UserVoteStateDTO>, KeyValueStore<Bytes, byte[]>>as("participant-state-store")
                                     .withKeySerde(Serdes.UUID())
                                     .withValueSerde(MapSerde.userVoteStateMapSerde())
                     );
@@ -156,7 +150,7 @@ public class SessionParticipantConfig {
                 }
             });
 
-            KTable<UUID, Map<UUID, UserVoteState>> maskedParticipantStateTable = participantStateTable.leftJoin(
+            KTable<UUID, Map<UUID, UserVoteStateDTO>> maskedParticipantStateTable = participantStateTable.leftJoin(
                     votingStatusKTable,
                     (participantVotes, votingStatus) -> {
                         if (votingStatus != null && votingStatus.votingState() != null) {
@@ -165,13 +159,13 @@ public class SessionParticipantConfig {
                                     return participantVotes.entrySet().stream()
                                             .collect(Collectors.toMap(
                                                     Map.Entry::getKey,
-                                                    entry -> new UserVoteState(entry.getValue().voted(), null)
+                                                    entry -> new UserVoteStateDTO(entry.getValue().voted(), null)
                                             ));
                                 case IDLE:
                                     return participantVotes.entrySet().stream()
                                             .collect(Collectors.toMap(
                                                     Map.Entry::getKey,
-                                                    entry -> new UserVoteState(false, null)
+                                                    entry -> new UserVoteStateDTO(false, null)
                                             ));
                                 case REVEALED:
                                     return participantVotes;
@@ -181,7 +175,7 @@ public class SessionParticipantConfig {
                         }
                         return participantVotes;
                     },
-                    Materialized.<UUID, Map<UUID, UserVoteState>, KeyValueStore<Bytes, byte[]>>as("masked-participants-store")
+                    Materialized.<UUID, Map<UUID, UserVoteStateDTO>, KeyValueStore<Bytes, byte[]>>as("masked-participants-store")
                             .withKeySerde(Serdes.UUID())
                             .withValueSerde(MapSerde.userVoteStateMapSerde())
             );

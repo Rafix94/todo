@@ -1,10 +1,7 @@
 package com.todolist.refinementservice.mapper;
 
-import com.todolist.refinementservice.dto.SessionStateDTO;
 import com.todolist.refinementservice.dto.UserDataDTO;
 import com.todolist.refinementservice.dto.UserVoteStateDTO;
-import com.todolist.refinementservice.model.SessionState;
-import com.todolist.refinementservice.model.UserVoteState;
 import com.todolist.refinementservice.service.KeycloakUserService;
 import lombok.AllArgsConstructor;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -21,36 +18,7 @@ public class SessionStateMapper {
 
     KeycloakUserService keycloakUserService;
 
-    public SessionStateDTO sessionStateToSessionStateDTO(SessionState sessionState) {
-        Map<UserDataDTO, UserVoteStateDTO> participantsVotes = sessionState.participantsVotes().entrySet().stream()
-                .collect(Collectors.toMap(
-                        (entry) -> {
-                            Optional<UserRepresentation> user = keycloakUserService.getUserById(String.valueOf(entry.getKey()));
-                            String firstName = "Undefined";
-                            String lastName = "Undefined";
-                            if (user.isPresent()) {
-                                UserRepresentation userRepresentation = user.get();
-                                firstName = userRepresentation.getFirstName() != null ? userRepresentation.getFirstName() : firstName;
-                                lastName = userRepresentation.getLastName() != null ? userRepresentation.getLastName() : lastName;
-                            }
-                            return new UserDataDTO(entry.getKey(), firstName, lastName);
-                        },
-                        (entry) ->
-                        {
-                            UserVoteState userVoteState = entry.getValue();
-                            return switch (sessionState.votingState()) {
-                                case ACTIVE -> new UserVoteStateDTO(userVoteState != null ? userVoteState.voted() : null, null);
-                                case IDLE -> new UserVoteStateDTO(null, null);
-                                case REVEALED ->
-                                        new UserVoteStateDTO(userVoteState != null ? userVoteState.voted() : null, userVoteState != null ? userVoteState.score() : null);
-                            };
-                        }
-                ));
-
-        return new SessionStateDTO(participantsVotes, sessionState.adminId(), sessionState.votingState(), sessionState.selectedTask());
-    }
-
-    public Map<UserDataDTO, UserVoteStateDTO> getParticipants(Map<UUID, UserVoteState> participants) {
+    public Map<UserDataDTO, UserVoteStateDTO> getParticipants(Map<UUID, UserVoteStateDTO> participants) {
         return participants.entrySet().stream().collect(Collectors.toMap(
                 entry -> {
                     Optional<UserRepresentation> user = keycloakUserService.getUserById(String.valueOf(entry.getKey()));

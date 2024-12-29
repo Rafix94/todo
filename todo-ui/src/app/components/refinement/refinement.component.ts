@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { RefinementService } from '../../services/refinement.service';
-import { ActivatedRoute } from '@angular/router';
-import { KeycloakService } from "keycloak-angular";
+import {Component, HostListener, OnDestroy, OnInit} from "@angular/core";
+import {RefinementService} from "../../services/refinement.service";
 import {DataService} from "../../services/data.service";
+import {ActivatedRoute} from "@angular/router";
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-refinement',
@@ -13,13 +13,14 @@ export class RefinementComponent implements OnInit, OnDestroy {
   isAdmin: boolean = false;
   votingState: 'ACTIVE' | 'IDLE' | 'REVEALED' = 'IDLE';
   userVoted: boolean = false;
-  selectedTask: string | null = null;
+  selectedTask: number | null = null;
   selectedTaskTitle: string | null = null;
   selectedTaskDescription: string | null = null;
   loading: boolean = false;
   participants: { firstName: string; lastName: string; score: number | null; voted: boolean; userId: string }[] = [];
-  tasks: { id: string; title: string; description: string }[] = [];
+  tasks: { id: number; title: string; description: string }[] = [];
   votingValues: number[] = [1, 2, 3, 5, 8, 13, 21];
+  averageScore: number | null = null; // Store average score
   private teamId: string = '';
   private userId: string = '';
 
@@ -45,9 +46,6 @@ export class RefinementComponent implements OnInit, OnDestroy {
           });
           this.refinementService.subscribeToParticipantsStateUpdates(this.teamId, (state) => {
             this.updateParticipantState(state);
-          });
-          this.refinementService.subscribeToSessionStateUpdates(this.teamId, (state) => {
-            this.updateSessionState(state);
           });
           this.refinementService.subscribeToAdminUpdates(this.teamId, (state) => {
             this.updateAdminState(state);
@@ -89,6 +87,15 @@ export class RefinementComponent implements OnInit, OnDestroy {
   resetVoting(): void {
     this.loading = true;
     this.refinementService.emitResetVoting(this.teamId);
+  }
+
+  updateTaskWeight(): void {
+    if (this.averageScore !== null && this.selectedTask) {
+      this.dataService.updateTaskWeight(this.selectedTask, this.averageScore).subscribe(() => {
+        console.log('Task weight updated successfully.');
+        this.averageScore = null;
+      });
+    }
   }
 
   submitVote(value: number): void {
@@ -159,6 +166,16 @@ export class RefinementComponent implements OnInit, OnDestroy {
         score: value.score,
       };
     });
+
+    if (this.votingState === 'REVEALED') {
+      const scores = this.participants.map((p) => p.score).filter((score) => score !== null) as number[];
+      if (scores.length > 0) {
+        const total = scores.reduce((acc, score) => acc + score, 0);
+        this.averageScore = Math.round(total / scores.length);
+      } else {
+        this.averageScore = null;
+      }
+    }
 
     const loggedInUser = this.participants.find((p) => p.userId === this.userId);
     this.userVoted = loggedInUser?.voted || false;

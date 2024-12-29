@@ -2,7 +2,7 @@ package com.todolist.refinementservice.service;
 
 import com.todolist.refinementservice.config.TopicConfig;
 import com.todolist.refinementservice.dto.*;
-import com.todolist.refinementservice.model.VotingState;
+import com.todolist.refinementservice.dto.VotingState;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
