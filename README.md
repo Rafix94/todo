@@ -1,3 +1,5 @@
+## Demo Video
+[Watch the demo video](./media/demo-video.mp4)
 
 # ToDoListApp
 
