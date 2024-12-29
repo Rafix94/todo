@@ -112,6 +112,15 @@ public class TaskController {
         return ResponseEntity.ok(updatedTask);
     }
 
+
+    @Operation(summary = "Update task weight", description = "Update the weight of a specific task if the authenticated user has permission within the associated team.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Task weight successfully updated"),
+            @ApiResponse(responseCode = "403", description = "User not authorized to update this task"),
+            @ApiResponse(responseCode = "404", description = "Task not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    })
     @PutMapping("/{taskId}/weight")
     @PreAuthorize("@teamSecurityService.taskBelongsToUsersTeam(#taskId)")
     public ResponseEntity<TaskDto> updateWeight(@PathVariable long taskId, @RequestBody WeightDto weightDto) {
